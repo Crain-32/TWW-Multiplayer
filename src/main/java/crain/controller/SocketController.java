@@ -7,26 +7,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.websocket.server.PathParam;
 import java.security.Principal;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class SocketController {
 
-    private final SimpMessagingTemplate simpMessagingTemplate;
+
     private final GameRoomService gameRoomService;
     private static final String GAME_ROOM_QUEUE = "/queue/gameroom/";
 
     @SneakyThrows
     @MessageMapping("/item/{gameRoomName}")
-    public void handleItems(@PathParam("gameRoomName") String gameRoomName, @Payload ItemDto item) {
+    public void handleItems(@PathVariable("gameRoomName") String gameRoomName, @Payload ItemDto item, StompSession stompSession) {
         String gameRoomUrl = gameRoomService.receiveItem(gameRoomName, item);
-        simpMessagingTemplate.convertAndSend(GAME_ROOM_QUEUE + gameRoomUrl, item);
+        stompSession.send(GAME_ROOM_QUEUE + gameRoomUrl, item);
     }
 
     @MessageMapping("/ready")
@@ -36,8 +36,7 @@ public class SocketController {
     }
 
     @MessageMapping("/test")
-    @SendToUser("/test/queue")
-    public String testQueue(@Payload String test) {
-        return test;
+    public ItemDto testOther(@Payload ItemDto input) {
+        return input;
     }
 }

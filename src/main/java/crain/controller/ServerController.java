@@ -6,11 +6,10 @@ import crain.service.GameRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
 
-@RestController
+
 @RequiredArgsConstructor
 public class ServerController {
 
