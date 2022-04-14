@@ -1,16 +1,13 @@
 package crain.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class EventDto {
-
-    private int stageId;
-    private int mainOffset;
-    private int secondaryOffset;
+@AllArgsConstructor
+public class CoopDto {
     private String sourcePlayerName;
-
-
+    private int itemId;
 }

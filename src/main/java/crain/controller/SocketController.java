@@ -1,7 +1,8 @@
 package crain.controller;
 
+import crain.model.dto.CoopDto;
 import crain.model.dto.EventDto;
-import crain.model.dto.ItemDto;
+import crain.model.dto.MultiworldDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,9 +16,14 @@ public class SocketController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/item/{GameRoom}")
-    public void postItemToGroupTopic(@Payload ItemDto input, @DestinationVariable("GameRoom") String gameroom) {
-        this.simpMessagingTemplate.convertAndSend("/topic/item/" + gameroom, input);
+    @MessageMapping("/multiworld/{GameRoom}")
+    public void postItemToGroupTopic(@Payload MultiworldDto dto, @DestinationVariable("GameRoom") String gameroom) {
+        this.simpMessagingTemplate.convertAndSend("/topic/multiworld/" + gameroom, dto);
+    }
+
+    @MessageMapping("/coop/{GameRoom}")
+    public void postItemToCoopTopic(@Payload CoopDto dto, @DestinationVariable("GameRoom") String gameroom) {
+        this.simpMessagingTemplate.convertAndSend("/topic/coop/" + gameroom, dto);
     }
 
     @MessageMapping("/event/{GameRoom}")
@@ -27,6 +33,6 @@ public class SocketController {
 
     @MessageMapping("/names/{GameRoom}")
     public void getNamesForGameRoom(@DestinationVariable("GameRoom") String gameroom) {
-
+        this.simpMessagingTemplate.convertAndSend("/topic/names/" + gameroom, "foo");
     }
 }
