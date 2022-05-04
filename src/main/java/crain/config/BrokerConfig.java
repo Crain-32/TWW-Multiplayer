@@ -1,6 +1,6 @@
 package crain.config;
 
-import crain.interceptor.GameRoomSubscribeInterceptor;
+import crain.interceptor.TopicSubscribeInterceptor;
 import crain.service.GameRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class BrokerConfig implements WebSocketMessageBrokerConfigurer {
+
     @Autowired
     private GameRoomService gameRoomService;
 
@@ -30,6 +31,6 @@ public class BrokerConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new GameRoomSubscribeInterceptor(gameRoomService));
+        registration.interceptors(new TopicSubscribeInterceptor(gameRoomService));
     }
 }

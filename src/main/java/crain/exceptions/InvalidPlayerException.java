@@ -1,14 +1,13 @@
 package crain.exceptions;
 
-public class InvalidGameRoomException extends RuntimeException {
+public class InvalidPlayerException extends Exception{
     private final String GAMEROOM_NAME;
 
-    public InvalidGameRoomException(String message) {
+    public InvalidPlayerException(String message) {
         super(message);
         this.GAMEROOM_NAME = "";
     }
-
-    public InvalidGameRoomException(String message, String gameRoom) {
+    public InvalidPlayerException(String message, String gameRoom) {
         super(message);
         this.GAMEROOM_NAME = gameRoom;
     }
