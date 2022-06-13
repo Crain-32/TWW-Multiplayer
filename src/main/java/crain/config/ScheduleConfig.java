@@ -1,8 +1,6 @@
 package crain.config;
 
 import crain.model.dto.GameRoomDto;
-import crain.repository.GameRoomRepo;
-import crain.repository.PlayerRepo;
 import crain.service.GameRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +20,10 @@ public class ScheduleConfig {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Scheduled(initialDelay = 100000, fixedDelay = 10000000)
+    @Scheduled(initialDelay = 30000, fixedDelay = 1000000)
     public void clearEmptyGameRooms() {
         List<GameRoomDto> toDelete = gameRoomService.getEmptyGameRooms();
-        toDelete.forEach(room -> {simpMessagingTemplate.convertAndSend("/topic/general/" + room.getName(), "This Room is being cleared due to Inactivity.");});
+        toDelete.forEach(room -> simpMessagingTemplate.convertAndSend("/topic/general/" + room.getName(), "This Room is being cleared due to Inactivity."));
         gameRoomService.clearEmptyGameRooms();
     }
 }

@@ -11,6 +11,7 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -34,6 +35,10 @@ public class PlayerDto implements Serializable {
     private Boolean connected;
 
     public static PlayerDto fromEntity(Player player) {
+        if (Objects.isNull(player)) {
+            return new PlayerDto();
+        }
+
         String worldType = "";
         switch (player.getWorldType()) {
             case COOP:

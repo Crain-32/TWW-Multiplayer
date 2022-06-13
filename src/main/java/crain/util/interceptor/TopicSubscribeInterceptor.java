@@ -1,9 +1,10 @@
-package crain.interceptor;
+package crain.util.interceptor;
 
 import crain.exceptions.InvalidGameRoomException;
 import crain.service.GameRoomService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.Message;
@@ -12,10 +13,12 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.Objects;
 
+@Component
 @RequiredArgsConstructor
 public class TopicSubscribeInterceptor implements ChannelInterceptor {
 
@@ -23,6 +26,7 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
     private final GameRoomService gameRoomService;
 
     @Override
+    @SneakyThrows
     @SuppressWarnings({"unchecked", "ConstantConditions"}) // IDE Doesn't register the Try/Catch, smh
     public Message<?> preSend(@NotNull Message<?> message, MessageChannel channel) {
         try {
@@ -45,7 +49,8 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
         throw new InvalidGameRoomException("Failed to Subscribe to the Gameroom.");
     }
 
-    private String extractGameRoomFromURL(@NonNull String destination) throws InvalidGameRoomException {
+    @SneakyThrows
+    private String extractGameRoomFromURL(@NonNull String destination) {
         if (destination.length() >= 30) {
             throw new InvalidGameRoomException("Invalid Gameroom Name!");
         }

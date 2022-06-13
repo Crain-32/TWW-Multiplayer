@@ -1,12 +1,11 @@
 package crain.model.domain;
 
-import crain.exceptions.InvalidPlayerException;
 import crain.model.constants.WorldType;
 import crain.model.dto.PlayerDto;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,8 @@ public class Player {
     private String playerName;
 
     @ManyToOne
-    @JoinColumn(name = "gameroom_id", nullable = false)
+    @JoinColumn(name = "gameroom_id")
+    @NotNull
     private GameRoom gameRoom;
 
     @Enumerated
@@ -33,7 +33,12 @@ public class Player {
     private Integer worldId;
     private Boolean connected;
 
-    @ElementCollection
+    @PreRemove
+    public void preRemove() {
+        this.gameRoom = null;
+    }
+
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<Integer> items = new ArrayList<>();
 
     public static Player fromDto(PlayerDto dto) {
@@ -45,21 +50,19 @@ public class Player {
     }
 
     /**
-     * Validates if the other Player object would be a valid Player in the same GameRoom.
+     * Validates if the other {@link Player} object would be a valid Player in the same {@link GameRoom}
      * Matching Criteria (Returns False if any of the following are True)
-     * - Same Name (LowerCased)
-     * - Same World ID - If Both WorldType != WorldType.SHARED
+     * *Same Name (LowerCased)
+     * *Same World ID - If Both WorldType != WorldType.SHARED
      *
      * @param player Player to Compare Against
      * @return boolean
      */
-    public boolean validateOtherPlayer(@NonNull Player player) {
-        // Yes, this looks terrible. I do not care.
-        // The only change would be swapping the elements in the First && for Performance
-        return (this.playerName.equalsIgnoreCase(player.getPlayerName()) &&
-                (!this.worldId.equals(player.worldId) ||
+    public boolean softEqualityWithPlayer(@NonNull Player player) {
+        return (this.playerName.equalsIgnoreCase(player.getPlayerName()) ||
+                (this.worldId.equals(player.worldId) &&
                     (this.worldType.equals(WorldType.SHARED) &&
-                    player.worldType.equals(WorldType.SHARED))));
+                    !player.worldType.equals(WorldType.SHARED))));
     }
 
 }
