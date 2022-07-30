@@ -1,8 +1,7 @@
 package crain.controller;
 
-import crain.model.dto.TournamentDto;
+import crain.model.records.TOURNAMENT;
 import crain.service.GameRoomService;
-import crain.service.PlayerService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,11 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class TournamentController {
 
     private final GameRoomService gameRoomService;
-    private final PlayerService playerService;
 
 
     @GetMapping("/{GameRoom}")
-    public TournamentDto pollGameRoom(@PathVariable("gameroom") String gameRoomName) {
+    public TOURNAMENT.TournamentRecord pollGameRoom(@PathVariable("gameroom") String gameRoomName) {
         return gameRoomService.getTournamentDto(gameRoomName);
     }
 }

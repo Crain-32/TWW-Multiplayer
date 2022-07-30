@@ -5,7 +5,6 @@ import crain.service.GameRoomService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -28,10 +27,10 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
     @Override
     @SneakyThrows
     @SuppressWarnings({"unchecked", "ConstantConditions"}) // IDE Doesn't register the Try/Catch, smh
-    public Message<?> preSend(@NotNull Message<?> message, MessageChannel channel) {
+    public Message<?> preSend(@NotNull Message<?> message, @NotNull MessageChannel channel) {
         try {
             final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-            if (Objects.nonNull(accessor) && !StompCommand.SUBSCRIBE.equals(accessor.getCommand()) || isUserChannel(accessor.getDestination())) {
+            if (StompCommand.CONNECT.equals(accessor.getCommand()) || StompCommand.DISCONNECT.equals(accessor.getCommand())) {
                 return message;
             }
             var headers = (LinkedMultiValueMap<String, String>) accessor.getHeader("nativeHeaders");
@@ -46,7 +45,7 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
             // We're just going to convert any NullPointerExceptions into an InvalidGameRoomException.
             // Currently means the Same thing. is really just a Styling Choice.
         }
-        throw new InvalidGameRoomException("Failed to Subscribe to the Gameroom.");
+        throw new InvalidGameRoomException("Failed to Communicate with the Gameroom.");
     }
 
     @SneakyThrows
@@ -56,12 +55,8 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
         }
         String[] urlBreakdown = destination.split("/");
         if (urlBreakdown.length > 4) {
-            throw new InvalidGameRoomException("Invalid Subscription URL");
+            throw new InvalidGameRoomException("Invalid Destination URL");
         }
         return urlBreakdown[urlBreakdown.length - 1];
-    }
-
-    private boolean isUserChannel(@NonNull String destination) {
-        return destination.startsWith("/queue");
     }
 }

@@ -4,9 +4,12 @@ import crain.exceptions.InvalidGameRoomException;
 import crain.exceptions.InvalidPlayerException;
 import crain.model.domain.GameRoom;
 import crain.model.domain.Player;
-import crain.model.dto.*;
+import crain.model.records.INFO;
+import crain.model.records.ROOM;
+import crain.model.records.TOURNAMENT;
 import crain.repository.GameRoomRepo;
 import crain.repository.PlayerRepo;
+import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -31,16 +34,16 @@ public class GameRoomService {
     }
 
     @SneakyThrows
-    public void createGameRoom(CreateRoomDto dto) {
-        if (gameRoomRepo.existsByName(dto.getGameRoomName())) {
+    public void createGameRoom(INFO.CreateRoomRecord dto) {
+        if (gameRoomRepo.existsByName(dto.gameRoomName())) {
             throw new InvalidGameRoomException("A Gameroom with this Name already Exists!");
         }
         GameRoom gameRoom = GameRoom.builder()
-                            .name(dto.getGameRoomName())
-                            .password(dto.getGameRoomPassword())
-                            .worldAmount(dto.getWorldAmount())
-                            .players(new ArrayList<>(dto.getPlayerAmount()))
-                            .build();
+                .name(dto.gameRoomName())
+                .password(dto.gameRoomPassword())
+                .worldAmount(dto.worldAmount())
+                .players(new ArrayList<>(dto.playerAmount()))
+                .build();
         gameRoomRepo.saveAndFlush(gameRoom);
     }
 
@@ -48,17 +51,19 @@ public class GameRoomService {
         return gameRoomRepo.existsByNameAndPassword(gameRoomName, password);
     }
 
-    public PlayerDto getPlayerStatus(PlayerDto playerDto, String gameRoomName) {
-        return PlayerDto.fromEntity(
+    public ROOM.PlayerRecord getPlayerStatus(ROOM.PlayerRecord playerRecord, String gameRoomName) {
+        return ROOM.PlayerRecord.fromEntity(
                 playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(
-                        playerDto.getPlayerName(),
-                        gameRoomName)
+                        playerRecord.playerName(),
+                        gameRoomName).get()
         );
     }
 
-    public void addPlayerDto(PlayerDto playerDto, String gameRoomName) {
-        GameRoom gameRoom = gameRoomRepo.findOneByName(gameRoomName);
-        Player player = Player.fromDto(playerDto);
+    @SneakyThrows
+    public void addPlayerDto(ROOM.PlayerRecord playerRecord, String gameRoomName) {
+        GameRoom gameRoom = gameRoomRepo.findOneByName(gameRoomName)
+                .getOrElseThrow(() -> new InvalidGameRoomException("The Provided Gameroom does not Exist!", gameRoomName));
+        Player player = Player.fromDto(playerRecord);
         player.setConnected(false);
         // The InvalidPlayerException from below is caught by the Global Exception Handler
         gameRoom.addPlayer(player);
@@ -67,25 +72,19 @@ public class GameRoomService {
     }
 
     @SneakyThrows
-    public void setPlayerToConnected(@NonNull PlayerDto dto, @NonNull String gameRoomName, @NonNull String password) {
-        if (validateGameRoomPassword(gameRoomName, password)) {
-            GameRoom gameRoom = gameRoomRepo.findOneByName(gameRoomName);
-            playerService.setPlayerToConnected(dto, gameRoomName);
-        } else {
-            throw new InvalidGameRoomException("Could not find GameRoom", gameRoomName);
-        }
+    public ROOM.PlayerRecord setPlayerToConnected(@NonNull ROOM.PlayerRecord dto, @NonNull String gameRoomName) {
+        return ROOM.PlayerRecord.fromEntity(playerService.setPlayerToConnected(dto, gameRoomName));
     }
 
 
     @SneakyThrows
-    public void givePlayerInGameRoomItem(@NonNull String gameRoomName, @NonNull ItemDto itemDto) {
-        Player targetPlayer = playerRepo.findByWorldIdAndGameRoomName(itemDto.getTargetPlayerWorldId(), gameRoomName);
-        if (Objects.nonNull(targetPlayer)) {
-            targetPlayer.getItems().add(itemDto.getItemId());
-            playerRepo.save(targetPlayer);
-        } else {
-            throw new InvalidPlayerException("Could not find Player!", gameRoomName);
-        }
+    public void givePlayerInGameRoomItem(@NonNull String gameRoomName, @NonNull INFO.ItemRecord itemRecord) {
+        Option<Player> targetPlayer = playerRepo.findByWorldIdAndGameRoomName(itemRecord.targetPlayerWorldId(), gameRoomName);
+        Player result = targetPlayer.getOrElseThrow(() -> new InvalidPlayerException("Could not find Player!", gameRoomName));
+        result.getItems().add(itemRecord.itemId());
+        playerRepo.save(result);
+
+
     }
 
     @Transactional
@@ -94,17 +93,16 @@ public class GameRoomService {
         gameRoomRepo.flush();
         gameRoomRepo.deleteAll(gameRooms);
         gameRoomRepo.flush();
-        System.out.println("It worked!");
     }
 
-    public List<GameRoomDto> getEmptyGameRooms() {
+    public List<ROOM.GameRoomRecord> getEmptyGameRooms() {
         List<GameRoom> gameRooms = gameRoomRepo.findAllDistinctByPlayersConnectedFalseOrPlayersIsNull();
-        return gameRooms.stream().map(GameRoomDto::fromEntity).collect(Collectors.toList());
+        return gameRooms.stream().map(ROOM.GameRoomRecord::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
     public boolean deleteGameRoomByName(@NonNull String gameRoomName) {
-        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName);
+        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName).getOrNull();
         if (Objects.nonNull(targetRoom)) {
             gameRoomRepo.delete(targetRoom);
         }
@@ -113,23 +111,18 @@ public class GameRoomService {
 
     @Transactional
     @SneakyThrows
-    public boolean setTournamentMode(@NonNull String gameRoomName, @NonNull boolean setTo) {
-        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName);
-        if (Objects.nonNull(targetRoom)) {
-            targetRoom.setTournament(setTo);
-            gameRoomRepo.saveAndFlush(targetRoom);
-        } else {
-            throw new InvalidGameRoomException("The Provided Gameroom does not Exist!", gameRoomName);
-        }
+    public boolean setTournamentMode(@NonNull String gameRoomName, @NonNull Boolean setTo) {
+        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName)
+                .getOrElseThrow(() -> new InvalidGameRoomException("The Provided Gameroom does not Exist!", gameRoomName));
+        targetRoom.setTournament(setTo);
+        gameRoomRepo.saveAndFlush(targetRoom);
         return targetRoom.getTournament();
     }
 
     @SneakyThrows
-    public TournamentDto getTournamentDto(@NonNull String gameRoomName) {
-        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName);
-        if (Objects.nonNull(targetRoom)) {
-            return TournamentDto.fromGameRoom(targetRoom);
-        }
-        throw new InvalidGameRoomException("The Provided GameRoom does not Exist!", gameRoomName);
+    public TOURNAMENT.TournamentRecord getTournamentDto(@NonNull String gameRoomName) {
+        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName)
+                .getOrElseThrow(() -> new InvalidGameRoomException("The Provided GameRoom does not Exist!", gameRoomName));
+        return TOURNAMENT.TournamentRecord.fromGameRoom(targetRoom);
     }
 }

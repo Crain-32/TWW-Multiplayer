@@ -5,7 +5,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,18 +22,26 @@ public class GameRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String name;
     private String password;
     private Integer worldAmount;
     private Integer connectedPlayerCount;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> players = new ArrayList<>();
-
     private Boolean tournament;
+
+    private Date creationTimestamp;
+
+
+    @PrePersist
+    public void beforePersist() {
+        this.creationTimestamp = Date.from(Instant.now());
+    }
 
     @PreRemove
     public void beforeRemoval() {
-        this.players.removeAll(this.players);
+        players.clear();
     }
 
 

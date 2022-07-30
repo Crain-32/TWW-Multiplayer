@@ -1,4 +1,4 @@
-package unit.service;
+package integration.service;
 
 import crain.repository.PlayerRepo;
 import crain.service.PlayerService;

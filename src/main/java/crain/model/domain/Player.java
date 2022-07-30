@@ -1,7 +1,7 @@
 package crain.model.domain;
 
 import crain.model.constants.WorldType;
-import crain.model.dto.PlayerDto;
+import crain.model.records.ROOM;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,11 +41,11 @@ public class Player {
     @ElementCollection(fetch=FetchType.EAGER)
     private List<Integer> items = new ArrayList<>();
 
-    public static Player fromDto(PlayerDto dto) {
+    public static Player fromDto(ROOM.PlayerRecord dto) {
         return Player.builder()
-                .playerName(dto.getPlayerName())
-                .worldType(WorldType.valueOf(dto.getWorldType().toUpperCase()))
-                .worldId(dto.getWorldId())
+                .playerName(dto.playerName())
+                .worldType(dto.worldType())
+                .worldId(dto.worldId())
                 .build();
     }
 
