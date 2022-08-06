@@ -1,30 +1,24 @@
 ## Read Me / Release Notes ##
 
-Welcome to the 0.1.0 Server Release for the Wind Waker Randomizer Multiplayer!
+Welcome to the Wind Waker Randomizer Multiplayer Project Repository!
 
-The current implementation of the Server is *not very good*. I recommend either putting this behind a 
-whitelisted IP firewall, or using a VPN like Hamachi to avoid exposing yourself.
+Within this Project you can find 3 Java Modules, `Model`, `Server`, and `Client`.
 
-### Set Up ###
-1. Download the Source Code.
-2. Open up your preferred shell and install the dependencies `mvn clean install`
-3. Run `Application.java`
+`Model` contains the shared API Models for the Server and the Client.
+`Server` contains the Server
+`Client` contains the Client.
 
-### Application Properties ###
-The `application.properties` in the resource folder only has the port the Server is listening to. If you encounter
-problems while running the source code, you can set `root.logging.level` to `TRACE` for a detailed output.
+For more information about each Module, please consult that Module's `README.md`
 
-### Server Information ###
-- It really doesn't do a lot. This is on purpose.
+### Release Notes ###
+Version 1.0.0 is currently in the works. The plan is to have full Co-op
+Support within that release. The current changes on this Repository are to help Migrate
+the Server/Client to be completely Java based. (Target Goal is 11/2022)
 
-### How to Connect ###
-- Create a Websocket connection.
-- Use the STOMP Protocol
+### Discord Information ###
 
-#### Multiworld ####
-- Subscribe to `/topic/multiworld/<gameroom>`
-- Send an ItemDto object to `/app/multiworld/<gameroom>`
+Feel Free to [click here](https://discord.gg/44jYHA7zSA) to join the Discord Server!
 
-#### Coop ####
-- Subscribe to `/topic/coop/<gameroom>`
-- Send a CoopDto object to `/app/coop/<gameroom>`
+
+It's the Perfect Place to find friends to play with.
+
