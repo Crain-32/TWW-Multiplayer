@@ -20,7 +20,7 @@ public class ScheduleConfig {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Scheduled(initialDelay = 30000, fixedDelay = 1000000)
+    @Scheduled(cron="0 0 0 4 * *")
     public void clearEmptyGameRooms() {
         List<ROOM.GameRoomRecord> toDelete = gameRoomService.getEmptyGameRooms();
         toDelete.forEach(room -> simpMessagingTemplate.convertAndSend("/topic/general/" + room.name(), "This Room is being cleared due to Inactivity."));

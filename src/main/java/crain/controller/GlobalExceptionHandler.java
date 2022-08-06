@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected String handleUnmatchedExceptions(Exception e) {
         log.debug(e.getMessage());
+        log.debug("Unexpected Failure:", e);
         return e.getMessage();
     }
 }

@@ -17,7 +17,7 @@ public class PlayerService {
     @SneakyThrows
     public Player setPlayerToConnected(ROOM.PlayerRecord dto, String gameRoomName) {
         Player player = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(dto.playerName(), gameRoomName)
-                .getOrElseThrow(() -> new InvalidPlayerException("Player could not be found."));
+                .orElseThrow(() -> new InvalidPlayerException("Player could not be found."));
         player.setConnected(true);
         return playerRepo.save(player);
     }

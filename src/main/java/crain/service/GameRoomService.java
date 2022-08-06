@@ -9,16 +9,15 @@ import crain.model.records.ROOM;
 import crain.model.records.TOURNAMENT;
 import crain.repository.GameRoomRepo;
 import crain.repository.PlayerRepo;
-import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,8 +54,7 @@ public class GameRoomService {
         return ROOM.PlayerRecord.fromEntity(
                 playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(
                         playerRecord.playerName(),
-                        gameRoomName).get()
-        );
+                        gameRoomName).orElse(new Player()));
     }
 
     @SneakyThrows
@@ -79,8 +77,8 @@ public class GameRoomService {
 
     @SneakyThrows
     public void givePlayerInGameRoomItem(@NonNull String gameRoomName, @NonNull INFO.ItemRecord itemRecord) {
-        Option<Player> targetPlayer = playerRepo.findByWorldIdAndGameRoomName(itemRecord.targetPlayerWorldId(), gameRoomName);
-        Player result = targetPlayer.getOrElseThrow(() -> new InvalidPlayerException("Could not find Player!", gameRoomName));
+        Optional<Player> targetPlayer = playerRepo.findByWorldIdAndGameRoomName(itemRecord.targetPlayerWorldId(), gameRoomName);
+        Player result = targetPlayer.orElseThrow(() -> new InvalidPlayerException("Could not find Player!", gameRoomName));
         result.getItems().add(itemRecord.itemId());
         playerRepo.save(result);
 
@@ -90,8 +88,13 @@ public class GameRoomService {
     @Transactional
     public void clearEmptyGameRooms() {
         List<GameRoom> gameRooms = gameRoomRepo.findAllDistinctByPlayersConnectedFalseOrPlayersIsNull();
+        var filteredRooms = gameRooms.stream().filter(gameRoom -> gameRoom.getCreationTimestamp()
+                .before(
+                        Date.from(Instant.now().minus(1, ChronoUnit.DAYS)
+                        )
+                )).toList();
         gameRoomRepo.flush();
-        gameRoomRepo.deleteAll(gameRooms);
+        gameRoomRepo.deleteAll(filteredRooms);
         gameRoomRepo.flush();
     }
 

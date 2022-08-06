@@ -14,7 +14,7 @@ import static io.vavr.API.For;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/rest/admin")
+@RequestMapping("/admin")
 @ConditionalOnProperty(name = "enable.admin.controller", havingValue = "true")
 public class AdminController {
 
