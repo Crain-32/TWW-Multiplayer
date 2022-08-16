@@ -4,7 +4,7 @@ Welcome to the Wind Waker Randomizer Multiplayer Project Repository!
 
 Within this Project you can find 3 Java Modules, `Model`, `Server`, and `Client`.
 
-`Model` contains the shared API Models for the Server and the Client.
+`Model` contains the shared API Models for the Server and the client.App.
 `Server` contains the Server
 `Client` contains the Client.
 

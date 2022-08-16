@@ -76,5 +76,11 @@ public class INFO {
             Integer itemId
     ) {
     }
+
+    public record foo(Integer bar) {
+        public Integer getBar() {
+            return this.bar();
+        }
+    }
 }
 
