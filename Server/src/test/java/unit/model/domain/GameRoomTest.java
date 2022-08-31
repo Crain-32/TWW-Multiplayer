@@ -1,7 +1,7 @@
 package unit.model.domain;
 
+import constants.WorldType;
 import crain.exceptions.InvalidPlayerException;
-import crain.model.constants.WorldType;
 import crain.model.domain.GameRoom;
 import crain.model.domain.Player;
 import org.junit.jupiter.api.Assertions;

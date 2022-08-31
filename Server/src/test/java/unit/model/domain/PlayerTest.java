@@ -1,6 +1,6 @@
 package unit.model.domain;
 
-import crain.model.constants.WorldType;
+import constants.WorldType;
 import crain.model.domain.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

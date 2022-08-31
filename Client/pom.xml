@@ -18,14 +18,30 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
+        <multiplayer-model-version>1.0.0-SNAPSHOT</multiplayer-model-version>
+        <java-dolphin-engine-version>1.0-SNAPSHOT</java-dolphin-engine-version>
+
+        <spring-messaging-version>5.3.20</spring-messaging-version>
+        <spring-cloud-dependencies-version>2021.0.3</spring-cloud-dependencies-version>
+
+        <junit-testing-version>5.8.2</junit-testing-version>
     </properties>
 
     <dependencies>
+        <!-- Custom Code Dependencies -->
         <dependency>
             <groupId>org.crain.multiplayer</groupId>
             <artifactId>wwr.multiplayer.model</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${multiplayer-model-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.crain</groupId>
+            <artifactId>Java-Dolphin-Memory-Engine</artifactId>
+            <version>${java-dolphin-engine-version}</version>
+        </dependency>
+
+        <!-- Spring Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
@@ -33,19 +49,44 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
-            <version>5.3.20</version>
+            <version>${spring-messaging-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+
+
+
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-testing-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-testing-version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
+
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2021.0.3</version>
+                <version>${spring-cloud-dependencies-version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

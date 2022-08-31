@@ -1,4 +1,4 @@
-package crain.util.interceptor;
+package crain.repository.interceptor;
 
 import crain.exceptions.InvalidGameRoomException;
 import crain.service.GameRoomService;

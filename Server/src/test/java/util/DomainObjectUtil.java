@@ -1,6 +1,6 @@
 package util;
 
-import crain.model.constants.WorldType;
+import constants.WorldType;
 import crain.model.domain.GameRoom;
 import crain.model.domain.Player;
 

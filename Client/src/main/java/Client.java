@@ -1,4 +1,4 @@
-import client.communication.TestClient;
+import client.communication.GameRoomApi;
 import client.view.MainPageConstructor;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +11,7 @@ import java.awt.*;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"client"})
-@EnableFeignClients(clients = {TestClient.class})
+@EnableFeignClients(clients = {GameRoomApi.class})
 public class Client {
 
     public static void main(String[] args) {
