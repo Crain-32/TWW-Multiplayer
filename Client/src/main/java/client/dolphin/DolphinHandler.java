@@ -8,7 +8,6 @@ import client.game.GameInterfaceEvents;
 import client.game.interfaces.ConnectionHandler;
 import client.game.interfaces.MemoryHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
@@ -17,23 +16,20 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Lazy
 @Component
-public class DolphinCommunicator implements ConnectionHandler, MemoryHandler {
+public class DolphinHandler implements ConnectionHandler, MemoryHandler {
 
-    private DolphinEngine engine;
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    private final DolphinEngine engine;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
     private boolean isHooked;
 
-    public DolphinCommunicator() {
+    public DolphinHandler(ApplicationEventPublisher applicationEventPublisher) {
         this.engine = DolphinFactory.createEngine();
-    }
-
-    @EventListener
-    public void hookEvent(HookEvent hookEvent) {
-        connect();
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
+    @EventListener(HookEvent.class)
     public void connect() throws GameHandlerDisconnectException {
         engine.hook();
         if (engine.getStatus() == DolphinStatus.NO_EMU) {

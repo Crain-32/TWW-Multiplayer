@@ -160,7 +160,7 @@ public enum ItemInfo {
     WIND_TINGLE_STATUE(0xA7, "Wind Tingle Statue", 1),
     HURRICANE_SPIN(0xAA, "Hurricane Spin", 1),
     THOUSAND_RUPEE_WALLET(0xAB, "1000 Rupee Wallet", 1),
-    FIVE_THOU_RUPEE_WALLET(0xAC, "5000 Rupee Wallet", 1),
+    FIVE_THOUSAND_RUPEE_WALLET(0xAC, "5000 Rupee Wallet", 1),
     SIXTY_BOMB_BAG(0xAD, "60 Bomb Bag", 1),
     MAX_BOMB_BAG(0xAE, "99 Bomb Bag", 1),
     SIXTY_QUIVER(0xAF, "60 Arrow Quiver", 1),
@@ -250,7 +250,7 @@ public enum ItemInfo {
         return getInfoByItemId(itemId.byteValue());
     }
 
-    public ItemInfo getInfoByItemId(Byte itemId) {
+    public static ItemInfo getInfoByItemId(Byte itemId) {
         return Arrays.stream(ItemInfo.values())
                 .filter(info -> Objects.equals(info.getItemId(), itemId))
                 .findFirst().orElse(ItemInfo.INVALID_ID);

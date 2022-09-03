@@ -14,7 +14,7 @@ public class ItemInfoTests {
 
     @Test //All Item Ids Should be Unique
     public void verifyAllItemsIdsAreUnique(){
-        List<Integer> itemIds =  Arrays.stream(ItemInfo.values()).map(ItemInfo::getItemId).distinct().toList();
+        List<Byte> itemIds =  Arrays.stream(ItemInfo.values()).map(ItemInfo::getItemId).distinct().toList();
         Assertions.assertEquals(itemIds.size(), ItemInfo.values().length);
     }
 
@@ -34,7 +34,7 @@ public class ItemInfoTests {
 
     @Test //Retrieving by Item ID should work
     public void getItemInfoByItemID() {
-        ItemInfo info = ItemInfo.BAIT_BAG.getInfoByItemId(0xFF);
+        ItemInfo info = ItemInfo.getInfoByItemId(0xFF);
         Assertions.assertEquals(info, ItemInfo.INVALID_ID);
     }
 }

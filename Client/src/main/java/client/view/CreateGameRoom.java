@@ -1,6 +1,6 @@
 package client.view;
 
-import client.dolphin.DolphinCommunicator;
+import client.dolphin.DolphinHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -14,15 +14,20 @@ public class CreateGameRoom {
     private JComboBox<String> gameMode;
     private JPanel basePanel;
     private JButton testServerRequestionButton;
+    private JTextField ServerUrlInput;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
+    private JTextField textField5;
 
     private JTextArea testMessageArea;
-    private DolphinCommunicator testClient;
+    private DolphinHandler testClient;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
 
-    public CreateGameRoom(DolphinCommunicator testClient) {
+    public CreateGameRoom(DolphinHandler testClient) {
         this.testClient = testClient;
         testServerRequestionButton.addMouseListener(new MouseAdapter() {
             @Override

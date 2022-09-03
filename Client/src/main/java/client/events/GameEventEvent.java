@@ -1,6 +1,6 @@
 package client.events;
 
-import client.game.data.EventType;
+import client.game.data.EventInfo;
 import lombok.Data;
 
 @Data
@@ -11,7 +11,7 @@ public class GameEventEvent {
     // "true" should be consumed, "false" should
     // be sent out to the server.
     private Boolean consume;
-    private EventType eventType;
+    private EventInfo eventType;
     private Integer eventIndex;
     private Boolean enabled;
 }

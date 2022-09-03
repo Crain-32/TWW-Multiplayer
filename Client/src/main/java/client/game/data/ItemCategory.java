@@ -39,18 +39,24 @@ public enum ItemCategory {
             ItemInfo.HEROS_BOW, ItemInfo.FIRE_AND_ICE_ARROWS,
             ItemInfo.LIGHT_ARROWS
     }),
-    SHARDS_STATUES_WALLET_SONGS(new ItemInfo[]{
+    SHARDS(new ItemInfo[]{
             ItemInfo.TRIFORCE_SHARD_ONE, ItemInfo.TRIFORCE_SHARD_TWO,
             ItemInfo.TRIFORCE_SHARD_THREE, ItemInfo.TRIFORCE_SHARD_FOUR,
             ItemInfo.TRIFORCE_SHARD_FIVE, ItemInfo.TRIFORCE_SHARD_SIX,
-            ItemInfo.TRIFORCE_SHARD_SEVEN, ItemInfo.TRIFORCE_SHARD_EIGHT,
-            ItemInfo.WINDS_REQUIEM, ItemInfo.BALLAD_OF_GALES,
-            ItemInfo.COMMAND_MELODY, ItemInfo.EARTH_GODS_LYRIC,
-            ItemInfo.WIND_GODS_ARIA, ItemInfo.SONG_OF_PASSING,
+            ItemInfo.TRIFORCE_SHARD_SEVEN, ItemInfo.TRIFORCE_SHARD_EIGHT
+    }),
+    STATUES(new ItemInfo[]{
             ItemInfo.DRAGON_TINGLE_STATUE, ItemInfo.FORBIDDEN_TINGLE_STATUE,
             ItemInfo.GODDESS_TINGLE_STATUE, ItemInfo.EARTH_TINGLE_STATUE,
-            ItemInfo.WIND_TINGLE_STATUE, ItemInfo.THOUSAND_RUPEE_WALLET,
-            ItemInfo.FIVE_THOU_RUPEE_WALLET
+            ItemInfo.WIND_TINGLE_STATUE
+    }),
+    SONGS(new ItemInfo[]{
+            ItemInfo.WINDS_REQUIEM, ItemInfo.BALLAD_OF_GALES,
+            ItemInfo.COMMAND_MELODY, ItemInfo.EARTH_GODS_LYRIC,
+            ItemInfo.WIND_GODS_ARIA, ItemInfo.SONG_OF_PASSING
+    }),
+    WALLET(new ItemInfo[]{
+            ItemInfo.THOUSAND_RUPEE_WALLET, ItemInfo.FIVE_THOUSAND_RUPEE_WALLET
     }),
     PROGRESSIVE_CONSUMABLE(new ItemInfo[]{
             ItemInfo.SIXTY_BOMB_BAG, ItemInfo.MAX_BOMB_BAG,
@@ -67,17 +73,20 @@ public enum ItemCategory {
             ItemInfo.FATHERS_LETTER
     }),
     DUNGEON_ITEMS(new ItemInfo[]{
-            ItemInfo.DRC_SMALL_KEY, ItemInfo.DRC_BIG_KEY,
-            ItemInfo.DRC_DUNGEON_COMPASS, ItemInfo.DRC_DUNGEON_MAP,
-            ItemInfo.FW_SMALL_KEY, ItemInfo.FW_BIG_KEY,
+            ItemInfo.DRC_BIG_KEY, ItemInfo.DRC_DUNGEON_COMPASS,
+            ItemInfo.DRC_DUNGEON_MAP, ItemInfo.FW_BIG_KEY,
             ItemInfo.FW_DUNGEON_COMPASS, ItemInfo.FW_DUNGEON_MAP,
-            ItemInfo.TOTG_SMALL_KEY, ItemInfo.TOTG_BIG_KEY,
-            ItemInfo.TOTG_DUNGEON_COMPASS, ItemInfo.TOTG_DUNGEON_MAP,
-            ItemInfo.FF_DUNGEON_COMPASS, ItemInfo.FF_DUNGEON_MAP,
-            ItemInfo.ET_SMALL_KEY, ItemInfo.ET_BIG_KEY,
+            ItemInfo.TOTG_BIG_KEY, ItemInfo.TOTG_DUNGEON_COMPASS,
+            ItemInfo.TOTG_DUNGEON_MAP, ItemInfo.FF_DUNGEON_COMPASS,
+            ItemInfo.FF_DUNGEON_MAP, ItemInfo.ET_BIG_KEY,
             ItemInfo.ET_DUNGEON_COMPASS, ItemInfo.ET_DUNGEON_MAP,
-            ItemInfo.WT_SMALL_KEY, ItemInfo.WT_BIG_KEY,
-            ItemInfo.WT_DUNGEON_COMPASS, ItemInfo.WT_DUNGEON_MAP
+            ItemInfo.WT_BIG_KEY, ItemInfo.WT_DUNGEON_COMPASS,
+            ItemInfo.WT_DUNGEON_MAP
+    }),
+    SMALL_KEYS(new ItemInfo[]{
+            ItemInfo.DRC_SMALL_KEY, ItemInfo.FW_SMALL_KEY,
+            ItemInfo.TOTG_SMALL_KEY, ItemInfo.ET_SMALL_KEY,
+            ItemInfo.WT_SMALL_KEY
     }),
     CHARTS(new ItemInfo[]{
             ItemInfo.TREASURE_CHART_ONE, ItemInfo.TREASURE_CHART_TWO, ItemInfo.TREASURE_CHART_THREE,
@@ -124,7 +133,6 @@ public enum ItemCategory {
             ItemInfo.SKULL_TOWER_IDOL, ItemInfo.FOUNTAIN_IDOL,
             ItemInfo.POSTMAN_STATUE,
             ItemInfo.SHOP_GURU_STATUE, ItemInfo.BLUE_CHU_JELLY,
-            ItemInfo.HEROS_CHARM, ItemInfo.POWER_BRACELETS,
     }),
     TRANSLATED_CHARTS(new ItemInfo[]{
             ItemInfo.TRANSLATED_CHART_ONE, ItemInfo.TRANSLATED_CHART_TWO,
@@ -132,7 +140,10 @@ public enum ItemCategory {
             ItemInfo.TRANSLATED_CHART_FIVE, ItemInfo.TRANSLATED_CHART_SIX,
             ItemInfo.TRANSLATED_CHART_SEVEN, ItemInfo.TRANSLATED_CHART_EIGHT
     }),
-    BOTTLE_CONTENTS(new ItemInfo[]{
+    BOTTLES(new ItemInfo[]{
+            ItemInfo.EMPTY_BOTTLE,
+            // Just to put all the Bottle Logic in one place,
+            // Only the Empty bottle is support right now.
             ItemInfo.RED_POTION, ItemInfo.GREEN_POTION,
             ItemInfo.BLUE_POTION, ItemInfo.ELIXIR_SOUP,
             ItemInfo.ELIXIR_SOUP_HALF, ItemInfo.FOREST_WATER,
@@ -141,8 +152,9 @@ public enum ItemCategory {
     }),
     MISC(new ItemInfo[]{
             ItemInfo.PIECE_OF_HEART, ItemInfo.PIECE_OF_HEART_ALT,
-            ItemInfo.HEART_CONTAINER, ItemInfo.EMPTY_BOTTLE,
-            ItemInfo.HURRICANE_SPIN, ItemInfo.MAGIC_METER_UPGRADE
+            ItemInfo.HEART_CONTAINER, ItemInfo.HURRICANE_SPIN,
+            ItemInfo.MAGIC_METER_UPGRADE, ItemInfo.HEROS_CHARM,
+            ItemInfo.POWER_BRACELETS,
     }),
     NOT_SUPPORTED(new ItemInfo[]{
             ItemInfo.INVALID_ID, ItemInfo.PIRATES_CHARM,
@@ -161,7 +173,7 @@ public enum ItemCategory {
     private final ItemInfo[] items;
 
     public static ItemCategory getInfoCategory(ItemInfo info) {
-        for (ItemCategory category: ItemCategory.values()) {
+        for (ItemCategory category : ItemCategory.values()) {
             Optional<ItemInfo> filteredInfo = Arrays.stream(category.getItems())
                     .filter(itemInfo -> Objects.equals(itemInfo, info))
                     .findFirst();
