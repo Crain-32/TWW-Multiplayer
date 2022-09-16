@@ -1,6 +1,7 @@
 package service;
 
 import constants.WorldType;
+import crain.mappers.GameRoomMapper;
 import crain.model.domain.GameRoom;
 import crain.repository.GameRoomRepo;
 import crain.service.GameRoomService;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @SpringJUnitConfig(classes = GameRoomServiceTest.Config.class)
 @DataJpaTest
-@ComponentScan(basePackageClasses = {GameRoomService.class, GameRoom.class})
+@ComponentScan(basePackageClasses = {GameRoomService.class, GameRoom.class, GameRoomMapper.class}, lazyInit = true)
 @DisplayName("Game Room Service Test")
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
 public class GameRoomServiceTest {

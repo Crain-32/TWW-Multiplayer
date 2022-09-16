@@ -1,10 +1,11 @@
-package crain.repository.interceptor;
+package crain.util.interceptor;
 
 import crain.exceptions.InvalidGameRoomException;
 import crain.service.GameRoomService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -17,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.Objects;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TopicSubscribeInterceptor implements ChannelInterceptor {
@@ -42,19 +44,26 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
                 }
             }
         } catch (NullPointerException ignored) {
+            log.debug("Null Pointer Exception Swallowed");
             // We're just going to convert any NullPointerExceptions into an InvalidGameRoomException.
             // Currently means the Same thing. is really just a Styling Choice.
         }
-        throw new InvalidGameRoomException("Failed to Communicate with the Gameroom.");
+        throw new InvalidGameRoomException("Failed to Communicate with the Game Room.");
     }
 
     @SneakyThrows
     private String extractGameRoomFromURL(@NonNull String destination) {
         if (destination.length() >= 30) {
-            throw new InvalidGameRoomException("Invalid Gameroom Name!");
+            if (log.isDebugEnabled()) {
+                log.debug("Attempted to message: " + destination);
+            }
+            throw new InvalidGameRoomException("Invalid Game Room Name!");
         }
         String[] urlBreakdown = destination.split("/");
         if (urlBreakdown.length > 4) {
+            if (log.isDebugEnabled()) {
+                log.debug("Invalid Destination Attempted: " + destination);
+            }
             throw new InvalidGameRoomException("Invalid Destination URL");
         }
         return urlBreakdown[urlBreakdown.length - 1];

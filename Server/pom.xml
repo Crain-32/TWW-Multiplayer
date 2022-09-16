@@ -11,14 +11,14 @@
     </parent>
 
     <artifactId>wwr.multiplayer.server</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Server</name>
 
 
     <properties>
         <multiplayer-model-version>1.0.0-SNAPSHOT</multiplayer-model-version>
-        <mapping-struct-version>1.5.1.Final</mapping-struct-version>
+        <mapping-struct-version>1.5.2.Final</mapping-struct-version>
     </properties>
 
     <dependencies>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.9</version>
+            <version>1.6.11</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -142,14 +142,14 @@
                     <target>17</target>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapping-struct-version}</version>
-                        </path>
-                        <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.24</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapping-struct-version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -1,6 +1,6 @@
 package crain.config;
 
-import crain.repository.interceptor.TopicSubscribeInterceptor;
+import crain.util.interceptor.TopicSubscribeInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GeneralMessageEvent {
+public class GameRoomMessageEvent {
 
     private String message;
     private String gameRoom;

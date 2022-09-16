@@ -38,6 +38,7 @@ public class AdminController {
 
     @DeleteMapping("/{GameRoom}")
     public Boolean deleteGameRoom(@PathVariable("GameRoom") String gameRoomName) {
+        applicationEventPublisher.publishEvent(new GameRoomMessageEvent("This Room is being cleared by Crain.", gameRoomName));
         return gameRoomService.deleteGameRoomByName(gameRoomName);
     }
 
@@ -58,8 +59,17 @@ public class AdminController {
     }
 
 
+    @PostMapping("/gameroom/message/all")
+    public void tellAllGameRooms(@RequestBody String message) {
+        var allGameRooms = getAllGameRooms();
+        for (var room: allGameRooms) {
+            applicationEventPublisher.publishEvent(new GameRoomMessageEvent(message, room.name()));
+        }
+    }
+
+
     @SneakyThrows
-    @PostMapping("/force/event")
+    @PostMapping("/force/{event}/{GameRoom}")
     public void forceEvent(@PathVariable("GameRoom") String gameRoomName, @PathVariable("event") EventTypes type,
                            @RequestBody String eventInfo) {
         switch(type) {
@@ -67,7 +77,7 @@ public class AdminController {
             case MULTI -> applicationEventPublisher.publishEvent(new MultiworldItemEvent(objectMapper.readValue(eventInfo, INFO.ItemRecord.class), gameRoomName));
             case NAME -> applicationEventPublisher.publishEvent(new NameEvent(objectMapper.readValue(eventInfo, ROOM.PlayerRecord.class), gameRoomName));
             case EVENT -> applicationEventPublisher.publishEvent(new EventEvent(objectMapper.readValue(eventInfo, INFO.EventRecord.class), gameRoomName));
-            case GENERAL -> applicationEventPublisher.publishEvent(new GeneralMessageEvent(eventInfo, gameRoomName));
+            case GENERAL -> applicationEventPublisher.publishEvent(new GameRoomMessageEvent(eventInfo, gameRoomName));
             case ERROR -> applicationEventPublisher.publishEvent(new ErrorEvent(eventInfo, gameRoomName));
         }
     }

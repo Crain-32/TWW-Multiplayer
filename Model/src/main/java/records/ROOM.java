@@ -34,4 +34,14 @@ public class ROOM {
             WorldType worldType,
             Boolean connected
     ) { }
+
+    public record MessageRecord(
+            @Size(min=3, max=120, message="Max Message Size is 120 Characters")
+            String message
+    ) {}
+
+    public record ErrorRecord(
+            @NotNull
+            String error
+    ) {}
 }

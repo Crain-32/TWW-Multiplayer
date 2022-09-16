@@ -39,6 +39,6 @@ public class HttpConfig implements WebMvcConfigurer {
     @ConditionalOnProperty(name = "enable.admin.controller", havingValue = "true")
     @ServletComponentScan(basePackageClasses = AdminFilter.class)
     static class AdminFilterRegistration {
-
+        // Registers the Admin Filter only if we enable the Admin Controller
     }
 }

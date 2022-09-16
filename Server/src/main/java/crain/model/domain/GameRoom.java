@@ -60,7 +60,7 @@ public class GameRoom {
         }
     }
 
-    @Transactional
+    //TODO: Add Max Player Handling for Coop in Here.
     public boolean canAddPlayer(Player player) {
         if (this.worldType == WorldType.COOP && this.worldType == player.getWorldType()) {
             return true;
@@ -68,5 +68,9 @@ public class GameRoom {
         boolean playerMatch = this.players.stream()
                 .noneMatch(existingPlayer -> existingPlayer.softEqualityWithPlayer(player));
         return playerMatch && this.worldAmount >= player.getWorldId();
+    }
+
+    public String getName() {
+        return name;
     }
 }

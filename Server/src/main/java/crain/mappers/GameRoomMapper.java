@@ -9,6 +9,6 @@ import records.ROOM;
 @Mapper(uses={PlayerMapper.class}, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface GameRoomMapper {
     @Mapping(target="extraValidation", expression="java(gameRoom.getPassword() != null)")
-    @Mapping(source="connectedPlayerCount", target="playerAmount")
+    @Mapping(target="playerAmount", expression="java(gameRoom.getConnectedPlayerCount())")
     ROOM.GameRoomRecord gameRoomRecordMapper(GameRoom gameRoom);
 }

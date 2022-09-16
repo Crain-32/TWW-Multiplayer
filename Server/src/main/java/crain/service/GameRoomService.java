@@ -12,6 +12,7 @@ import crain.repository.PlayerRepo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import records.INFO;
 import records.ROOM;
@@ -22,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GameRoomService {
@@ -39,7 +41,10 @@ public class GameRoomService {
     @SneakyThrows
     public void createGameRoom(INFO.CreateRoomRecord dto) {
         if (gameRoomRepo.existsByName(dto.gameRoomName())) {
-            throw new InvalidGameRoomException("A Gameroom with this Name already Exists!");
+            if(log.isDebugEnabled()) {
+                log.debug("Attempted Duplicate Game Room Create with name: " + dto.gameRoomName());
+            }
+            throw new InvalidGameRoomException("A Game Room with this Name already Exists!");
         }
         GameRoom gameRoom = GameRoom.builder()
                 .name(dto.gameRoomName())
@@ -65,9 +70,12 @@ public class GameRoomService {
     @SneakyThrows
     public void addPlayerDto(ROOM.PlayerRecord playerRecord, String gameRoomName) {
         GameRoom gameRoom = gameRoomRepo.findOneByName(gameRoomName)
-                .orElseThrow(() -> new InvalidGameRoomException("The Provided Gameroom does not Exist!", gameRoomName));
+                .orElseThrow(() -> new InvalidGameRoomException("The Provided Room does not Exist!", gameRoomName));
         Player player = Player.fromDto(playerRecord);
         player.setConnected(false);
+        if (log.isDebugEnabled()) {
+            log.debug(playerRecord + " : was added to - " + gameRoomName);
+        }
         // The InvalidPlayerException from below is caught by the Global Exception Handler
         gameRoom.addPlayer(player);
         playerRepo.save(player);
@@ -83,9 +91,9 @@ public class GameRoomService {
     @SneakyThrows
     public void givePlayerInGameRoomItem(@NonNull String gameRoomName, @NonNull INFO.ItemRecord itemRecord) {
         Optional<Player> targetPlayer = playerRepo.findByWorldIdAndGameRoomName(itemRecord.targetPlayerWorldId(), gameRoomName);
-        Player result = targetPlayer.orElseThrow(() -> new InvalidPlayerException("Could not find Player!", gameRoomName));
-        result.getItems().add(itemRecord.itemId());
-        playerRepo.save(result);
+        Player player = targetPlayer.orElseThrow(() -> new InvalidPlayerException("Could not find Player!", gameRoomName));
+        player.getItems().add(itemRecord.itemId());
+        playerRepo.save(player);
     }
 
     @Transactional
@@ -103,6 +111,11 @@ public class GameRoomService {
 
     public List<ROOM.GameRoomRecord> getEmptyGameRooms() {
         List<GameRoom> gameRooms = gameRoomRepo.findAllDistinctByPlayersConnectedFalseOrPlayersIsNull();
+        gameRooms = gameRooms.stream().filter(gameRoom -> gameRoom.getCreationTimestamp()
+                .before(
+                        Date.from(Instant.now().minus(1, ChronoUnit.DAYS)
+                        )
+                )).toList();
         return gameRooms.stream().map(this.gameRoomMapper::gameRoomRecordMapper).collect(Collectors.toList());
     }
 
