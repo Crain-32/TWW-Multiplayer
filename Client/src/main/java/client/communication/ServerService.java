@@ -1,7 +1,11 @@
 package client.communication;
 
+import client.config.GameRoomConfig;
 import client.events.SetConfigEvent;
+import client.game.GameInfoConfig;
 import client.view.events.GeneralMessageEvent;
+import client.view.events.ServerConnectEvent;
+import constants.WorldType;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +18,7 @@ import records.ROOM;
 
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -24,27 +29,32 @@ public class ServerService {
     private final StompService stompService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final GameRoomConfig gameRoomConfig;
+    private final GameInfoConfig gameInfoConfig;
     private boolean connectedToRoom = false;
 
     @Async
     @EventListener
     public void handleConfigChange(SetConfigEvent configEvent) {
-        gameRoomConfig.setGameRoomName(Objects.requireNonNullElseGet(configEvent.getGameRoomName(), gameRoomConfig::getGameRoomName));
-        gameRoomConfig.setPassword(Objects.requireNonNullElseGet(configEvent.getPassword(), gameRoomConfig::getPassword));
-        gameRoomConfig.setPlayerName(Objects.requireNonNullElseGet(configEvent.getPlayerName(), gameRoomConfig::getPlayerName));
-        gameRoomConfig.setWorldId(Objects.requireNonNullElseGet(configEvent.getWorldId(), gameRoomConfig::getWorldId));
-        gameRoomConfig.setPlayerAmount(Objects.requireNonNullElseGet(configEvent.getPlayerAmount(), gameRoomConfig::getPlayerAmount));
-        gameRoomConfig.setWorldAmount(Objects.requireNonNullElseGet(configEvent.getWorldAmount(), gameRoomConfig::getWorldAmount));
-        gameRoomConfig.setWorldType(Objects.requireNonNullElseGet(configEvent.getWorldType(), gameRoomConfig::getWorldType));
-        gameRoomConfig.setRoomType(Objects.requireNonNullElseGet(configEvent.getRoomType(), gameRoomConfig::getRoomType));
+        gameRoomConfig.setGameRoomName(Optional.ofNullable(configEvent.getGameRoomName()).orElse(gameRoomConfig.getGameRoomName()));
+        gameRoomConfig.setPassword(Optional.ofNullable(configEvent.getPassword()).orElse(gameRoomConfig.getPassword()));
+        gameRoomConfig.setPlayerName(Optional.ofNullable(configEvent.getPlayerName()).orElse(gameRoomConfig.getPlayerName()));
+        gameRoomConfig.setWorldId(Optional.ofNullable(configEvent.getWorldId()).orElse(gameRoomConfig.getWorldId()));
+        gameRoomConfig.setPlayerAmount(Optional.ofNullable(configEvent.getPlayerAmount()).orElse(gameRoomConfig.getPlayerAmount()));
+        gameRoomConfig.setWorldAmount(Optional.ofNullable(configEvent.getWorldAmount()).orElse(gameRoomConfig.getWorldAmount()));
+        gameRoomConfig.setWorldType(Optional.ofNullable(configEvent.getWorldType()).orElse(gameRoomConfig.getWorldType()));
+        gameInfoConfig.setWorldType(Optional.ofNullable(configEvent.getWorldType()).orElse(gameRoomConfig.getWorldType()));
+        gameRoomConfig.setRoomType(Optional.ofNullable(configEvent.getRoomType()).orElse(gameRoomConfig.getRoomType()));
     }
 
     @Async
-    @EventListener
-    public void createGameRoom(CreateRoomEvent createRoomEvent) {
+    @EventListener(CreateRoomEvent.class)
+    public void createGameRoom() {
         try {
-            gameRoomApi.createGameRoom(createRoomRecordFromConfig());
+            INFO.CreateRoomRecord roomRecord = createRoomRecordFromConfig();
+            gameRoomApi.createGameRoom(roomRecord);
+            applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Created " + roomRecord.gameRoomName()));
         } catch (FeignException.FeignClientException e) {
+            log.debug("Feign Client Failure", e);
             ByteBuffer buf = e.responseBody().orElse(null);
             String serverResponse = buf != null ? buf.toString() : "Failed to Parse Server Response";
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(serverResponse));
@@ -55,8 +65,8 @@ public class ServerService {
     }
 
     @Async
-    @EventListener
-    public void createPlayer(CreatePlayerEvent createPlayerEvent) {
+    @EventListener(CreatePlayerEvent.class)
+    public void createPlayer() {
         try {
             Boolean createdPlayer = gameRoomApi.addPlayerToGameRoom(gameRoomConfig.getGameRoomName(), gameRoomConfig.getPassword(), createPlayerRecordFromConfig());
             String outputMessage;
@@ -75,23 +85,25 @@ public class ServerService {
 
 
     @Async
-    @EventListener
-    public void connectToRoom(ConnectToGameRoom connect) {
+    @EventListener(ConnectToGameRoom.class)
+    public void connectToRoom() {
         if (connectedToRoom) {
             return;
         }
+        createPlayer();
         stompService.setUpClient();
         connectedToRoom = true;
+        applicationEventPublisher.publishEvent(new ServerConnectEvent());
     }
 
 
     private INFO.CreateRoomRecord createRoomRecordFromConfig() {
         return new INFO.CreateRoomRecord(
                 gameRoomConfig.getGameRoomName(),
-                gameRoomConfig.getPlayerAmount(),
-                gameRoomConfig.getWorldAmount(),
+                Objects.requireNonNullElse(gameRoomConfig.getPlayerAmount(), 1),
+                Objects.requireNonNullElse(gameRoomConfig.getWorldAmount(), 1),
                 gameRoomConfig.getPassword(),
-                gameRoomConfig.getRoomType()
+                Objects.requireNonNullElse(gameRoomConfig.getWorldType(), WorldType.SHARED)
         );
     }
 
@@ -99,7 +111,7 @@ public class ServerService {
         return new ROOM.PlayerRecord(
                 gameRoomConfig.getPlayerName(),
                 gameRoomConfig.getWorldId(),
-                gameRoomConfig.getWorldType(),
+                Objects.requireNonNullElse(gameRoomConfig.getWorldType(), WorldType.SHARED),
                 false
         );
     }
@@ -111,5 +123,11 @@ public class ServerService {
     public static class CreatePlayerEvent {
     }
 
-    public static class ConnectToGameRoom { }
+    public static class ConnectToGameRoom {
+
+    }
+
+    public static class DisconnectFromGameRoom {
+
+    }
 }

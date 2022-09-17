@@ -1,9 +1,11 @@
 package client.events;
 
 import constants.WorldType;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class SetConfigEvent {
     private String gameRoomName;
     private String password;

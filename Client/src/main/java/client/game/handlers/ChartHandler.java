@@ -22,8 +22,8 @@ public class ChartHandler extends ItemCategoryHandler {
     public Boolean giveItem(ItemInfo info) throws FailedToGiveItemException {
         try {
             ChartInfo chart = ChartInfo.fromItemInfo(info);
-            Integer currFlagValue = memoryHandler.readInteger(chart.getConsoleAddress());
-            Boolean writeResult = memoryHandler.writeInteger(chart.getConsoleAddress(), (currFlagValue | chart.getMask()));
+            Integer currFlagValue = memoryAdapter.readInteger(chart.getConsoleAddress());
+            Boolean writeResult = memoryAdapter.writeInteger(chart.getConsoleAddress(), (currFlagValue | chart.getMask()));
             if(!writeResult) {
                 throw new FailedToGiveItemException("Failed to mark the chart, current flag: " + currFlagValue, info);
             }
@@ -39,9 +39,9 @@ public class ChartHandler extends ItemCategoryHandler {
     public Boolean takeItem(ItemInfo info) throws FailedToTakeItemException {
         try {
             ChartInfo chart = ChartInfo.fromItemInfo(info);
-            Integer currFlagValue = memoryHandler.readInteger(chart.getConsoleAddress());
+            Integer currFlagValue = memoryAdapter.readInteger(chart.getConsoleAddress());
             Integer mask = 0xFFFFFFFF;
-            Boolean writeResult = memoryHandler.writeInteger(chart.getConsoleAddress(), (currFlagValue &(mask ^ chart.getMask())));
+            Boolean writeResult = memoryAdapter.writeInteger(chart.getConsoleAddress(), (currFlagValue &(mask ^ chart.getMask())));
             if(!writeResult) {
                 throw new FailedToTakeItemException("Failed to remove the chart, current flag: " + currFlagValue, info);
             }

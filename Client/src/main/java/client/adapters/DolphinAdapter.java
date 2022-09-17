@@ -1,53 +1,59 @@
-package client.dolphin;
+package client.adapters;
 
 import Dolphin.DolphinEngine;
 import Dolphin.DolphinFactory;
 import Dolphin.DolphinStatus;
 import client.exceptions.GameHandlerDisconnectException;
-import client.game.GameInterfaceEvents;
-import client.game.interfaces.ConnectionHandler;
-import client.game.interfaces.MemoryHandler;
+import client.game.interfaces.MemoryAdapter;
+import client.view.events.GeneralMessageEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+import java.io.IOException;
+
 @Lazy
+@Slf4j
 @Component
-public class DolphinHandler implements ConnectionHandler, MemoryHandler {
+public class DolphinAdapter implements MemoryAdapter {
 
     private final DolphinEngine engine;
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private boolean isHooked;
 
-    public DolphinHandler(ApplicationEventPublisher applicationEventPublisher) {
+    public DolphinAdapter(ApplicationEventPublisher applicationEventPublisher) throws IOException {
         this.engine = DolphinFactory.createEngine();
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
-    @EventListener(HookEvent.class)
     public void connect() throws GameHandlerDisconnectException {
         engine.hook();
         if (engine.getStatus() == DolphinStatus.NO_EMU) {
             log.debug("No emulator was found.");
+            throw new GameHandlerDisconnectException("Failed to Find Dolphin, Please Open Dolphin and Restart the Client.");
         } else if (engine.getStatus() == DolphinStatus.HOOKED) {
             log.debug("Hooked to Dolphin");
             log.debug("Publishing Self to Context...");
             isHooked = true;
-            applicationEventPublisher.publishEvent(new GameInterfaceEvents.MemoryHandlerEvent(this));
+            applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Hooked to Dolphin"));
         }
     }
 
     @Override
+    public Boolean disconnect() {
+        return engine.unhook();
+    }
+
+    @Override
     public Boolean isConnected() {
-        if (!isHooked) {
+        if (engine.getStatus() != DolphinStatus.HOOKED) {
             engine.hook();
         }
-        return engine.getStatus() == DolphinStatus.HOOKED;
+        isHooked = engine.getStatus() == DolphinStatus.HOOKED;
+        return isHooked;
     }
 
     @Override
@@ -88,9 +94,5 @@ public class DolphinHandler implements ConnectionHandler, MemoryHandler {
     @Override
     public String readString(Integer consoleAddress, Integer stringLength) {
         return engine.readStringFromRAM(consoleAddress, stringLength);
-    }
-
-
-    public static class HookEvent {
     }
 }

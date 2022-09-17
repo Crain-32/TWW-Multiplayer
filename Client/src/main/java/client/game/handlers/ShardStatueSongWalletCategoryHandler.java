@@ -33,8 +33,8 @@ public class ShardStatueSongWalletCategoryHandler extends ItemCategoryHandler {
         try {
             Integer consoleAddress = getMemoryAddress(ItemCategory.getInfoCategory(info));
             Integer flagIndex = getFlagIndex(info);
-            Byte currFlagValue = memoryHandler.readByte(consoleAddress);
-            Boolean successfulWrite = memoryHandler.writeByte(consoleAddress, (byte) (currFlagValue | (byte) 1 << flagIndex));
+            Byte currFlagValue = memoryAdapter.readByte(consoleAddress);
+            Boolean successfulWrite = memoryAdapter.writeByte(consoleAddress, (byte) (currFlagValue | (byte) 1 << flagIndex));
             if (!successfulWrite) {
                 throw new FailedToGiveItemException("Failed to Write to Item Flag with current Value " + currFlagValue);
             }
@@ -51,9 +51,9 @@ public class ShardStatueSongWalletCategoryHandler extends ItemCategoryHandler {
         try {
             Integer consoleAddress = getMemoryAddress(ItemCategory.getInfoCategory(info));
             Integer flagIndex = getFlagIndex(info);
-            Byte currFlagValue = memoryHandler.readByte(consoleAddress);
+            Byte currFlagValue = memoryAdapter.readByte(consoleAddress);
             Byte mask = (byte) (0b11111111 ^ (1 << flagIndex));
-            Boolean successfulWrite = memoryHandler.writeByte(consoleAddress, (byte) (currFlagValue & mask));
+            Boolean successfulWrite = memoryAdapter.writeByte(consoleAddress, (byte) (currFlagValue & mask));
             if (!successfulWrite) {
                 throw new FailedToTakeItemException("Failed to Write to Item Flag with current Value " + currFlagValue);
             }

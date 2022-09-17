@@ -12,7 +12,7 @@ public class MemoryConstants {
     public static final Integer powerBraceletFlagAddress = 0x803C4CBE;
     public static final Integer currStageAddress = 0x803C53A4;
     // Short that the game uses. Will increment the current
-    // Stage's Key amount by whatever number is put in it.
+    // Stage's Key count by whatever number is put in it.
     public static final Integer incrementSmallKey = 0x803CA77C;
     public static final Integer incrementHeartPieces = 0x803CA77F;
 

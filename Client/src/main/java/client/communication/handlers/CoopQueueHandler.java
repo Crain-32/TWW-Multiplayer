@@ -1,20 +1,28 @@
 package client.communication.handlers;
 
-import client.communication.GameRoomConfig;
+import client.config.GameRoomConfig;
 import client.game.ItemCategoryService;
+import client.game.data.ItemInfo;
+import client.view.events.GeneralMessageEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import constants.WorldType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.stereotype.Component;
 import records.INFO;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 
+@Slf4j
 @Component
+@Qualifier("queueHandler")
 @RequiredArgsConstructor
-public class CoopQueueHandler extends StompSessionHandlerAdapter {
+public class CoopQueueHandler extends AbstractQueueHandler {
 
     private final ObjectMapper objectMapper;
     //Improper, we need to route this through another Service First in order to accomplish the following,
@@ -24,12 +32,36 @@ public class CoopQueueHandler extends StompSessionHandlerAdapter {
     // Manage the GameHandler.
     private final ItemCategoryService itemCategoryService;
     private final GameRoomConfig gameRoomConfig;
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    @Override
+    public String getTopicPath() {
+        return "/topic/coop/";
+    }
+
+    @Override
+    public WorldType supportedWorldType() {
+        return WorldType.COOP;
+    }
+
+    @Override
+    public Type getPayloadType(StompHeaders headers) {
+        return INFO.CoopItemRecord.class;
+    }
 
     @Override
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
-        INFO.CoopItemRecord itemRecord = objectMapper.convertValue(payload, INFO.CoopItemRecord.class);
-        if (!Objects.equals(itemRecord.sourcePlayer(), gameRoomConfig.getPlayerName())) {
-            itemCategoryService.giveItem(itemRecord.itemId());
+        try {
+            log.debug("Received a Frame");
+            INFO.CoopItemRecord itemRecord = objectMapper.convertValue(payload, INFO.CoopItemRecord.class);
+            log.debug(itemRecord.toString());
+            if (!Objects.equals(itemRecord.sourcePlayer(), gameRoomConfig.getPlayerName())) {
+                ItemInfo item = ItemInfo.getInfoByItemId(itemRecord.itemId());
+                applicationEventPublisher.publishEvent(new GeneralMessageEvent(itemRecord.sourcePlayer() + " found " + item.getDisplayName()));
+                itemCategoryService.giveItem(item);
+            }
+        } catch (Exception e) {
+            log.debug("An Unknown exception occurred", e);
         }
     }
 }

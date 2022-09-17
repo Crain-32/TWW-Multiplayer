@@ -2,9 +2,9 @@ package client.view.events;
 
 public class GeneralMessageEvent {
 
-    public String message;
+    public final String message;
 
-    public GeneralMessageEvent(String message) {
+    public GeneralMessageEvent(final String message) {
         this.message = message;
     }
 

@@ -24,7 +24,7 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
         try {
             Integer maxAmountAddress = maxAmountAddress(info);
             Integer currAmountAddress = currentAmountAddress(info);
-            Byte currMaxAmount = memoryHandler.readByte(maxAmountAddress);
+            Byte currMaxAmount = memoryAdapter.readByte(maxAmountAddress);
             byte nextMaxAmount;
             if (currMaxAmount == 99) {
                 return true;
@@ -35,11 +35,11 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
             } else {
                 nextMaxAmount = 30;
             }
-            Boolean updateMaxAmount = memoryHandler.writeByte(maxAmountAddress, nextMaxAmount);
+            Boolean updateMaxAmount = memoryAdapter.writeByte(maxAmountAddress, nextMaxAmount);
             if (!updateMaxAmount) {
                 throw new FailedToGiveItemException("Failed to Upgrade Max Amount from " + currMaxAmount + " to " + nextMaxAmount, info);
             }
-            Boolean playerGotMaxAmount = memoryHandler.writeByte(currAmountAddress, nextMaxAmount);
+            Boolean playerGotMaxAmount = memoryAdapter.writeByte(currAmountAddress, nextMaxAmount);
             if (!playerGotMaxAmount) {
                 log.debug("Failed to Set Curr Amount to " + nextMaxAmount);
             }
@@ -56,7 +56,7 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
         try {
             Integer maxAmountAddress = maxAmountAddress(info);
             Integer currAmountAddress = currentAmountAddress(info);
-            Byte currMaxAmount = memoryHandler.readByte(maxAmountAddress);
+            Byte currMaxAmount = memoryAdapter.readByte(maxAmountAddress);
             byte nextMaxAmount;
             if (currMaxAmount == 30 || currMaxAmount == 0) {
                 return true;
@@ -65,11 +65,11 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
             } else {
                 nextMaxAmount = 30;
             }
-            Boolean updateMaxAmount = memoryHandler.writeByte(maxAmountAddress, nextMaxAmount);
+            Boolean updateMaxAmount = memoryAdapter.writeByte(maxAmountAddress, nextMaxAmount);
             if (!updateMaxAmount) {
                 throw new FailedToTakeItemException("Failed to Downgrade Max Amount from " + currMaxAmount + " to " + nextMaxAmount, info);
             }
-            Boolean playerGotMaxAmount = memoryHandler.writeByte(currAmountAddress, nextMaxAmount);
+            Boolean playerGotMaxAmount = memoryAdapter.writeByte(currAmountAddress, nextMaxAmount);
             if (!playerGotMaxAmount) {
                 log.debug("Failed to Set Curr Amount to " + nextMaxAmount);
             }

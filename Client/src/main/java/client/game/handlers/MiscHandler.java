@@ -49,11 +49,11 @@ public class MiscHandler extends ItemCategoryHandler {
     }
 
     private Boolean giveMagicMeter() throws FailedToGiveItemException {
-        boolean writeResult = memoryHandler.writeByte(MemoryConstants.maxMagicAddress, (byte) 0x20);
+        boolean writeResult = memoryAdapter.writeByte(MemoryConstants.maxMagicAddress, (byte) 0x20);
         if (!writeResult) {
             throw new FailedToGiveItemException("Failed to write Max value", ItemInfo.MAGIC_METER_UPGRADE);
         }
-        writeResult = memoryHandler.writeByte(MemoryConstants.currMagicAddress, (byte) 0x20);
+        writeResult = memoryAdapter.writeByte(MemoryConstants.currMagicAddress, (byte) 0x20);
         if (!writeResult) {
             log.debug("Failed to set Max Magic");
         }
@@ -61,11 +61,11 @@ public class MiscHandler extends ItemCategoryHandler {
     }
 
     private Boolean givePowerBracelets() {
-        boolean writeResult = memoryHandler.writeByte(MemoryConstants.powerBraceletAddress, ItemInfo.POWER_BRACELETS.getItemId());
+        boolean writeResult = memoryAdapter.writeByte(MemoryConstants.powerBraceletAddress, ItemInfo.POWER_BRACELETS.getItemId());
         if (!writeResult) {
             throw new FailedToGiveItemException("Failed to write Inventory value", ItemInfo.POWER_BRACELETS);
         }
-        writeResult = memoryHandler.writeByte(MemoryConstants.powerBraceletFlagAddress, (byte) 0x01);
+        writeResult = memoryAdapter.writeByte(MemoryConstants.powerBraceletFlagAddress, (byte) 0x01);
         if (!writeResult) {
             throw new FailedToGiveItemException("Failed to write ownership value", ItemInfo.POWER_BRACELETS);
         }
@@ -73,14 +73,14 @@ public class MiscHandler extends ItemCategoryHandler {
     }
 
     private Boolean giveHerosCharm() {
-        return MemoryEditorUtil.toggleBit(memoryHandler, EventInfo.HEROS_CHARM.getConsoleAddress(), EventInfo.HEROS_CHARM.getBitIndex(), true);
+        return MemoryEditorUtil.toggleBit(memoryAdapter, EventInfo.HEROS_CHARM.getConsoleAddress(), EventInfo.HEROS_CHARM.getBitIndex(), true);
     }
 
     private Boolean giveHurricaneSpin() {
-        return MemoryEditorUtil.toggleBit(memoryHandler, EventInfo.HURRICANE_SPIN.getConsoleAddress(), EventInfo.HURRICANE_SPIN.getBitIndex(), true);
+        return MemoryEditorUtil.toggleBit(memoryAdapter, EventInfo.HURRICANE_SPIN.getConsoleAddress(), EventInfo.HURRICANE_SPIN.getBitIndex(), true);
     }
 
     private Boolean giveHeartPiece(Byte amount) {
-        return memoryHandler.writeByte(MemoryConstants.incrementHeartPieces, amount);
+        return memoryAdapter.writeByte(MemoryConstants.incrementHeartPieces, amount);
     }
 }

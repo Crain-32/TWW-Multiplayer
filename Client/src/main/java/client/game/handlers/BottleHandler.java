@@ -24,12 +24,12 @@ public class BottleHandler extends ItemCategoryHandler {
             return true; // We only care for Empty bottle right now
         }
         try {
-            Integer freeIndex = MemoryScanUtil.findOpenIndex(memoryHandler, MemoryConstants.bottleArray, 4);
+            Integer freeIndex = MemoryScanUtil.findOpenIndex(memoryAdapter, MemoryConstants.bottleArray, 4);
             if (freeIndex < 0) {
                 log.debug("No free Space to give bottle!");
                 return true;
             }
-            Boolean writeSuccess = memoryHandler.writeByte(MemoryConstants.bottleArray + freeIndex, ItemInfo.EMPTY_BOTTLE.getItemId());
+            Boolean writeSuccess = memoryAdapter.writeByte(MemoryConstants.bottleArray + freeIndex, ItemInfo.EMPTY_BOTTLE.getItemId());
             if (!writeSuccess) {
                 throw new FailedToGiveItemException("Failed to write the Bottle to Inventory", info);
             }

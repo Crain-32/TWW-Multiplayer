@@ -183,4 +183,8 @@ public enum ItemCategory {
         }
         return ItemCategory.NOT_SUPPORTED;
     }
+
+    public static ItemCategory getItemCategory(Integer itemId) {
+        return ItemCategory.getInfoCategory(ItemInfo.getInfoByItemId(itemId));
+    }
 }

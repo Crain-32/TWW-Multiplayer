@@ -24,7 +24,7 @@ public class PearlCategoryHandler extends ItemCategoryHandler {
         boolean setPearl = false;
         try {
             EventInfo event = convertToEvent(info);
-            setPearl = MemoryEditorUtil.enableEvent(event, memoryHandler);
+            setPearl = MemoryEditorUtil.enableEvent(event, memoryAdapter);
             if (!setPearl) {
                 throw new FailedToGiveItemException("Failed to Enable the Pearl Flag", info);
             }
@@ -43,7 +43,7 @@ public class PearlCategoryHandler extends ItemCategoryHandler {
         boolean setPearl = false;
         try {
             EventInfo event = convertToEvent(info);
-            setPearl = MemoryEditorUtil.disableEvent(event, memoryHandler);
+            setPearl = MemoryEditorUtil.disableEvent(event, memoryAdapter);
             if (!setPearl) {
                 throw new FailedToTakeItemException("Failed to Disable the Pearl Flag", info);
             }
@@ -58,11 +58,11 @@ public class PearlCategoryHandler extends ItemCategoryHandler {
     }
 
     private void checkToTG() {
-        Byte pearlStatus = memoryHandler.readByte(EventInfo.DINS_PEARL.getConsoleAddress());
+        Byte pearlStatus = memoryAdapter.readByte(EventInfo.DINS_PEARL.getConsoleAddress());
         if (pearlStatus == 0x07) {
-            MemoryEditorUtil.enableEvent(EventInfo.RAISE_TOTG, memoryHandler);
+            MemoryEditorUtil.enableEvent(EventInfo.RAISE_TOTG, memoryAdapter);
         } else {
-            MemoryEditorUtil.disableEvent(EventInfo.RAISE_TOTG, memoryHandler);
+            MemoryEditorUtil.disableEvent(EventInfo.RAISE_TOTG, memoryAdapter);
         }
     }
 

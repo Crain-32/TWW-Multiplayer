@@ -22,7 +22,7 @@ public class InventoryLocations {
             case DELIVERY_BAG -> 0x803C4C56;
             case HOOKSHOT -> 0x803C4C57;
             case SKULL_HAMMER -> 0x803C4C58;
-            default -> throw new IllegalArgumentException("The Provided Item doesn't have an Inventory Slot");
+            default -> throw new IllegalArgumentException("The Provided Item doesn't have an Inventory Slot: " + itemInfo);
         };
     }
 
@@ -42,7 +42,7 @@ public class InventoryLocations {
             case DELIVERY_BAG -> 0x803C4C6B;
             case HOOKSHOT -> 0x803C4C6C;
             case SKULL_HAMMER -> 0x803C4C6D;
-            default -> throw new IllegalArgumentException("The Provided Inventory Item is not an Inventory Item");
+            default -> throw new IllegalArgumentException("The Provided Inventory Item is not an Inventory Item: " + itemInfo);
         };
     }
 }

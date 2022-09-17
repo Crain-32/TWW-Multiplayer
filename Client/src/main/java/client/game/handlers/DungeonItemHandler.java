@@ -75,14 +75,14 @@ public class DungeonItemHandler extends ItemCategoryHandler {
      */
     private Boolean giveSmallKey(ItemInfo info) throws FailedToGiveItemException {
         Byte stageId = DungeonStageInfo.fromItem(info).getStageId();
-        Byte currStageId = memoryHandler.readByte(MemoryConstants.currStageAddress);
+        Byte currStageId = memoryAdapter.readByte(MemoryConstants.currStageAddress);
         boolean gaveItem;
         if (!Objects.equals(currStageId, stageId)) {
             Integer stageAddress = StageInfo.fromStageId(stageId).getMemoryLocation();
-            Byte currKeyAmount = memoryHandler.readByte(stageAddress + smallKeyOffset);
-            gaveItem = memoryHandler.writeByte(stageAddress + smallKeyOffset, (byte) (currKeyAmount + 1));
+            Byte currKeyAmount = memoryAdapter.readByte(stageAddress + smallKeyOffset);
+            gaveItem = memoryAdapter.writeByte(stageAddress + smallKeyOffset, (byte) (currKeyAmount + 1));
         } else {
-            gaveItem = memoryHandler.writeShort(MemoryConstants.incrementSmallKey, (short) 1);
+            gaveItem = memoryAdapter.writeShort(MemoryConstants.incrementSmallKey, (short) 1);
         }
         if (!gaveItem) {
             throw new FailedToGiveItemException("Failed to give Small Key to Stage: " + stageId, info);
@@ -92,18 +92,18 @@ public class DungeonItemHandler extends ItemCategoryHandler {
 
     private Boolean takeSmallKey(ItemInfo info) throws FailedToTakeItemException {
         Byte stageId = DungeonStageInfo.fromItem(info).getStageId();
-        Byte currStageId = memoryHandler.readByte(MemoryConstants.currStageAddress);
+        Byte currStageId = memoryAdapter.readByte(MemoryConstants.currStageAddress);
         boolean tookItem;
         if (!Objects.equals(currStageId, stageId)) {
             Integer stageAddress = StageInfo.fromStageId(stageId).getMemoryLocation();
-            Byte currKeyAmount = memoryHandler.readByte(stageAddress + smallKeyOffset);
+            Byte currKeyAmount = memoryAdapter.readByte(stageAddress + smallKeyOffset);
             if (currKeyAmount > 0) {
-                tookItem = memoryHandler.writeByte(stageAddress + smallKeyOffset, (byte) (currKeyAmount - 1));
+                tookItem = memoryAdapter.writeByte(stageAddress + smallKeyOffset, (byte) (currKeyAmount - 1));
             } else {
                 tookItem = true;
             }
         } else {
-            tookItem = memoryHandler.writeShort(MemoryConstants.incrementSmallKey, (short) 0xFFFF);
+            tookItem = memoryAdapter.writeShort(MemoryConstants.incrementSmallKey, (short) 0xFFFF);
         }
         if (!tookItem) {
             throw new FailedToTakeItemException("Failed to take Small Key to Stage: " + stageId, info);
@@ -113,13 +113,13 @@ public class DungeonItemHandler extends ItemCategoryHandler {
 
     private Boolean toggleDungeonFlag(Byte stageId, Integer offset, Boolean enable) {
         int targetStageAddress;
-        Byte currStageId = memoryHandler.readByte(MemoryConstants.currStageAddress);
+        Byte currStageId = memoryAdapter.readByte(MemoryConstants.currStageAddress);
         if (Objects.equals(currStageId, stageId)) {
             targetStageAddress = StageInfo.fromStageId(stageId).getMemoryLocation();
         } else {
             targetStageAddress = StageInfo.CURRENT.getMemoryLocation();
         }
-        return MemoryEditorUtil.toggleBit(memoryHandler, targetStageAddress, offset, enable);
+        return MemoryEditorUtil.toggleBit(memoryAdapter, targetStageAddress, offset, enable);
     }
 
     private Integer getFlagOffset(ItemInfo info) {

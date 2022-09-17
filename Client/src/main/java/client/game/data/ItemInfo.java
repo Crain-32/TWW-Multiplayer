@@ -8,7 +8,7 @@ import java.util.Objects;
 @Getter
 public enum ItemInfo {
 
-    HEART(0x00, "Heart (Pickup)f", -1),
+    HEART(0x00, "Heart (Pickup)", -1),
     GREEN_RUPEE(0x01, "Green Rupee", -1),
     BLUE_RUPEE(0x02, "Blue Rupee", -1),
     YELLOW_RUPEE(0x03, "Yellow Rupee", -1),

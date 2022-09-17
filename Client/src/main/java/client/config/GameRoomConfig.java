@@ -1,4 +1,4 @@
-package client.communication;
+package client.config;
 
 import constants.WorldType;
 import lombok.Data;

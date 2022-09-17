@@ -1,9 +1,13 @@
 package client.view;
 
+import client.view.events.ServerDisconnectEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -11,29 +15,40 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class MainPageConstructor {
 
     private JFrame jFrame;
-    private CreateGameRoom createGameRoom;
-    private ConfigurableApplicationContext context;
+    private final LeftPanelLogic leftPanelLogic;
+    private final ConfigurableApplicationContext context;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public MainPageConstructor(CreateGameRoom createGameRoom, ConfigurableApplicationContext context) {
-        this.createGameRoom = createGameRoom;
+    public MainPageConstructor(LeftPanelLogic leftPanelLogic, ConfigurableApplicationContext context, ApplicationEventPublisher applicationEventPublisher) {
+        this.leftPanelLogic = leftPanelLogic;
         this.context = context;
+        this.applicationEventPublisher = applicationEventPublisher;
         initUI();
     }
 
     private void initUI() {
         jFrame = new JFrame();
+        leftPanelLogic.setListeners();
 
         ClientWrapper clientWrapper = new ClientWrapper();
         MessageWrapper messageDisplay = context.getBean(MessageWrapper.class);
-        createGameRoom.setJTextArea(messageDisplay.jTextArea());
-        clientWrapper.getLeftPanel().add(createGameRoom.getBasePanel());
+        messageDisplay.postConstruct();
+        clientWrapper.getLeftPanel().add(leftPanelLogic.getBasePanel());
         clientWrapper.getRightPanel().add(messageDisplay.getMessagePanel());
         jFrame.add(clientWrapper.getParentPanel());
 
-        jFrame.setSize(600, 600);
-        jFrame.setTitle("Testing Wrapper");
+        jFrame.setSize(875, 350);
+        jFrame.setTitle("The Wind Waker Multiplayer Project");
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        jFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                applicationEventPublisher.publishEvent(new ServerDisconnectEvent());
+            }
+        });
     }
 
     public JFrame getJFrame() {

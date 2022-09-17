@@ -1,5 +1,7 @@
 package client.game.interfaces;
 
+import client.exceptions.GameHandlerDisconnectException;
+
 /**
  * This Interface should define the protocol between the Client and the Game.
  * Primarily Planning to be Dolphin/Websocket. This gets fed into the
@@ -8,7 +10,17 @@ package client.game.interfaces;
  *
  * Protocol Implementations should handle the mapping from Game Address (0x8000000~) to real Address.
  */
-public interface MemoryHandler {
+public interface MemoryAdapter {
+
+    /**
+     * A call to this function should connect the Client to the Game using the
+     * Communication Protocol being implemented.
+     * Failure to connect should raise a GameHandlerDisconnectWarning
+     */
+    void connect() throws GameHandlerDisconnectException;
+
+    Boolean disconnect();
+
 
     Boolean writeByte(Integer consoleAddress, Byte byteVal);
 
@@ -25,4 +37,9 @@ public interface MemoryHandler {
     Boolean writeString(Integer consoleAddress, String stringVal);
 
     String readString(Integer consoleAddress, Integer stringLength);
+    /**
+     * True if the Connection to the Game is current connected and usable.
+     */
+    Boolean isConnected();
+
 }

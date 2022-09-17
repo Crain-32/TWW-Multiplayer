@@ -22,12 +22,12 @@ public class DeliveryBagHandler extends ItemCategoryHandler {
     @Override
     public Boolean giveItem(ItemInfo info) throws FailedToGiveItemException {
         try {
-            Integer openIndex = MemoryScanUtil.findOpenIndex(memoryHandler, deliveryBagAddress, 9);
+            Integer openIndex = MemoryScanUtil.findOpenIndex(memoryAdapter, deliveryBagAddress, 9);
             if (openIndex < 0) {
-                log.debug("Delivery Bag is Full? " + memoryHandler.readString(deliveryBagAddress, 9));
+                log.debug("Delivery Bag is Full? " + memoryAdapter.readString(deliveryBagAddress, 9));
                 throw new FailedToGiveItemException("Failed to find an open space", info);
             }
-            Boolean placedItem = memoryHandler.writeByte(deliveryBagAddress + openIndex, info.getItemId());
+            Boolean placedItem = memoryAdapter.writeByte(deliveryBagAddress + openIndex, info.getItemId());
             if (!placedItem) {
                 log.debug("Failed to write Item, Memory Handler Issue?");
                 throw new FailedToGiveItemException("Failed to write to memory", info);
@@ -43,12 +43,12 @@ public class DeliveryBagHandler extends ItemCategoryHandler {
     @Override
     public Boolean takeItem(ItemInfo info) throws FailedToTakeItemException {
         try {
-            Integer openIndex = MemoryScanUtil.findByteInList(memoryHandler, deliveryBagAddress, 9, info.getItemId());
+            Integer openIndex = MemoryScanUtil.findByteInList(memoryAdapter, deliveryBagAddress, 9, info.getItemId());
             if (openIndex < 0) {
-                log.debug("Player doesn't have Item: " + memoryHandler.readString(deliveryBagAddress, 9));
+                log.debug("Player doesn't have Item: " + memoryAdapter.readString(deliveryBagAddress, 9));
                 return true;
             }
-            Boolean placedItem = memoryHandler.writeByte(deliveryBagAddress + openIndex, (byte) 0xFF);
+            Boolean placedItem = memoryAdapter.writeByte(deliveryBagAddress + openIndex, (byte) 0xFF);
             if (!placedItem) {
                 log.debug("Failed to Overwrite Item, Memory Handler Issue?");
                 throw new FailedToTakeItemException("Failed to erase Item", info);

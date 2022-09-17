@@ -29,11 +29,11 @@ public class ProgressiveCategoryHandler extends ItemCategoryHandler {
             }
             Integer flagAddress = ProgressiveItemUtil.getProgressiveFlagAddress(nextProgressiveVal);
             Integer progressiveIndex = ProgressiveItemUtil.getProgressiveIndex(nextProgressiveVal);
-            Byte currentFlagVal = memoryHandler.readByte(flagAddress);
-            if(!memoryHandler.writeByte(flagAddress, (byte) (currentFlagVal | (byte) 1 << progressiveIndex))) {
+            Byte currentFlagVal = memoryAdapter.readByte(flagAddress);
+            if(!memoryAdapter.writeByte(flagAddress, (byte) (currentFlagVal | (byte) 1 << progressiveIndex))) {
                 throw new FailedToGiveItemException("Failed to Updated Ownership Flag", info);
             }
-            return memoryHandler.writeByte(ProgressiveItemUtil.getProgressiveAddress(info), nextProgressiveVal.getItemId());
+            return memoryAdapter.writeByte(ProgressiveItemUtil.getProgressiveAddress(info), nextProgressiveVal.getItemId());
         } catch (FailedToGiveItemException e) {
             throw e;
         } catch (Exception exception) {
@@ -49,7 +49,7 @@ public class ProgressiveCategoryHandler extends ItemCategoryHandler {
 
     private ItemInfo getCurrentValue(ItemInfo info) {
         Integer consoleAddress = ProgressiveItemUtil.getProgressiveAddress(info);
-        Byte currentItemId = memoryHandler.readByte(consoleAddress);
+        Byte currentItemId = memoryAdapter.readByte(consoleAddress);
         return ItemInfo.getInfoByItemId(currentItemId);
     }
 

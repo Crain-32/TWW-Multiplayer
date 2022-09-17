@@ -1,11 +1,9 @@
 package client.game;
 
 
-import client.game.interfaces.MemoryHandler;
+import client.game.interfaces.MemoryAdapter;
 
 public class GameInterfaceEvents {
-
-
-    public record MemoryHandlerEvent(MemoryHandler memoryHandler){}
+    public record MemoryHandlerEvent(MemoryAdapter memoryAdapter){}
 
 }

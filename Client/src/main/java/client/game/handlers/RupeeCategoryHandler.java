@@ -20,7 +20,7 @@ public class RupeeCategoryHandler extends ItemCategoryHandler {
     public Boolean giveItem(ItemInfo info) throws FailedToGiveItemException {
         try {
             verifyHandler();
-            return this.memoryHandler.writeInteger(0x803CA768, getRupeeAmount(info));
+            return this.memoryAdapter.writeInteger(0x803CA768, getRupeeAmount(info));
         } catch (MissingMemoryHandlerException memoryHandlerException) {
             throw new FailedToGiveItemException("No MemoryHandler Present");
         } catch (IllegalArgumentException illegalArgumentException) {

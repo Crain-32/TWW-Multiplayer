@@ -26,11 +26,11 @@ public class InventoryCategoryHandler extends ItemCategoryHandler {
             verifyHandler();
             Integer inventoryAddress = InventoryLocations.getInventoryLocation(info);
             Integer ownedBitLocation = InventoryLocations.getItemOwnedMemoryLocation(info);
-            Boolean giveItem = memoryHandler.writeByte(inventoryAddress, info.getItemId());
+            Boolean giveItem = memoryAdapter.writeByte(inventoryAddress, info.getItemId());
             if (!giveItem) {
                 throw new FailedToGiveItemException("Failed to set Inventory Value", info);
             }
-            return memoryHandler.writeByte(ownedBitLocation, (byte) 1);
+            return memoryAdapter.writeByte(ownedBitLocation, (byte) 1);
         } catch (MissingMemoryHandlerException memoryHandlerException) {
             throw new FailedToGiveItemException("No MemoryHandler Present");
         } catch (Exception exception) {
@@ -44,11 +44,11 @@ public class InventoryCategoryHandler extends ItemCategoryHandler {
             verifyHandler();
             Integer inventoryAddress = InventoryLocations.getInventoryLocation(info);
             Integer ownedBitLocation = InventoryLocations.getItemOwnedMemoryLocation(info);
-            Boolean giveItem = memoryHandler.writeByte(inventoryAddress, ItemInfo.INVALID_ID.getItemId());
+            Boolean giveItem = memoryAdapter.writeByte(inventoryAddress, ItemInfo.INVALID_ID.getItemId());
             if (!giveItem) {
                 throw new FailedToTakeItemException("Failed to set Inventory Value", info);
             }
-            return memoryHandler.writeByte(ownedBitLocation, (byte) 0);
+            return memoryAdapter.writeByte(ownedBitLocation, (byte) 0);
         } catch (MissingMemoryHandlerException memoryHandlerException) {
             throw new FailedToTakeItemException("No MemoryHandler Present");
         } catch (Exception exception) {
