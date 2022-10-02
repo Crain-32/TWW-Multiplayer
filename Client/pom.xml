@@ -25,7 +25,7 @@
         <spring-messaging-version>5.3.20</spring-messaging-version>
         <spring-cloud-dependencies-version>2021.0.3</spring-cloud-dependencies-version>
 
-        <junit-testing-version>5.8.2</junit-testing-version>
+        <junit-testing-version>5.9.0</junit-testing-version>
     </properties>
 
     <dependencies>

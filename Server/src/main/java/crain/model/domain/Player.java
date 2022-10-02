@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -70,9 +71,14 @@ public class Player {
      */
     public boolean softEqualityWithPlayer(@NonNull Player player) {
         return (this.playerName.equalsIgnoreCase(player.getPlayerName()) ||
-                (this.worldId.equals(player.worldId) &&
-                    (this.worldType.equals(WorldType.SHARED) &&
-                    !player.worldType.equals(WorldType.SHARED))));
+                (multiworldCheck(this, player)));
     }
 
+    private boolean multiworldCheck(Player one, Player two) {
+        boolean sameWorld = Objects.equals(one.getWorldId(), two.getWorldId());
+        if (sameWorld) {
+            return !(Objects.equals(one.getWorldType(), two.getWorldType()) && Objects.equals(one.getWorldType(), WorldType.SHARED));
+        }
+        return false;
+    }
 }

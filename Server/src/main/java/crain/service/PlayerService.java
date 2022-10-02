@@ -2,10 +2,13 @@ package crain.service;
 
 import crain.exceptions.InvalidPlayerException;
 import crain.model.domain.Player;
+import crain.model.event.CoopItemEvent;
 import crain.repository.PlayerRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import records.ROOM;
 
@@ -36,6 +39,17 @@ public class PlayerService {
             playerRepo.saveAll(oldPlayers);
         } catch (Exception e) {
             log.info("Failed to update old Players", e);
+        }
+    }
+
+    @Async
+    @EventListener
+    public void handleCoopItem(CoopItemEvent event) {
+        var optionalPlayer = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(event.getItemRecord().sourcePlayer(), event.getGameRoom());
+        if (optionalPlayer.isPresent()) {
+            var player = optionalPlayer.get();
+            player.preUpdated();
+            playerRepo.save(player);
         }
     }
 }

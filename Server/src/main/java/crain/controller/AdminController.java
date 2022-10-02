@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import crain.mappers.GameRoomMapper;
 import crain.model.enums.EventTypes;
 import crain.model.event.*;
+import crain.model.records.DETAIL;
 import crain.repository.PlayerRepo;
 import crain.service.GameRoomService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class AdminController {
 
     @GetMapping("/gameroom")
     public List<ROOM.GameRoomRecord> getAllGameRooms() {
-        return For(gameRoomService.findAll()).yield(this.gameRoomMapper::gameRoomRecordMapper).toJavaList();
+        return For(gameRoomService.findAll()).yield(gameRoomMapper::gameRoomRecordMapper).toJavaList();
     }
 
     @DeleteMapping("/{GameRoom}")
@@ -56,6 +57,11 @@ public class AdminController {
     @GetMapping("/gameroom/empty")
     public List<ROOM.GameRoomRecord> getAllEmpty() {
         return gameRoomService.getEmptyGameRooms();
+    }
+
+    @GetMapping("/gameroom/detailed")
+    public List<DETAIL.GameRoom> getAllDetailedRooms() {
+        return For(gameRoomService.findAll()).yield(gameRoomMapper::detailedRoomMapper).toJavaList();
     }
 
 

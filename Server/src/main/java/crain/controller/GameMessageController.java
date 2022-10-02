@@ -37,12 +37,12 @@ public class GameMessageController {
         applicationEventPublisher.publishEvent(new EventEvent(eventRecord, gameRoom));
     }
 
-    @MessageMapping("/connect/{GameRoom}")
+    @MessageMapping("/name/{GameRoom}")
     public void setPlayerToConnected(@Valid @Payload ROOM.PlayerRecord playerRecord,
                                      @DestinationVariable("GameRoom") String gameRoom) {
         playerRecord = gameRoomService.setPlayerToConnected(playerRecord, gameRoom);
         if (log.isDebugEnabled()) {
-            log.debug(playerRecord + " was set to Connected in - " + gameRoom);
+            log.debug(playerRecord.playerName() + " was set to Connected in - " + gameRoom);
         }
         applicationEventPublisher.publishEvent(new NameEvent(playerRecord, gameRoom));
     }

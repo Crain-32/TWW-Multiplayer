@@ -3,6 +3,7 @@ package crain.model.domain;
 import constants.WorldType;
 import crain.exceptions.InvalidPlayerException;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -48,6 +49,9 @@ public class GameRoom {
         players.clear();
     }
 
+    public Integer getConnectedPlayerCount() {
+        return Math.toIntExact(this.players.stream().filter(Player::getConnected).count());
+    }
 
     @SneakyThrows
     @Transactional
@@ -63,7 +67,7 @@ public class GameRoom {
     //TODO: Add Max Player Handling for Coop in Here.
     public boolean canAddPlayer(Player player) {
         if (this.worldType == WorldType.COOP && this.worldType == player.getWorldType()) {
-            return true;
+            return this.players.stream().noneMatch(existingPlayer -> StringUtils.equalsIgnoreCase(existingPlayer.getPlayerName(), player.getPlayerName()));
         }
         boolean playerMatch = this.players.stream()
                 .noneMatch(existingPlayer -> existingPlayer.softEqualityWithPlayer(player));

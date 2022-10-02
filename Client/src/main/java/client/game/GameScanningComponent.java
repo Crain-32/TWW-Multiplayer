@@ -1,7 +1,9 @@
 package client.game;
 
 
+import client.events.ItemFoundEvent;
 import client.game.data.ItemCategory;
+import client.game.data.ItemInfo;
 import client.game.interfaces.MemoryAdapter;
 import client.view.events.GeneralMessageEvent;
 import constants.WorldType;
@@ -13,7 +15,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import records.INFO;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -82,21 +83,23 @@ public class GameScanningComponent {
             int worldId = (0xFF & memoryAdapter.readInteger(gameConfig.getWorldIdAddress()));
 
             if (itemId == 0 || (worldId == 0 && (gameInfoConfig.getWorldType() != WorldType.COOP))) {
-
-                log.debug("Nothing Found");
-                log.debug("World ID: " + worldId);
-                log.debug("Item ID: " + itemId);
+                log.trace("World ID: " + worldId);
+                log.trace("Item ID: " + itemId);
                 return;
             }
             log.debug("Clearing Game Memory");
             memoryAdapter.writeInteger(gameConfig.getItemIdAddress(), 0);
             memoryAdapter.writeInteger(gameConfig.getWorldIdAddress(), 0);
-            if (gameConfig.getWorldType() == WorldType.COOP && shouldSend(itemId)) {
-                log.debug("Publishing Coop Record");
-                applicationEventPublisher.publishEvent(new INFO.CoopItemRecord(null, itemId));
+            if (gameConfig.getWorldType() == WorldType.COOP) {
+                if (shouldSend(itemId)) {
+                    log.debug("Publishing Coop Record");
+                    applicationEventPublisher.publishEvent(new ItemFoundEvent(ItemInfo.getInfoByItemId(itemId), null));
+                } else {
+                    log.debug("Not Sending Item: " + ItemInfo.getInfoByItemId(itemId).getDisplayName());
+                }
             } else if (gameInfoConfig.getWorldType() == WorldType.MULTIWORLD || gameInfoConfig.getWorldType() == WorldType.SHARED) {
                 log.debug("Publishing Multiworld Record");
-                applicationEventPublisher.publishEvent(new INFO.ItemRecord(gameConfig.getWorldId(), worldId, itemId));
+                applicationEventPublisher.publishEvent(new ItemFoundEvent(ItemInfo.getInfoByItemId(itemId), worldId));
             } else {
                 log.debug("Failed to identify the World Type");
             }
@@ -105,7 +108,7 @@ public class GameScanningComponent {
         private Boolean shouldSend(Integer itemId) {
             ItemCategory category = ItemCategory.getItemCategory(itemId);
             return switch (category) {
-                case BIT_ONLY_ACTION, RUPEES, NOT_SUPPORTED, TRANSLATED_CHARTS, SPOILS_BAG_CONSUMABLE, BAIT_BAG_CONSUMABLES  -> false;
+                case BIT_ONLY_ACTION, RUPEES, NOT_SUPPORTED, TRANSLATED_CHARTS, SPOILS_BAG_CONSUMABLE, BAIT_BAG_CONSUMABLES -> false;
                 default -> true;
             };
         }

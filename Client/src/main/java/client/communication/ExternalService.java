@@ -37,6 +37,7 @@ public class ExternalService {
                 log.trace("Integration done not work for Multiworld Seeds Yet");
                 return;
             }
+            log.debug("Sending %s to the Tracker".formatted(event.info().getDisplayName()));
             multiplayerTrackerApi.sendItem(createPayload(event));
         } catch (Exception e) {
             // We really don't care if something fails here.
@@ -51,7 +52,7 @@ public class ExternalService {
                     .formatted(
                             gameRoomConfig.getGameRoomName(),
                             gameRoomConfig.getPlayerName(),
-                            event.getInfo().getItemId()
+                            event.info().getItemId()
                     )
             );
         }
@@ -59,7 +60,7 @@ public class ExternalService {
                 .gameRoom(gameRoomConfig.getGameRoomName())
                 .playerName(gameRoomConfig.getPlayerName())
                 .checkName(null) // We'll just leave this as null for now.
-                .itemId(event.getInfo().getItemId())
+                .itemId(event.info().getItemId())
                 .build();
     }
 

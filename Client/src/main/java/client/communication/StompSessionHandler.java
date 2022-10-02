@@ -15,6 +15,7 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import records.INFO;
+import records.ROOM;
 
 import java.util.List;
 
@@ -23,11 +24,11 @@ import java.util.List;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS) // Required for StompService to Construct.
 public class StompSessionHandler extends StompSessionHandlerAdapter {
 
-    private final List<? extends AbstractQueueHandler> queueHandlers;
+    private final List<? extends AbstractQueueHandler<?>> queueHandlers;
     private final GameRoomConfig gameRoomConfig;
     private StompSession stompSession;
 
-    public StompSessionHandler(@Qualifier("queueHandler") List<? extends AbstractQueueHandler> queueHandlers, GameRoomConfig gameRoomConfig) {
+    public StompSessionHandler(@Qualifier("queueHandler") List<? extends AbstractQueueHandler<?>> queueHandlers, GameRoomConfig gameRoomConfig) {
         this.queueHandlers = queueHandlers;
         this.gameRoomConfig = gameRoomConfig;
     }
@@ -37,7 +38,8 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
         session.setAutoReceipt(true);
         log.debug(gameRoomConfig.getGameRoomName());
         try {
-            for (AbstractQueueHandler handler : queueHandlers) {
+            for (AbstractQueueHandler<?> handler : queueHandlers) {
+                handler.getPayloadType(new StompHeaders());
                 WorldType handlerWorldType = handler.supportedWorldType();
                 if (handlerWorldType != WorldType.SHARED && handlerWorldType != gameRoomConfig.getWorldType()) {
                     log.debug("Now Skipping Registration: " + handler.getClass().getSimpleName());
@@ -52,13 +54,14 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
             log.info("An Unknown Exception Occurred", e);
         }
         this.stompSession = session;
-        // Need to send /app/connect/gameroom PlayerRecord after at this line.
+        StompHeaders stompHeaders = createNormalHeaders("app/name/" + gameRoomConfig.getGameRoomName());
+        stompSession.send(stompHeaders, createPlayerRecordFromConfig(gameRoomConfig));
     }
 
     @Async
     @EventListener
     public void sendMultiworldItem(ItemFoundEvent event) {
-        Integer itemId = Byte.toUnsignedInt(event.getInfo().getItemId());
+        Integer itemId = Byte.toUnsignedInt(event.info().getItemId());
         if (gameRoomConfig.getWorldType() == WorldType.COOP) {
             log.debug("Sending Coop Item");
 
@@ -68,7 +71,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
         } else {
             log.debug("Sending Multiworld Item");
 
-            var multiworldRecord =new INFO.ItemRecord(gameRoomConfig.getWorldId(), event.getWorldId(), itemId);
+            var multiworldRecord = new INFO.ItemRecord(gameRoomConfig.getWorldId(), event.worldId(), itemId);
             StompHeaders headers = createNormalHeaders("/app/item/" + gameRoomConfig.getGameRoomName());
             stompSession.send(headers, multiworldRecord);
         }
@@ -89,5 +92,13 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
         headers.setDestination(destination);
         headers.set("password", gameRoomConfig.getPassword());
         return headers;
+    }
+
+    private ROOM.PlayerRecord createPlayerRecordFromConfig(GameRoomConfig config) {
+        return new ROOM.PlayerRecord(
+                config.getPlayerName(),
+                config.getWorldId(),
+                config.getWorldType(),
+                false);
     }
 }
