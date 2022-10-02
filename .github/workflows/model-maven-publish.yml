@@ -26,9 +26,19 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -pl Model
+      run: |
+        mvn -B package --file pom.xml -pl Model
+        mvn -B package --file pom.xml -pl Server,Client
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Upload Client
+      uses: actions/upload-artifact@v3
+      with:
+        name: WWR-Client.jar
+        path: ./Client/target/*.jar
+        
+    - name: Upload Server
+      uses: actions/upload-artifact@v3
+      with:
+        name: WWR-Server.jar
+        path: ./Server/target/*.jar
+        
