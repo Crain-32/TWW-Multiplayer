@@ -44,7 +44,7 @@ public class AdminController {
     }
 
     @PutMapping("/{GameRoom}")
-    public Boolean toggleTournamentMode(@PathVariable("GameRoom") String gameRoomName, @PathParam("setTo") boolean setTo) {
+    public Boolean toggleTournamentMode(@PathVariable("GameRoom") String gameRoomName, @PathParam("setTo") Boolean setTo) {
         return gameRoomService.setTournamentMode(gameRoomName, setTo);
     }
 

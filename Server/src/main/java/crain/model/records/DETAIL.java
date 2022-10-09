@@ -15,7 +15,8 @@ public class DETAIL {
             WorldType worldType,
             List<Player> players,
             Boolean tournament,
-            String creationTimestamp) {}
+            String creationTimestamp
+    ) {}
 
     public record Player(
             Long id,

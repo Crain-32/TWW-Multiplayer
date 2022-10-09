@@ -120,7 +120,7 @@ public class GameRoomService {
     }
 
     @Transactional
-    public boolean deleteGameRoomByName(@NonNull String gameRoomName) {
+    public Boolean deleteGameRoomByName(@NonNull String gameRoomName) {
         GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName).orElse(null);
         if (Objects.nonNull(targetRoom)) {
             gameRoomRepo.delete(targetRoom);
@@ -130,7 +130,7 @@ public class GameRoomService {
 
     @Transactional
     @SneakyThrows
-    public boolean setTournamentMode(@NonNull String gameRoomName, @NonNull Boolean setTo) {
+    public Boolean setTournamentMode(@NonNull String gameRoomName, @NonNull Boolean setTo) {
         GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName)
                 .orElseThrow(() -> new InvalidGameRoomException("The Provided Gameroom does not Exist!", gameRoomName));
         targetRoom.setTournament(setTo);
