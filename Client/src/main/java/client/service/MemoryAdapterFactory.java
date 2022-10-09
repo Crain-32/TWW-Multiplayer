@@ -30,7 +30,7 @@ public class MemoryAdapterFactory {
     @EventListener
     public void createMemoryAdapterEventHandler(CreateMemoryAdapterEvent event) {
         try {
-            log.debug("Creating a new Memory Adapter of Type: " + event.getMemoryAdapterType());
+            log.debug("Creating a new Memory Adapter of Type: {}", event.getMemoryAdapterType());
             switch (event.getMemoryAdapterType()) {
                 case DOLPHIN -> createDolphinMemoryAdapter();
                 case NINTENDONT -> createNintendontAdapter();

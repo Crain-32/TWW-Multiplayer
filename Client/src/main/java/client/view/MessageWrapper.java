@@ -40,7 +40,7 @@ public class MessageWrapper {
     @Async
     @EventListener
     public void onGeneralMessageEvent(GeneralMessageEvent e) {
-        log.debug("General Message Event Received: " + e.getMessage());
+        log.debug("General Message Event Received: {}", e.getMessage());
         SwingUtilities.invokeLater(() -> {
                     this.jTextArea().insert(e.getMessage(), 0);
                 }
@@ -71,7 +71,7 @@ public class MessageWrapper {
      */
     private void $$$setupUI$$$() {
         messagePanel = new JPanel();
-        messagePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        messagePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 10, 0), -1, -1));
         mainTextArea = new JTextArea();
         mainTextArea.setCaretPosition(0);
         mainTextArea.setEditable(false);
@@ -85,7 +85,7 @@ public class MessageWrapper {
         clearText.setText("Clear");
         clearText.setVerticalAlignment(0);
         clearText.setVerticalTextPosition(0);
-        messagePanel.add(clearText, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_SOUTHEAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 20), null, new Dimension(-1, 20), 0, false));
+        messagePanel.add(clearText, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 20), null, new Dimension(-1, 20), 0, false));
     }
 
     /**

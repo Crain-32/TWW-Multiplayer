@@ -35,8 +35,7 @@ public class DolphinAdapter implements MemoryAdapter {
             log.debug("No emulator was found.");
             throw new GameHandlerDisconnectException("Failed to Find Dolphin, Please Open Dolphin and Restart the Client.");
         } else if (engine.getStatus() == DolphinStatus.HOOKED) {
-            log.debug("Hooked to Dolphin");
-            log.debug("Publishing Self to Context...");
+            log.debug("Hooked to Dolphin\nPublishing Self to Context...");
             isHooked = true;
             applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Hooked to Dolphin"));
         }

@@ -40,7 +40,7 @@ public class DisplayEventService {
         Integer targetPlayer = itemRecord.targetPlayerWorldId();
         Integer itemId = itemRecord.itemId();
         if (anyNull(sourcePlayer, targetPlayer, itemId)) {
-            log.debug("Unexpected NULL in itemRecord: " + itemRecord);
+            log.debug("Unexpected NULL in itemRecord: {}", itemRecord);
             return;
         }
         String sourcePlayerName = getUsername(sourcePlayer);
@@ -55,7 +55,7 @@ public class DisplayEventService {
         String sourcePlayer = Optional.ofNullable(itemRecord.sourcePlayer()).orElseGet(gameRoomConfig::getPlayerName);
         Integer itemId = itemRecord.itemId();
         if (itemId == null) {
-            log.debug("Unexpected NULL in itemRecord: " + itemRecord);
+            log.debug("Unexpected NULL in itemRecord: {}", itemRecord);
             return;
         }
         String itemDisplayName = ItemInfo.getInfoByItemId(itemId).getDisplayName();

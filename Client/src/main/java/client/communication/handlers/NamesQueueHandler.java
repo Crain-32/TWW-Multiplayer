@@ -1,7 +1,7 @@
 package client.communication.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import constants.WorldType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -9,14 +9,10 @@ import org.springframework.stereotype.Component;
 import records.ROOM;
 
 @Component
+@RequiredArgsConstructor
 @Qualifier("queueHandler")
 public class NamesQueueHandler extends AbstractQueueHandler<ROOM.PlayerRecord> {
     private final ApplicationEventPublisher applicationEventPublisher;
-
-    public NamesQueueHandler(ApplicationEventPublisher applicationEventPublisher, ObjectMapper objectMapper) {
-        super(objectMapper);
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
 
     @Override
     public String getTopicPath() {

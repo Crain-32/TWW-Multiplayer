@@ -24,11 +24,11 @@ import java.util.List;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS) // Required for StompService to Construct.
 public class StompSessionHandler extends StompSessionHandlerAdapter {
 
-    private final List<? extends AbstractQueueHandler<?>> queueHandlers;
+    private final List<AbstractQueueHandler<?>> queueHandlers;
     private final GameRoomConfig gameRoomConfig;
     private StompSession stompSession;
 
-    public StompSessionHandler(@Qualifier("queueHandler") List<? extends AbstractQueueHandler<?>> queueHandlers, GameRoomConfig gameRoomConfig) {
+    public StompSessionHandler(@Qualifier("queueHandler") List<AbstractQueueHandler<?>> queueHandlers, GameRoomConfig gameRoomConfig) {
         this.queueHandlers = queueHandlers;
         this.gameRoomConfig = gameRoomConfig;
     }
@@ -42,16 +42,16 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                 handler.getPayloadType(new StompHeaders());
                 WorldType handlerWorldType = handler.supportedWorldType();
                 if (handlerWorldType != WorldType.SHARED && handlerWorldType != gameRoomConfig.getWorldType()) {
-                    log.debug("Now Skipping Registration: " + handler.getClass().getSimpleName());
+                    log.debug("Now Skipping Registration: {}", handler.getClass().getSimpleName());
                     continue;
                 }
-                log.debug("Now Registering: " + handler.getClass().getSimpleName());
+                log.debug("Now Registering: {}", handler.getClass().getSimpleName());
                 StompHeaders subscriptionHeaders = createNormalHeaders(handler.getTopicPath() + gameRoomConfig.getGameRoomName());
-                log.debug("Now Subscribing to: " + subscriptionHeaders.getDestination());
+                log.debug("Now Subscribing to: {}", subscriptionHeaders.getDestination());
                 session.subscribe(subscriptionHeaders, handler);
             }
         } catch (Exception e) {
-            log.info("An Unknown Exception Occurred", e);
+            log.error("An Unknown Exception Occurred", e);
         }
         this.stompSession = session;
         StompHeaders stompHeaders = createNormalHeaders("app/name/" + gameRoomConfig.getGameRoomName());

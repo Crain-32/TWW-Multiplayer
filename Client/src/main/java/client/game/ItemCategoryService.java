@@ -28,19 +28,19 @@ public class ItemCategoryService {
         resolvedHandlers = new HashMap<>();
 
         for (ItemCategory category : ItemCategory.values()) {
-            log.debug("Registering " + category);
+            log.debug("Registering {}", category);
             ItemCategoryHandler supported = handlers.stream()
                     .filter(
                             handler -> handler.supports(category)
                     ).findFirst().orElseThrow(IllegalStateException::new);
-            log.debug("Registered: " + category + " to " + supported.getClass().getSimpleName());
+            log.debug("Registered: {} to {}", category, supported.getClass().getSimpleName());
             resolvedHandlers.put(category, supported);
         }
 
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             log.debug("Checking Queued Items");
             if (queuedItems.size() != 0) {
-                log.debug("Checking Scheduled Futures, Amount: " + queuedItems.size());
+                log.debug("Checking Scheduled Futures, Amount: {}", queuedItems.size());
                 for (ScheduledFuture<ItemGiver> scheduledFuture : queuedItems.keySet()) {
                     if (scheduledFuture.isDone()) {
                         try {
@@ -55,7 +55,7 @@ public class ItemCategoryService {
                                 queuedItems.remove(scheduledFuture);
                                 queuedItems.put(redo, info);
                             } catch (Exception ex) {
-                                log.debug("What?", ex);
+                                log.debug("Failed to Rescheduling the Item with the follwoing Exception", ex);
                             }
                         }
                     } else if (scheduledFuture.isCancelled()) {
@@ -63,7 +63,7 @@ public class ItemCategoryService {
                         queuedItems.remove(scheduledFuture);
                     }
                 }
-                log.debug("Remaining Futures: " + queuedItems.size());
+                log.debug("Remaining Futures: {}", queuedItems.size());
             }
         }, 30000);
     }

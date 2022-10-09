@@ -1,8 +1,8 @@
 package client.communication.handlers;
 
 import client.view.events.GeneralMessageEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import constants.WorldType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,14 +13,11 @@ import records.ROOM;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @Qualifier("queueHandler")
 public class GeneralQueueHandler extends AbstractQueueHandler<ROOM.MessageRecord> {
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public GeneralQueueHandler(ApplicationEventPublisher applicationEventPublisher, ObjectMapper objectMapper) {
-        super(objectMapper);
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
 
     @Override
     public String getTopicPath() {

@@ -23,7 +23,7 @@ public abstract class ItemCategoryHandler {
     @Async
     @EventListener
     public void setMemoryAdapterEvent(GameInterfaceEvents.MemoryHandlerEvent event) {
-        log.debug("Memory Adapter Updated: " + event.memoryAdapter().getClass().getSimpleName());
+        log.debug("Memory Adapter Updated: {}", event.memoryAdapter().getClass().getSimpleName());
         this.memoryAdapter = event.memoryAdapter();
     }
 
@@ -32,7 +32,7 @@ public abstract class ItemCategoryHandler {
             throw new MissingMemoryHandlerException("No Memory Adapter could be found");
         }
         if (log.isTraceEnabled()) {
-            log.trace("Current Memory Adapter: %s".formatted(memoryAdapter.getClass().getSimpleName()));
+            log.trace("Current Memory Adapter: {}", memoryAdapter.getClass().getSimpleName());
         }
         if (!memoryAdapter.isConnected()) {
             throw new IllegalStateException("Memory Adapter is not connected");
@@ -45,7 +45,7 @@ public abstract class ItemCategoryHandler {
     public Boolean canGiveItem() {
         verifyHandler();
         String currStage = memoryAdapter.readString(0x803C9D3C, 8);
-        log.trace("Current Stage " + currStage);
+        log.trace("Current Stage {}", currStage);
         return !StringUtils.equalsIgnoreCase(currStage, "Name") && !StringUtils.equalsIgnoreCase(currStage, "sea_T");
     }
 

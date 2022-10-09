@@ -27,9 +27,9 @@ public class ServerService {
 
     private final GameRoomApi gameRoomApi;
     private final StompService stompService;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final GameRoomConfig gameRoomConfig;
     private final GameInfoConfig gameInfoConfig;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private boolean connectedToRoom = false;
 
     @Async
@@ -54,13 +54,13 @@ public class ServerService {
             gameRoomApi.createGameRoom(roomRecord);
             applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Created " + roomRecord.gameRoomName()));
         } catch (FeignException.FeignClientException e) {
-            log.debug("Feign Client Failure", e);
+            log.error("Feign Client Failure", e);
             ByteBuffer buf = e.responseBody().orElse(null);
             String serverResponse = buf != null ? buf.toString() : "Failed to Parse Server Response";
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(serverResponse));
         } catch (Exception e) {
             log.debug(e.getLocalizedMessage());
-            applicationEventPublisher.publishEvent(new GeneralMessageEvent("Failed to Communicate with the Server, please check your connection"));
+            applicationEventPublisher.publishEvent(new GeneralMessageEvent("Failed to Communicate with the Server, please verify your connection"));
         }
     }
 
@@ -77,6 +77,7 @@ public class ServerService {
             }
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(outputMessage));
         } catch (FeignException.FeignClientException e) {
+            log.error("Failed to create Player", e);
             ByteBuffer buf = e.responseBody().orElse(null);
             String serverResponse = buf != null ? buf.toString() : "Failed to Parse Server Response";
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(serverResponse));
@@ -90,6 +91,7 @@ public class ServerService {
         if (connectedToRoom) {
             return;
         }
+        log.trace("Attempting to create Player and connect to the Room");
         createPlayer();
         stompService.setUpClient();
         connectedToRoom = true;

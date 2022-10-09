@@ -33,7 +33,7 @@ public class NintendontSocket {
 
     @SneakyThrows
     private void connectSocket() {
-        log.info("Connecting to: " + ipAddress + ":" + port);
+        log.info("Connecting to: {}:{}", ipAddress, port);
         socket = new Socket(ipAddress, port);
         this.inputStream = new BufferedInputStream(socket.getInputStream());
         this.outputStream = new BufferedOutputStream(socket.getOutputStream());
@@ -47,14 +47,14 @@ public class NintendontSocket {
             temp |= (apiInfo[2 + 4 * index] << 8);
             temp |= (apiInfo[3 + 4 * index]);
             switch (index) {
-                case 0 -> nintendontApiVersion = Integer.valueOf(temp);
-                case 1 -> maxInput = Integer.valueOf(temp);
-                case 2 -> maxOutput = Integer.valueOf(temp);
-                case 3 -> maxAddresses = Integer.valueOf(temp);
+                case 0 -> nintendontApiVersion = temp;
+                case 1 -> maxInput = temp;
+                case 2 -> maxOutput = temp;
+                case 3 -> maxAddresses = temp;
                 default -> throw new IllegalStateException("Too much information provided in Nintendont API call");
             }
         }
-        log.debug("Connected to Nintendont Version: " + nintendontApiVersion);
+        log.debug("Connected to Nintendont Version: {}", nintendontApiVersion);
     }
 
     public void closeSocket() {
@@ -64,7 +64,7 @@ public class NintendontSocket {
             this.outputStream.close();
             this.socket.close();
         } catch (IOException e) {
-            log.debug("Failed to Close Nintendont Socket", e);
+            log.error("Failed to Close Nintendont Socket", e);
             // We're just going to log the exception.
             // Hard to close when the last close failed.
         }
@@ -80,7 +80,7 @@ public class NintendontSocket {
             outputStream.flush();
             return true;
         } catch (IOException e) {
-            log.debug("Failed to Write to Data Stream: ", e);
+            log.error("Failed to Write to Data Stream.", e);
             return false;
         }
     }

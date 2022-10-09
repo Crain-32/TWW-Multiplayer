@@ -1,11 +1,13 @@
 package client.game.data;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This can likely get merged into StageInfo, I want to iterate on it
  * a bit more before doing that though.
  */
+@Slf4j
 @Getter
 public enum DungeonStageInfo {
 
@@ -23,6 +25,7 @@ public enum DungeonStageInfo {
     }
 
     public static DungeonStageInfo fromItem(ItemInfo info) {
+        log.trace("Checking Dungeon Stage Info for {}", info.getDisplayName());
         return switch (info) {
             case DRC_SMALL_KEY, DRC_BIG_KEY, DRC_DUNGEON_COMPASS, DRC_DUNGEON_MAP -> DRAGON_ROOST_CAVERN;
             case FW_SMALL_KEY, FW_BIG_KEY, FW_DUNGEON_COMPASS, FW_DUNGEON_MAP -> FORBIDDEN_WOODS;

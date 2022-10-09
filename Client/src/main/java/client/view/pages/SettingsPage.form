@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="client.view.pages.SettingsPage">
+  <grid id="27dc6" binding="basePanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="5" bottom="10" right="10"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties>
+      <maximumSize width="-1" height="-1"/>
+      <minimumSize width="200" height="100"/>
+      <preferredSize width="336" height="100"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="c3abb" class="javax.swing.JComboBox" binding="connectionTypeSelection" custom-create="true">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="a7990" class="javax.swing.JTextField" binding="consoleIpField">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="e2b15" class="javax.swing.JLabel" binding="consoleIp">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="1" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="64" height="16"/>
+          </grid>
+        </constraints>
+        <properties>
+          <horizontalTextPosition value="4"/>
+          <text value="Console IP Address"/>
+        </properties>
+      </component>
+      <component id="c817" class="javax.swing.JLabel" binding="connectionType">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="1" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="64" height="16"/>
+          </grid>
+        </constraints>
+        <properties>
+          <horizontalTextPosition value="0"/>
+          <text value="Connection Type"/>
+        </properties>
+      </component>
+      <component id="ebb79" class="javax.swing.JCheckBox" binding="enableExternalIntegration">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <horizontalTextPosition value="2"/>
+          <text value="Enable Coop Tracker Updates"/>
+        </properties>
+      </component>
+      <component id="31d81" class="javax.swing.JButton" binding="saveButton">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="1" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Save"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

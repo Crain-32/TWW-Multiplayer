@@ -34,15 +34,15 @@ public class SettingsService {
     @EventListener
     public void saveNewSettings(SettingsChangeEvent event) {
         if (event.enableIntegration() != null) {
-            log.debug("Settings External Integration to: " + event.enableIntegration());
+            log.debug("Settings External Integration to: {}", event.enableIntegration());
             saveSetting(externalIntegration, Boolean.toString(event.enableIntegration()));
         }
         if (event.consoleIpAddress() != null) {
-            log.debug("Setting Console IP to: " + event.consoleIpAddress());
+            log.debug("Setting Console IP to: {}", event.consoleIpAddress());
             saveSetting(consoleIp, event.consoleIpAddress());
         }
         if (event.memoryAdapterType() != null) {
-            log.debug("Setting Connection Type to: " + event.memoryAdapterType());
+            log.debug("Setting Connection Type to: {}", event.memoryAdapterType());
             saveSetting(connectionType, event.memoryAdapterType().toString());
         }
     }

@@ -24,7 +24,7 @@ public class DeliveryBagHandler extends ItemCategoryHandler {
         try {
             Integer openIndex = MemoryScanUtil.findOpenIndex(memoryAdapter, deliveryBagAddress, 9);
             if (openIndex < 0) {
-                log.debug("Delivery Bag is Full? " + memoryAdapter.readString(deliveryBagAddress, 9));
+                log.debug("Delivery Bag is Full? {}", memoryAdapter.readString(deliveryBagAddress, 9));
                 throw new FailedToGiveItemException("Failed to find an open space", info);
             }
             Boolean placedItem = memoryAdapter.writeByte(deliveryBagAddress + openIndex, info.getItemId());
@@ -45,7 +45,7 @@ public class DeliveryBagHandler extends ItemCategoryHandler {
         try {
             Integer openIndex = MemoryScanUtil.findByteInList(memoryAdapter, deliveryBagAddress, 9, info.getItemId());
             if (openIndex < 0) {
-                log.debug("Player doesn't have Item: " + memoryAdapter.readString(deliveryBagAddress, 9));
+                log.debug("Player doesn't have {}, Index: {}", info.getDisplayName(), memoryAdapter.readString(deliveryBagAddress, 9));
                 return true;
             }
             Boolean placedItem = memoryAdapter.writeByte(deliveryBagAddress + openIndex, (byte) 0xFF);

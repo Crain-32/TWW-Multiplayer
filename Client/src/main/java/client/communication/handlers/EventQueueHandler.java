@@ -1,7 +1,7 @@
 package client.communication.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import constants.WorldType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,15 +11,12 @@ import records.INFO;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @Qualifier("queueHandler")
 public class EventQueueHandler extends AbstractQueueHandler<INFO.EventRecord> {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public EventQueueHandler(ApplicationEventPublisher applicationEventPublisher, ObjectMapper objectMapper) {
-        super(objectMapper);
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
 
     @Override
     public String getTopicPath() {

@@ -1,10 +1,12 @@
 package client.game.data;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.Objects;
 
+@Slf4j
 @Getter
 public enum ChartInfo {
     SUBMARINE_CHART(0XC2, 0x803C4CE0, 0x10000000),
@@ -80,6 +82,7 @@ public enum ChartInfo {
     }
 
     public static ChartInfo fromItemId(Byte itemId) {
+        log.trace("Checking for Item ID: {}", itemId);
         return Arrays.stream(ChartInfo.values())
                 .filter(chart -> Objects.equals(chart.getItemId(), itemId))
                 .findFirst()

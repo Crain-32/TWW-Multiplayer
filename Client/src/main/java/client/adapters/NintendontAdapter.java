@@ -50,7 +50,7 @@ public class NintendontAdapter implements MemoryAdapter {
             nintendontSocket.writeToSocket(NintendontOperation.writeByteOperation(consoleAddress, byteVal));
             return nintendontSocket.readFromSocket(1)[0] == 0x01;
         } catch (IOException e) {
-            log.debug("Failed to Read from Socket: ", e);
+            log.error("Failed to Read from Socket", e);
             return false;
         }
     }
@@ -61,7 +61,7 @@ public class NintendontAdapter implements MemoryAdapter {
             nintendontSocket.writeToSocket(NintendontOperation.readByteOperation(consoleAddress));
             return nintendontSocket.readFromSocket(2)[1];
         } catch (IOException e) {
-            log.debug("Failed to Read from Socket: ", e);
+            log.error("Failed to Read from Socket", e);
             return 0x00;
         }
     }
@@ -72,7 +72,7 @@ public class NintendontAdapter implements MemoryAdapter {
             nintendontSocket.writeToSocket(NintendontOperation.writeShortOperation(consoleAddress, shortVal));
             return nintendontSocket.readFromSocket(1)[0] == 0x01;
         } catch (IOException e) {
-            log.debug("Failed to Read from Socket: ", e);
+            log.error("Failed to Read from Socket", e);
             return false;
         }
     }
@@ -88,7 +88,7 @@ public class NintendontAdapter implements MemoryAdapter {
             String val = DatatypeConverter.printHexBinary(nintendontSocket.readFromSocket(2));
             return Short.parseShort(val, 16);
         } catch (IOException e) {
-            log.debug("Failed to Read from Socket: ", e);
+            log.error("Failed to Read from Socket", e);
             return 0x00;
         }
     }
@@ -99,7 +99,7 @@ public class NintendontAdapter implements MemoryAdapter {
             nintendontSocket.writeToSocket(NintendontOperation.writeIntegerOperation(consoleAddress, integerVal));
             return nintendontSocket.readFromSocket(1)[0] == 0x01;
         } catch (IOException e) {
-            log.debug("Failed to Read from Socket: ", e);
+            log.error("Failed to Read from Socket", e);
             return false;
         }
     }
@@ -115,7 +115,7 @@ public class NintendontAdapter implements MemoryAdapter {
             String val = DatatypeConverter.printHexBinary(nintendontSocket.readFromSocket(4));
             return Integer.parseInt(val, 16);
         } catch (IOException e) {
-            log.debug("Failed to Read from Socket: ", e);
+            log.error("Failed to Read from Socket", e);
             return 0x00;
         }
     }
@@ -141,13 +141,13 @@ public class NintendontAdapter implements MemoryAdapter {
              nintendontSocket.writeToSocket(NintendontOperation.readNOperation(consoleAddress,(byte) (0xFF & stringLength)));
              var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
              if (!confirmationByte) {
+                 log.error("Confirmation Byte was false when reading from Console Address: {}", consoleAddress);
                  throw new GameHandlerDisconnectException("An Error Likely Occurred when talking to the Console");
              }
              var socketBytes = nintendontSocket.readFromSocket(stringLength);
-
              return new String(socketBytes, StandardCharsets.UTF_8);
          } catch (IOException e) {
-             log.debug("Failed to Read from Socket: ", e);
+             log.error("Failed to Read from Socket", e);
              return "";
          }
     }

@@ -15,12 +15,12 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class MainPageConstructor {
 
     private JFrame jFrame;
-    private final LeftPanelLogic leftPanelLogic;
+    private final TabPageViewer tabPageViewer;
     private final ConfigurableApplicationContext context;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public MainPageConstructor(LeftPanelLogic leftPanelLogic, ConfigurableApplicationContext context, ApplicationEventPublisher applicationEventPublisher) {
-        this.leftPanelLogic = leftPanelLogic;
+    public MainPageConstructor(TabPageViewer tabPageViewer, ConfigurableApplicationContext context, ApplicationEventPublisher applicationEventPublisher) {
+        this.tabPageViewer = tabPageViewer;
         this.context = context;
         this.applicationEventPublisher = applicationEventPublisher;
         initUI();
@@ -28,12 +28,11 @@ public class MainPageConstructor {
 
     private void initUI() {
         jFrame = new JFrame();
-        leftPanelLogic.setListeners();
 
         ClientWrapper clientWrapper = new ClientWrapper();
         MessageWrapper messageDisplay = context.getBean(MessageWrapper.class);
         messageDisplay.postConstruct();
-        clientWrapper.getLeftPanel().add(leftPanelLogic.getBasePanel());
+        clientWrapper.getLeftPanel().add(tabPageViewer.getBasePanel());
         clientWrapper.getRightPanel().add(messageDisplay.getMessagePanel());
         jFrame.add(clientWrapper.getParentPanel());
 

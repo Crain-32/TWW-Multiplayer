@@ -37,7 +37,7 @@ public class GameScanningComponent {
     @Async
     @EventListener
     public void changeHandler(GameInterfaceEvents.MemoryHandlerEvent event) {
-        log.debug("Memory Handler changed to " + event.memoryAdapter().getClass().getSimpleName());
+        log.debug("Memory Handler changed to {}", event.memoryAdapter().getClass().getSimpleName());
         handler = event.memoryAdapter();
         ItemScanner scanner = new ItemScanner(handler, applicationEventPublisher, gameInfoConfig);
 
@@ -68,14 +68,14 @@ public class GameScanningComponent {
 
         @Override
         public void run() {
-            log.debug("Now Scanning for Info at Item Address: " + Integer.toHexString(gameConfig.getItemIdAddress()) + " And World Address: " + Integer.toHexString(gameConfig.getWorldIdAddress()) );
+            log.debug("Now Scanning for Info at Item Address: {} And World Address: {}", Integer.toHexString(gameConfig.getItemIdAddress()), Integer.toHexString(gameConfig.getWorldIdAddress()));
             if (Objects.isNull(memoryAdapter) || !memoryAdapter.isConnected()) {
                 log.debug("No Handler Found, or Handler was not Connected");
                 return;
             }
             String currStage = memoryAdapter.readString(0x803C9D3C, 8);
             if (StringUtils.equalsIgnoreCase(currStage, "Name") || StringUtils.equalsIgnoreCase(currStage, "sea_T")) {
-                log.trace("Current Stage " + currStage);
+                log.trace("Current Stage {}", currStage);
                 memoryAdapter.writeInteger(gameConfig.getItemIdAddress(), 0);
                 memoryAdapter.writeInteger(gameConfig.getWorldIdAddress(), 0);
             }
@@ -83,8 +83,8 @@ public class GameScanningComponent {
             int worldId = (0xFF & memoryAdapter.readInteger(gameConfig.getWorldIdAddress()));
 
             if (itemId == 0 || (worldId == 0 && (gameInfoConfig.getWorldType() != WorldType.COOP))) {
-                log.trace("World ID: " + worldId);
-                log.trace("Item ID: " + itemId);
+                log.trace("World ID: {}", worldId);
+                log.trace("Item ID: {}", itemId);
                 return;
             }
             log.debug("Clearing Game Memory");
@@ -95,7 +95,7 @@ public class GameScanningComponent {
                     log.debug("Publishing Coop Record");
                     applicationEventPublisher.publishEvent(new ItemFoundEvent(ItemInfo.getInfoByItemId(itemId), null));
                 } else {
-                    log.debug("Not Sending Item: " + ItemInfo.getInfoByItemId(itemId).getDisplayName());
+                    log.debug("Not Sending Item: {}", ItemInfo.getInfoByItemId(itemId).getDisplayName());
                 }
             } else if (gameInfoConfig.getWorldType() == WorldType.MULTIWORLD || gameInfoConfig.getWorldType() == WorldType.SHARED) {
                 log.debug("Publishing Multiworld Record");

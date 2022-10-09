@@ -2,6 +2,7 @@ package client.game.data;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Optional;
  * This enum helps us map the ItemInfo -> How to write that into the Game.
  * This lets us keep a cleaner Data structure, minus the amount of Enums.
  */
+@Slf4j
 @Getter
 @RequiredArgsConstructor
 public enum ItemCategory {
@@ -173,6 +175,7 @@ public enum ItemCategory {
     private final ItemInfo[] items;
 
     public static ItemCategory getInfoCategory(ItemInfo info) {
+        log.trace("Checking Category for {}", info.getDisplayName());
         for (ItemCategory category : ItemCategory.values()) {
             Optional<ItemInfo> filteredInfo = Arrays.stream(category.getItems())
                     .filter(itemInfo -> Objects.equals(itemInfo, info))
@@ -181,6 +184,7 @@ public enum ItemCategory {
                 return category;
             }
         }
+        log.trace("No Item Category found");
         return ItemCategory.NOT_SUPPORTED;
     }
 

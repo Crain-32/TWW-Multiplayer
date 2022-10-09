@@ -16,19 +16,15 @@ public class AsyncConfig {
 
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
-        ThreadPoolTaskScheduler threadPoolTaskScheduler
-                = new ThreadPoolTaskScheduler();
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(5);
-        threadPoolTaskScheduler.setThreadNamePrefix(
-                "ThreadPoolTaskScheduler");
+        threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
         return threadPoolTaskScheduler;
     }
 
     @Bean(name = "applicationEventMulticaster")
     public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
-        SimpleApplicationEventMulticaster eventMulticaster =
-                new SimpleApplicationEventMulticaster();
-
+        SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
         eventMulticaster.setTaskExecutor(new SimpleAsyncTaskExecutor());
         return eventMulticaster;
     }

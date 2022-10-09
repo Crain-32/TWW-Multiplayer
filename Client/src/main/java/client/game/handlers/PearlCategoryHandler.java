@@ -33,7 +33,7 @@ public class PearlCategoryHandler extends ItemCategoryHandler {
         } catch (FailedToGiveItemException e) {
             throw e;
         } catch (Exception e) {
-            log.debug(setPearl? "Pearl was Placed" : "Pearl wasn't placed");
+            log.debug(setPearl ? "Pearl was Placed" : "Pearl wasn't placed");
             throw new FailedToGiveItemException(e.getMessage(), info, e);
         }
     }

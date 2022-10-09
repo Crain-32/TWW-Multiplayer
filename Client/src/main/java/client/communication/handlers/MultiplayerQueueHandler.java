@@ -2,8 +2,8 @@ package client.communication.handlers;
 
 import client.config.GameRoomConfig;
 import client.game.ItemCategoryService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import constants.WorldType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -13,18 +13,13 @@ import records.INFO;
 import java.util.Objects;
 
 @Component
+@RequiredArgsConstructor
 @Qualifier("queueHandler")
 public class MultiplayerQueueHandler extends AbstractQueueHandler<INFO.ItemRecord> {
+
+    private final GameRoomConfig gameRoomConfig;
     private final ItemCategoryService itemCategoryService;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final GameRoomConfig gameRoomConfig;
-
-    public MultiplayerQueueHandler(ItemCategoryService itemCategoryService, ApplicationEventPublisher applicationEventPublisher, GameRoomConfig gameRoomConfig, ObjectMapper objectMapper) {
-        super(objectMapper);
-        this.itemCategoryService = itemCategoryService;
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.gameRoomConfig = gameRoomConfig;
-    }
 
     @Override
     public String getTopicPath() {

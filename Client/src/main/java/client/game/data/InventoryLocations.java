@@ -1,8 +1,12 @@
 package client.game.data;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class InventoryLocations {
 
     public static Integer getInventoryLocation(ItemInfo itemInfo) throws IllegalArgumentException {
+        log.trace("Checking Item Inventory Location for {}", itemInfo.getDisplayName());
         return switch (itemInfo) {
             case TELESCOPE -> 0x803C4C44;
             case BOATS_SAIL -> 0x803C4C45;
@@ -27,6 +31,7 @@ public class InventoryLocations {
     }
 
     public static Integer getItemOwnedMemoryLocation(ItemInfo itemInfo) throws IllegalArgumentException {
+        log.trace("Checking Item Owned Memory Location for {}", itemInfo.getDisplayName());
         return switch (itemInfo) {
             case GRAPPLING_HOOK -> 0x803C4C5C;
             case SPOILS_BAG -> 0x803C4C5D;

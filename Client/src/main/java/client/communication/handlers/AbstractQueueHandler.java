@@ -1,6 +1,5 @@
 package client.communication.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import constants.WorldType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -16,12 +15,6 @@ import java.lang.reflect.Type;
 
 @Slf4j
 public abstract class AbstractQueueHandler<T> extends StompSessionHandlerAdapter {
-
-    protected ObjectMapper objectMapper;
-
-    public AbstractQueueHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     /**
      * Get the Intended /topic/...../GameRoom Path This Handler Supports
@@ -44,15 +37,17 @@ public abstract class AbstractQueueHandler<T> extends StompSessionHandlerAdapter
 
     @Override
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
-        log.debug("Received a frame for the following Destination: " + headers.getDestination());
         if (payload == null) {
             log.debug("Payload was null");
             return;
         }
+        log.debug("Received a frame for the following Destination: {}", headers.getDestination());
+        log.debug("Object Received: {}", payload);
+
         try {
             innerHandleFrame(headers, (T) payload);
         } catch (Exception e) {
-            log.info("An unexpected Exception occurred", e);
+            log.error("An unexpected Exception occurred", e);
         }
     }
 
@@ -64,6 +59,6 @@ public abstract class AbstractQueueHandler<T> extends StompSessionHandlerAdapter
      */
     @Override
     public void handleTransportError(@NonNull StompSession session, @NonNull Throwable exception) {
-        log.info("A Transport Error Occurred", exception);
+        log.error("A Transport Error Occurred", exception);
     }
 }

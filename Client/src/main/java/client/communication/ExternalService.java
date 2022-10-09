@@ -22,7 +22,7 @@ public class ExternalService {
 
     @EventListener
     public void toggleIntegration(ToggleIntegrationEvent event) {
-        log.debug("Integration Set to: " + event.enable());
+        log.debug("Integration Set to: {}", event.enable());
         externalIntegrationEnabled = event.enable();
     }
 
@@ -37,25 +37,21 @@ public class ExternalService {
                 log.trace("Integration done not work for Multiworld Seeds Yet");
                 return;
             }
-            log.debug("Sending %s to the Tracker".formatted(event.info().getDisplayName()));
+            log.debug("Sending {} to the Tracker", event.info().getDisplayName());
             multiplayerTrackerApi.sendItem(createPayload(event));
         } catch (Exception e) {
             // We really don't care if something fails here.
             // So we'll log it for debugging, but nothing else.
-            log.debug("Failed to send to Tracker", e);
+            log.error("Failed to send to Tracker", e);
         }
     }
 
     private MultiplayerTrackerApi.MultiplayerTrackerPayload createPayload(ItemFoundEvent event) {
-        if (log.isTraceEnabled()) {
-            log.trace("Creating a Payload intended for: %s By: %s Item Id: %s"
-                    .formatted(
-                            gameRoomConfig.getGameRoomName(),
-                            gameRoomConfig.getPlayerName(),
-                            event.info().getItemId()
-                    )
-            );
-        }
+        log.trace("Creating a Payload intended for: {} By: {} Item Id: {}",
+                gameRoomConfig.getGameRoomName(),
+                gameRoomConfig.getPlayerName(),
+                event.info().getItemId()
+        );
         return MultiplayerTrackerApi.MultiplayerTrackerPayload.builder()
                 .gameRoom(gameRoomConfig.getGameRoomName())
                 .playerName(gameRoomConfig.getPlayerName())

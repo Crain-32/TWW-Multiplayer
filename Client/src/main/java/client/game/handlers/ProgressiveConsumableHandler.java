@@ -41,7 +41,7 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
             }
             Boolean playerGotMaxAmount = memoryAdapter.writeByte(currAmountAddress, nextMaxAmount);
             if (!playerGotMaxAmount) {
-                log.debug("Failed to Set Curr Amount to " + nextMaxAmount);
+                log.debug("Failed to Set Curr Amount to {}", nextMaxAmount);
             }
             return true;
         } catch (FailedToGiveItemException e) {
@@ -71,7 +71,7 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
             }
             Boolean playerGotMaxAmount = memoryAdapter.writeByte(currAmountAddress, nextMaxAmount);
             if (!playerGotMaxAmount) {
-                log.debug("Failed to Set Curr Amount to " + nextMaxAmount);
+                log.debug("Failed to Set Curr Amount to {}", nextMaxAmount);
             }
             return true;
         } catch (FailedToTakeItemException e) {
