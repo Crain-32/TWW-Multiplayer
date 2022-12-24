@@ -63,6 +63,8 @@ public class INFO {
             @NotNull
             Integer secondaryOffset,
             @NotNull
+            Boolean state,
+            @NotNull
             String sourcePlayerName
     ) {
     }

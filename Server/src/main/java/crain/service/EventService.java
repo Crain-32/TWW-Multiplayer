@@ -41,9 +41,9 @@ public class EventService {
     @EventListener
     public void EventEventListener(EventEvent eventEvent) {
         if (log.isDebugEnabled()) {
-            log.debug("Event Record: " + eventEvent.getEventRecord() + " GameRoom: " + eventEvent.getGameRoom());
+            log.debug("Event Record: " + eventEvent.eventRecord() + " GameRoom: " + eventEvent.gameRoom());
         }
-        simpMessagingTemplate.convertAndSend("/topic/event/" + eventEvent.getGameRoom(), eventEvent.getEventRecord());
+        simpMessagingTemplate.convertAndSend("/topic/event/" + eventEvent.gameRoom(), eventEvent.eventRecord());
     }
 
     @Async

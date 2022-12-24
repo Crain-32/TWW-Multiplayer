@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import crain.mappers.GameRoomMapper;
 import crain.model.enums.EventTypes;
 import crain.model.event.*;
-import crain.model.records.DETAIL;
 import crain.repository.PlayerRepo;
 import crain.service.GameRoomService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import lombok.SneakyThrows;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
+import records.DETAIL;
 import records.INFO;
 import records.ROOM;
 
@@ -23,6 +23,7 @@ import static io.vavr.API.For;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
+// localhost:8080/admin
 @ConditionalOnProperty(name = "enable.admin.controller", havingValue = "true")
 public class AdminController {
 
@@ -43,7 +44,7 @@ public class AdminController {
         return gameRoomService.deleteGameRoomByName(gameRoomName);
     }
 
-    @PutMapping("/{GameRoom}")
+    @PutMapping("/{GameRoom}") // ?setTo=False
     public Boolean toggleTournamentMode(@PathVariable("GameRoom") String gameRoomName, @PathParam("setTo") Boolean setTo) {
         return gameRoomService.setTournamentMode(gameRoomName, setTo);
     }

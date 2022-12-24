@@ -21,7 +21,7 @@ public class TournamentController {
 
 
     @GetMapping("/{GameRoom}")
-    public TOURNAMENT.TournamentRecord pollGameRoom(@PathVariable("gameroom") String gameRoomName) {
+    public TOURNAMENT.TournamentRecord pollGameRoom(@PathVariable("GameRoom") String gameRoomName) {
         return gameRoomService.getTournamentDto(gameRoomName);
     }
 }

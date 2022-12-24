@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Main-Class: Client
+Main-Class: crain.Client
 Class-Path: tomcat-embed-el-9.0.65.jar jackson-core-2.13.3.jar feign-cor
  e-11.8.jar jakarta.annotation-api-1.3.5.jar spring-web-5.3.22.jar aspec
  tjweaver-1.9.7.jar tomcat-embed-core-9.0.65.jar jackson-module-paramete

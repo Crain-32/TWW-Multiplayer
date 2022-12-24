@@ -1,10 +1,10 @@
 package crain.mappers;
 
 import crain.model.domain.GameRoom;
-import crain.model.records.DETAIL;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import records.DETAIL;
 import records.ROOM;
 
 @Mapper(uses={PlayerMapper.class}, componentModel = MappingConstants.ComponentModel.SPRING)

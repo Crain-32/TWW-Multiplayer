@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webflux-ui</artifactId>
-            <version>1.6.9</version>
+            <version>1.6.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,7 +52,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
-            <version>5.3.20</version>
         </dependency>
 
         <!-- Testing Dependencies -->
@@ -151,6 +150,11 @@
                             <artifactId>mapstruct-processor</artifactId>
                             <version>${mapping-struct-version}</version>
                         </path>
+                        <dependency>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </dependency>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>

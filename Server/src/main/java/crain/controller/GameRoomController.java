@@ -3,12 +3,14 @@ package crain.controller;
 import crain.exceptions.InvalidGameRoomException;
 import crain.exceptions.InvalidPlayerException;
 import crain.service.GameRoomService;
+import crain.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import records.DETAIL;
 import records.INFO;
 import records.ROOM;
 
@@ -17,6 +19,7 @@ import records.ROOM;
 @RequestMapping("/rest/gameroom")
 public class GameRoomController {
     private final GameRoomService gameRoomService;
+    private final PlayerService playerService;
 
 
     @PostMapping
@@ -44,6 +47,17 @@ public class GameRoomController {
                                              @RequestParam(value = "password") String password) {
         if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
             return gameRoomService.getPlayerStatus(dto, gameRoomName);
+        }
+        throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
+    }
+
+    @SneakyThrows
+    @GetMapping("/{GameRoom}/player/detail")
+    public DETAIL.Player getDetailedPlayer(@Validated @RequestBody ROOM.PlayerRecord dto,
+                                           @PathVariable(value = "GameRoom") String gameRoomName,
+                                           @RequestParam(value = "password") String password) {
+        if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
+            return playerService.getDetailedPlayer(dto, gameRoomName);
         }
         throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
     }
