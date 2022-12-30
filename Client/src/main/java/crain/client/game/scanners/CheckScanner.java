@@ -19,10 +19,6 @@ public class CheckScanner implements Runnable {
     private final MemoryAdapter memoryAdapter;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final GameInfoConfig gameConfig;
-//
-//    private final List<StageFlagInfo> potentialStageChecks;
-//
-//    private final List<StoryFlagInfo> potentialStoryChecks;
 
     @Override
     public void run() {
@@ -37,8 +33,8 @@ public class CheckScanner implements Runnable {
             memoryAdapter.writeInteger(gameConfig.getItemIdAddress(), 0);
             memoryAdapter.writeInteger(gameConfig.getWorldIdAddress(), 0);
         }
-        int itemId = (0xFF & memoryAdapter.readInteger(gameConfig.getItemIdAddress()));
-        int worldId = (0xFF & memoryAdapter.readInteger(gameConfig.getWorldIdAddress()));
+        int itemId = (0xFF & memoryAdapter.readByte(gameConfig.getItemIdAddress()));
+        int worldId = (0xFF & memoryAdapter.readByte(gameConfig.getWorldIdAddress()));
 
         if (itemId == 0 || (worldId == 0 && (gameConfig.getWorldType() != WorldType.COOP))) {
             log.trace("World ID: {}", worldId);
@@ -46,8 +42,8 @@ public class CheckScanner implements Runnable {
             return;
         }
         log.debug("Clearing Game Memory");
-        memoryAdapter.writeInteger(gameConfig.getItemIdAddress(), 0);
-        memoryAdapter.writeInteger(gameConfig.getWorldIdAddress(), 0);
+        memoryAdapter.writeByte(gameConfig.getItemIdAddress(), (byte) 0);
+        memoryAdapter.writeByte(gameConfig.getWorldIdAddress(), (byte) 0);
         if (gameConfig.getWorldType() == WorldType.COOP) {
             if (shouldSend(itemId)) {
                 log.debug("Publishing Coop Record");

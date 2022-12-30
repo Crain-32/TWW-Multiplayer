@@ -15,6 +15,19 @@ public interface MultiplayerTrackerApi {
     @PutMapping("/received")
     void sendItem(@RequestBody MultiplayerTrackerPayload payload);
 
+    @PutMapping("/chu")
+    void sendChu(@RequestBody BlueChuPayload payload);
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class BlueChuPayload {
+        private String chuName;
+        private String playerName;
+        private String gameRoom;
+    }
 
     @Data
     @Builder
