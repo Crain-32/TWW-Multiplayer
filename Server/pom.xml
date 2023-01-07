@@ -7,17 +7,17 @@
     <parent>
         <groupId>org.crain.multiplayer</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>wwr.multiplayer.server</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>Server</name>
 
 
     <properties>
-        <multiplayer-model-version>1.0.0-SNAPSHOT</multiplayer-model-version>
+        <multiplayer-model-version>1.0.0</multiplayer-model-version>
         <mapping-struct-version>1.5.2.Final</mapping-struct-version>
     </properties>
 

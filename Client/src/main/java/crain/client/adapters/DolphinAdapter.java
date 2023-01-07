@@ -1,10 +1,10 @@
 package crain.client.adapters;
 
-import Dolphin.DolphinEngine;
-import Dolphin.DolphinFactory;
 import crain.client.exceptions.MemoryAdapterDisconnectException;
 import crain.client.game.interfaces.MemoryAdapter;
 import crain.client.view.events.GeneralMessageEvent;
+import dolphin.DolphinEngine;
+import dolphin.DolphinFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;

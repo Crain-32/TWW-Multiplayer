@@ -5,6 +5,7 @@ import crain.client.events.ItemFoundEvent;
 import crain.client.game.GameInfoConfig;
 import crain.client.game.data.ItemCategory;
 import crain.client.game.data.ItemInfo;
+import crain.client.game.data.MemoryConstants;
 import crain.client.game.interfaces.MemoryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +28,14 @@ public class CheckScanner implements Runnable {
             log.debug("No Handler Found, or Handler was not Connected");
             return;
         }
-        String currStage = memoryAdapter.readString(0x803C9D3C, 8);
+        String currStage = memoryAdapter.readString(MemoryConstants.currStageName, 8);
         if (StringUtils.equalsIgnoreCase(currStage, "Name") || StringUtils.equalsIgnoreCase(currStage, "sea_T")) {
             log.trace("Current Stage {}", currStage);
             memoryAdapter.writeInteger(gameConfig.getItemIdAddress(), 0);
             memoryAdapter.writeInteger(gameConfig.getWorldIdAddress(), 0);
         }
-        int itemId = (0xFF & memoryAdapter.readByte(gameConfig.getItemIdAddress()));
-        int worldId = (0xFF & memoryAdapter.readByte(gameConfig.getWorldIdAddress()));
+        int itemId = (0xFF & memoryAdapter.readInteger(gameConfig.getItemIdAddress()));
+        int worldId = (0xFF & memoryAdapter.readInteger(gameConfig.getWorldIdAddress()));
 
         if (itemId == 0 || (worldId == 0 && (gameConfig.getWorldType() != WorldType.COOP))) {
             log.trace("World ID: {}", worldId);
