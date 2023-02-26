@@ -69,6 +69,12 @@ public class DungeonItemHandler extends ItemCategoryHandler {
         }
     }
 
+
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
+
     /**
      * Small Keys need special Logic, so we route them through here.
      */

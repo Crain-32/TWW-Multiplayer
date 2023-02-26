@@ -46,6 +46,10 @@ public class ProgressiveCategoryHandler extends ItemCategoryHandler {
         return null;
     }
 
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 
     private ItemInfo getCurrentValue(ItemInfo info) {
         Integer consoleAddress = ProgressiveItemUtil.getProgressiveAddress(info);

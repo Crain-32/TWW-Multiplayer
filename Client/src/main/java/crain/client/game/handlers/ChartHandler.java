@@ -50,4 +50,9 @@ public class ChartHandler extends ItemCategoryHandler {
             throw new FailedToTakeItemException(e.getMessage(), info, e);
         }
     }
+
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 }

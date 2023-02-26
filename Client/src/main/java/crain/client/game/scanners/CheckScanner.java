@@ -34,8 +34,8 @@ public class CheckScanner implements Runnable {
             memoryAdapter.writeInteger(gameConfig.getItemIdAddress(), 0);
             memoryAdapter.writeInteger(gameConfig.getWorldIdAddress(), 0);
         }
-        int itemId = (0xFF & memoryAdapter.readInteger(gameConfig.getItemIdAddress()));
-        int worldId = (0xFF & memoryAdapter.readInteger(gameConfig.getWorldIdAddress()));
+        int itemId = memoryAdapter.readInteger(gameConfig.getItemIdAddress());
+        int worldId = memoryAdapter.readInteger(gameConfig.getWorldIdAddress());
 
         if (itemId == 0 || (worldId == 0 && (gameConfig.getWorldType() != WorldType.COOP))) {
             log.trace("World ID: {}", worldId);

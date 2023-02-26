@@ -55,4 +55,9 @@ public class InventoryCategoryHandler extends ItemCategoryHandler {
             throw new FailedToTakeItemException(exception.getMessage(), info);
         }
     }
+
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 }

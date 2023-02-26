@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 @DisplayName("GameRoom Unit Test")
 public class GameRoomTest {
-
     @Test
     public void addPlayerToRoomTest() {
         GameRoom gameRoom = GameRoom.builder().worldAmount(3).players(new ArrayList<>()).build();
@@ -33,5 +32,4 @@ public class GameRoomTest {
         Assertions.assertDoesNotThrow(() -> gameRoom.addPlayer(playerThree));
         Assertions.assertThrows(InvalidPlayerException.class, () -> gameRoom.addPlayer(playerFour));
     }
-
 }

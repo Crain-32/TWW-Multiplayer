@@ -57,6 +57,11 @@ public class PearlCategoryHandler extends ItemCategoryHandler {
         }
     }
 
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
+
     private void checkToTG() {
         Byte pearlStatus = memoryAdapter.readByte(StoryFlagInfo.DINS_PEARL.getMemoryAddress());
         if (pearlStatus == 0x07) {

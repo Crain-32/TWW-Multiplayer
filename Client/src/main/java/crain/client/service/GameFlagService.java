@@ -91,4 +91,10 @@ public class GameFlagService extends MemoryAwareService {
     public void handleEventRecord(INFO.EventRecord event) {
 
     }
+
+
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 }

@@ -36,6 +36,11 @@ public class RupeeCategoryHandler extends ItemCategoryHandler {
         return true;
     }
 
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
+
     private Integer getRupeeAmount(ItemInfo info) throws IllegalArgumentException {
         return switch (info) {
             case GREEN_RUPEE -> 0x1;

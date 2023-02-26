@@ -65,6 +65,10 @@ public class ShardStatueSongWalletCategoryHandler extends ItemCategoryHandler {
         }
     }
 
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 
     private Integer getMemoryAddress(ItemCategory category) {
         return switch (category) {

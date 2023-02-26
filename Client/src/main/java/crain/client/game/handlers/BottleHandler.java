@@ -45,4 +45,9 @@ public class BottleHandler extends ItemCategoryHandler {
     public Boolean takeItem(ItemInfo info) throws FailedToTakeItemException {
         return true; // Bottles don't impact logic, so nothing to worry about.
     }
+
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 }

@@ -23,6 +23,7 @@ public class UnsupportedItemHandler extends ItemCategoryHandler {
             ItemCategory.NOT_SUPPORTED, ItemCategory.TRANSLATED_CHARTS,
             ItemCategory.SPOILS_BAG_CONSUMABLE, ItemCategory.BAIT_BAG_CONSUMABLES,
             ItemCategory.BIT_ONLY_ACTION);
+
     @Override
     public Boolean supports(ItemCategory itemCategory) {
         return supported.stream().anyMatch(category -> (category == itemCategory));
@@ -36,5 +37,10 @@ public class UnsupportedItemHandler extends ItemCategoryHandler {
     @Override
     public Boolean takeItem(ItemInfo info) throws FailedToTakeItemException {
         return true;
+    }
+
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
     }
 }

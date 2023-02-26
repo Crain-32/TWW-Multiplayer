@@ -3,6 +3,7 @@ package crain.client.service;
 import crain.client.exceptions.MissingMemoryAdapterException;
 import crain.client.game.GameInterfaceEvents;
 import crain.client.game.interfaces.MemoryAdapter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 @Slf4j
 public abstract class MemoryAwareService {
 
+    @Getter
     protected MemoryAdapter memoryAdapter = null;
 
     @Async
@@ -28,10 +30,12 @@ public abstract class MemoryAwareService {
             throw new MissingMemoryAdapterException("No Memory Adapter could be found");
         }
         if (log.isTraceEnabled()) {
-            log.trace("Current Memory Adapter: {}", memoryAdapter.getClass().getSimpleName());
+            log.trace("Current Memory Adapter: {}", getClassName());
         }
         if (!memoryAdapter.isConnected()) {
             throw new IllegalStateException("Memory Adapter is not connected");
         }
     }
+
+    protected abstract String getClassName();
 }

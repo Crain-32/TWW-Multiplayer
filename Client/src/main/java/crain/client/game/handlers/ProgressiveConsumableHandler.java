@@ -81,6 +81,11 @@ public class ProgressiveConsumableHandler extends ItemCategoryHandler {
         }
     }
 
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
+
     private Integer maxAmountAddress(ItemInfo info) {
         return switch (info) {
             case SIXTY_QUIVER, MAX_QUIVER -> 0x803C4C77;

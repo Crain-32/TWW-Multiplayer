@@ -19,7 +19,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
-        <multiplayer-model-version>1.0.0-SNAPSHOT</multiplayer-model-version>
+        <multiplayer-model-version>1.0.0</multiplayer-model-version>
         <java-dolphin-engine-version>0.1.0</java-dolphin-engine-version>
 
         <spring-messaging-version>6.0.3</spring-messaging-version>

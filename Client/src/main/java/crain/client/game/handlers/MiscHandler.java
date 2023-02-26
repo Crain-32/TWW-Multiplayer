@@ -48,6 +48,11 @@ public class MiscHandler extends ItemCategoryHandler {
         return true; // We won't worry about remove Misc items, since they don't impact logic.
     }
 
+    @Override
+    protected String getClassName() {
+        return this.getClass().getSimpleName();
+    }
+
     private Boolean giveMagicMeter() throws FailedToGiveItemException {
         boolean writeResult = memoryAdapter.writeByte(MemoryConstants.maxMagicAddress, (byte) 0x20);
         if (!writeResult) {
