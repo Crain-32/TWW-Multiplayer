@@ -1,12 +1,13 @@
-package integration.service;
+package crain.client.service;
 
+import crain.client.exceptions.MissingMemoryAdapterException;
 import crain.client.game.GameInterfaceEvents;
-import crain.client.game.interfaces.MemoryAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -20,8 +21,9 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import utils.MemoryAdapterStub;
 import utils.MemoryAwareServiceStub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Memory Service Event Validation")
 @TestExecutionListeners(
@@ -30,9 +32,9 @@ import static org.mockito.Mockito.verify;
         }
 )
 @SpringJUnitConfig
-@Import(MemoryAwareServiceTest.MemoryAwareServiceTestConfig.class)
+@Import(MemoryAwareServiceIntTest.MemoryAwareServiceTestConfig.class)
 @ExtendWith(MockitoExtension.class)
-public class MemoryAwareServiceTest {
+public class MemoryAwareServiceIntTest {
 
     @TestConfiguration
     @ComponentScan("utils")
@@ -50,7 +52,7 @@ public class MemoryAwareServiceTest {
     ArgumentCaptor<GameInterfaceEvents.MemoryHandlerEvent> memoryHandlerEventArgumentCaptor;
 
 
-    MemoryAdapter stubMemoryAdapter = new MemoryAdapterStub();
+    MemoryAdapterStub stubMemoryAdapter = Mockito.mock(MemoryAdapterStub.class);
     GameInterfaceEvents.MemoryHandlerEvent adapterEvent = new GameInterfaceEvents.MemoryHandlerEvent(stubMemoryAdapter);
 
     @Test
@@ -68,5 +70,17 @@ public class MemoryAwareServiceTest {
         var serviceStub = new MemoryAwareServiceStub();
         serviceStub.setMemoryAdapterEvent(adapterEvent);
         assertEquals(serviceStub.getMemoryAdapter(), stubMemoryAdapter);
+    }
+
+    @Test
+    void itShould_VerifyTheAdapterState() {
+        var serviceStub = new MemoryAwareServiceStub();
+        assertThrows(MissingMemoryAdapterException.class, serviceStub::verifyHandler);
+
+        when(stubMemoryAdapter.isConnected()).thenReturn(false);
+        serviceStub.setMemoryAdapterEvent(adapterEvent);
+        assertThrows(IllegalStateException.class, serviceStub::verifyHandler);
+        when(stubMemoryAdapter.isConnected()).thenReturn(true);
+        assertDoesNotThrow(serviceStub::verifyHandler);
     }
 }

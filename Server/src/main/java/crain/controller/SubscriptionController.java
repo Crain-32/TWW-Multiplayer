@@ -14,7 +14,6 @@ import java.util.Map;
 @ConditionalOnProperty(name = "enable.subscription.controller", havingValue = "true")
 public class SubscriptionController {
 
-
     public SubscriptionController() {
         log.info("Subscription Controller Created");
     }
@@ -27,8 +26,7 @@ public class SubscriptionController {
 
     @SubscribeMapping("/coop/item/{GameRoom}")
     public void subscribeToTopicItemQueue(@DestinationVariable("GameRoom") String gameRoomName,
-                                     @Headers Map<String, String> headers) {
+                                          @Headers Map<String, String> headers) {
         log.info("Topic Subscription to: " + gameRoomName + " Destination: " + headers.get("destination"));
     }
-
 }

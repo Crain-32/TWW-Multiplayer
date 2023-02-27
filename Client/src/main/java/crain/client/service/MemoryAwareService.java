@@ -21,7 +21,11 @@ public abstract class MemoryAwareService {
     @Async
     @EventListener
     public void setMemoryAdapterEvent(GameInterfaceEvents.MemoryHandlerEvent event) {
-        log.debug("Memory Adapter Updated: {}", event.memoryAdapter().getClass().getSimpleName());
+        log.debug(
+                "{} Updated the Memory Adapter to {}",
+                getClassName(),
+                event.memoryAdapter().getClass().getSimpleName()
+        );
         this.memoryAdapter = event.memoryAdapter();
     }
 

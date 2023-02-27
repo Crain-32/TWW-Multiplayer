@@ -17,12 +17,10 @@ import java.util.Map;
 @Service
 public class GameFlagService extends MemoryAwareService {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final Map<StageFlagInfo, byte[]> stageFlags;
     private final Map<StoryFlagInfo, Boolean> storyFlags;
 
-    public GameFlagService(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
+    public GameFlagService() {
         stageFlags = createStageFlags();
         storyFlags = createStoryFlags();
     }
