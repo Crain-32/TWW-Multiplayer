@@ -1,5 +1,6 @@
 package crain.client.service;
 
+import crain.client.config.UtilScanningConfig;
 import crain.client.exceptions.MissingMemoryAdapterException;
 import crain.client.game.GameInterfaceEvents;
 import org.junit.jupiter.api.DisplayName;
@@ -10,10 +11,8 @@ import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -25,22 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DisplayName("Memory Service Event Validation")
+@DisplayName("MemoryAwareService Event Validation")
 @TestExecutionListeners(
         listeners = {
                 DependencyInjectionTestExecutionListener.class
         }
 )
 @SpringJUnitConfig
-@Import(MemoryAwareServiceIntTest.MemoryAwareServiceTestConfig.class)
+@Import(UtilScanningConfig.class)
 @ExtendWith(MockitoExtension.class)
 public class MemoryAwareServiceIntTest {
-
-    @TestConfiguration
-    @ComponentScan("utils")
-    static class MemoryAwareServiceTestConfig {
-    }
-
 
     @Autowired
     ApplicationContext applicationContext;
