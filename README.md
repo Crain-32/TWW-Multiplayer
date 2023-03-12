@@ -13,7 +13,7 @@ For more information about each Module, please consult that Module's `README.md`
 ### Release Notes ###
 Version 1.0.0 is currently in the works. The plan is to have full Co-op
 Support within that release. The current changes on this Repository are to help Migrate
-the Server/crain.Client to be completely Java based. (Target Goal is 11/2022)
+the Server/crain.Client to be completely Java based.
 
 ### Discord Information ###
 
