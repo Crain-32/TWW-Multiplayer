@@ -23,18 +23,18 @@ public class EventService {
     @EventListener
     public void MultiworldItemEventListener(MultiworldItemEvent itemEvent) {
         if (log.isDebugEnabled()) {
-            log.debug("Multiworld Item Record: " + itemEvent.getItemRecord() + " GameRoom: " + itemEvent.getGameRoom());
+            log.debug("Multiworld Item Record: " + itemEvent.itemRecord() + " GameRoom: " + itemEvent.gameRoom());
         }
-        simpMessagingTemplate.convertAndSend("/topic/multiplayer/" + itemEvent.getGameRoom(), itemEvent.getItemRecord());
+        simpMessagingTemplate.convertAndSend("/topic/multiplayer/" + itemEvent.gameRoom(), itemEvent.itemRecord());
     }
 
     @Async
     @EventListener
     public void CoopItemEventListener(CoopItemEvent itemEvent) {
         if (log.isDebugEnabled()) {
-            log.debug("Coop Item Record: " + itemEvent.getItemRecord() + " GameRoom: " + itemEvent.getGameRoom());
+            log.debug("Coop Item Record: " + itemEvent.itemRecord() + " GameRoom: " + itemEvent.gameRoom());
         }
-        simpMessagingTemplate.convertAndSend("/topic/coop/" + itemEvent.getGameRoom(), itemEvent.getItemRecord());
+        simpMessagingTemplate.convertAndSend("/topic/coop/" + itemEvent.gameRoom(), itemEvent.itemRecord());
     }
 
     @Async
@@ -50,27 +50,27 @@ public class EventService {
     @EventListener
     public void NameEventListener(NameEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Player Record: " + event.getPlayerRecord() + " GameRoom: " + event.getGameRoom());
+            log.debug("Player Record: " + event.playerRecord() + " GameRoom: " + event.gameRoom());
         }
-        simpMessagingTemplate.convertAndSend("/topic/names/" + event.getGameRoom(), event.getPlayerRecord());
+        simpMessagingTemplate.convertAndSend("/topic/names/" + event.gameRoom(), event.playerRecord());
     }
 
     @Async
     @EventListener
     public void GameRoomMessageEventListener(GameRoomMessageEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("General Message: " + event.getMessage() + " GameRoom: " + event.getGameRoom());
+            log.debug("General Message: " + event.message() + " GameRoom: " + event.gameRoom());
         }
-        simpMessagingTemplate.convertAndSend("/topic/general/" + event.getGameRoom(), new ROOM.MessageRecord(event.getMessage()));
+        simpMessagingTemplate.convertAndSend("/topic/general/" + event.gameRoom(), new ROOM.MessageRecord(event.message()));
     }
 
     @Async
     @EventListener
     public void ErrorMessageEventListener(ErrorEvent event) {
         if (log.isDebugEnabled()) {
-            log.debug("Error Event: " + event.getMessage() + " GameRoom: " + event.getGameRoom());
+            log.debug("Error Event: " + event.message() + " GameRoom: " + event.gameRoom());
         }
-        simpMessagingTemplate.convertAndSend("/topic/error/" + event.getGameRoom(), new ROOM.ErrorRecord(event.getMessage()));
+        simpMessagingTemplate.convertAndSend("/topic/error/" + event.gameRoom(), new ROOM.ErrorRecord(event.message()));
     }
 
 //    Not sure what we'll put in here yet tbh.

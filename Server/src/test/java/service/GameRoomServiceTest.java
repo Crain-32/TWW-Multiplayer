@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,6 +61,7 @@ public class GameRoomServiceTest {
 
     @Test
     public void itShouldGetGameRoomsByTimestamp() {
+        Optional.ofNullable(null);
         gameRoomService.createGameRoom(getCreateRoomDto());
         GameRoom testingGameRoom = gameRoomRepo.findOneByName(baseGameRoomName).orElseThrow(TestAbortedException::new);
 

@@ -55,7 +55,7 @@ public class PlayerService {
     @Async
     @EventListener
     public void handleCoopItem(CoopItemEvent event) {
-        var optionalPlayer = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(event.getItemRecord().sourcePlayer(), event.getGameRoom());
+        var optionalPlayer = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(event.itemRecord().sourcePlayer(), event.gameRoom());
         if (optionalPlayer.isPresent()) {
             var player = optionalPlayer.get();
             player.preUpdated();

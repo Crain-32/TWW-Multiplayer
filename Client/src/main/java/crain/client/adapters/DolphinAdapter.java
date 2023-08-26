@@ -1,6 +1,7 @@
 package crain.client.adapters;
 
 import crain.client.exceptions.MemoryAdapterDisconnectException;
+import crain.client.exceptions.MissingGameAdapterException;
 import crain.client.game.interfaces.MemoryAdapter;
 import crain.client.view.events.GeneralMessageEvent;
 import dolphin.DolphinEngine;
@@ -32,7 +33,7 @@ public class DolphinAdapter implements MemoryAdapter {
         engine.hook();
         if (engine.getStatus() == Boolean.FALSE) {
             log.debug("No emulator was found.");
-            throw new MemoryAdapterDisconnectException("Failed to Find Dolphin, Please Open Dolphin and Restart the crain.Client.");
+            throw new MissingGameAdapterException("Failed to Find Dolphin, Please Open Dolphin and Restart the Client.");
         } else if (engine.getStatus() == Boolean.TRUE) {
             log.debug("Hooked to Dolphin\nPublishing Self to Context...");
             isHooked = true;

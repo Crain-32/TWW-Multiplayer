@@ -1,6 +1,7 @@
 package crain.client.view;
 
 import crain.client.view.events.ServerDisconnectEvent;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.awt.event.WindowEvent;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 @Component
+@ConditionalOnProperty(value = "run-gui", havingValue = "true")
 public class MainPageConstructor {
 
     private JFrame jFrame;

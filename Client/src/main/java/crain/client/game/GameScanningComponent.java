@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledFuture;
 
@@ -35,7 +36,7 @@ public class GameScanningComponent {
         MemoryAdapter handler = event.memoryAdapter();
         CheckScanner scanner = new CheckScanner(handler, applicationEventPublisher, gameInfoConfig);
 
-        itemScanner = scheduledExecutorService.scheduleAtFixedRate(scanner, 5000);
+        itemScanner = scheduledExecutorService.scheduleAtFixedRate(scanner, Duration.ofMillis(5000));
         scheduledExecutorService.schedule(this::itemScannerStillRunning, Instant.now().plusSeconds(300));
     }
 

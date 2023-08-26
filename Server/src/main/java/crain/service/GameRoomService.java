@@ -9,6 +9,7 @@ import crain.model.domain.Player;
 import crain.model.records.TOURNAMENT;
 import crain.repository.GameRoomRepo;
 import crain.repository.PlayerRepo;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import records.INFO;
 import records.ROOM;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -41,7 +41,7 @@ public class GameRoomService {
     @SneakyThrows
     public void createGameRoom(INFO.CreateRoomRecord dto) {
         if (gameRoomRepo.existsByName(dto.gameRoomName())) {
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Attempted Duplicate Game Room Create with name: " + dto.gameRoomName());
             }
             throw new InvalidGameRoomException("A Game Room with this Name already Exists!");

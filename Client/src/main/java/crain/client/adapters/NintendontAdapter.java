@@ -2,13 +2,13 @@ package crain.client.adapters;
 
 import crain.client.adapters.sockets.NintendontOperation;
 import crain.client.adapters.sockets.NintendontSocket;
+import crain.client.exceptions.HandlerValidationException;
 import crain.client.exceptions.MemoryAdapterDisconnectException;
 import crain.client.game.interfaces.MemoryAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -83,9 +83,9 @@ public class NintendontAdapter implements MemoryAdapter {
             nintendontSocket.writeToSocket(NintendontOperation.readShortOperation(consoleAddress));
             var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
             if (!confirmationByte) {
-                throw new MemoryAdapterDisconnectException("An Error Likely Occurred when talking to the Console");
+                throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
             }
-            String val = DatatypeConverter.printHexBinary(nintendontSocket.readFromSocket(2));
+            String val = toHexString(nintendontSocket.readFromSocket(2));
             return Short.parseShort(val, 16);
         } catch (IOException e) {
             log.error("Failed to Read from Socket", e);
@@ -110,9 +110,9 @@ public class NintendontAdapter implements MemoryAdapter {
             nintendontSocket.writeToSocket(NintendontOperation.readIntegerOperation(consoleAddress));
             var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
             if (!confirmationByte) {
-                throw new MemoryAdapterDisconnectException("An Error Likely Occurred when talking to the Console");
+                throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
             }
-            String val = DatatypeConverter.printHexBinary(nintendontSocket.readFromSocket(4));
+            String val = toHexString(nintendontSocket.readFromSocket(4));
             return Integer.parseInt(val, 16);
         } catch (IOException e) {
             log.error("Failed to Read from Socket", e);
@@ -127,28 +127,38 @@ public class NintendontAdapter implements MemoryAdapter {
 
     @Override
     public String readString(Integer consoleAddress, Integer stringLength) {
-         try {
-             if (stringLength == 4) {
-                 nintendontSocket.writeToSocket(NintendontOperation.readIntegerOperation(consoleAddress));
-                 var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
-                 if (!confirmationByte) {
-                     throw new MemoryAdapterDisconnectException("An Error Likely Occurred when talking to the Console");
-                 }
-                 var socketBytes = nintendontSocket.readFromSocket(4);
+        try {
+            if (stringLength == 4) {
+                nintendontSocket.writeToSocket(NintendontOperation.readIntegerOperation(consoleAddress));
+                var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
+                if (!confirmationByte) {
+                    throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
+                }
+                var socketBytes = nintendontSocket.readFromSocket(4);
 
-                 return new String(socketBytes, StandardCharsets.UTF_8);
-             }
-             nintendontSocket.writeToSocket(NintendontOperation.readNOperation(consoleAddress,(byte) (0xFF & stringLength)));
-             var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
-             if (!confirmationByte) {
-                 log.error("Confirmation Byte was false when reading from Console Address: {}", consoleAddress);
-                 throw new MemoryAdapterDisconnectException("An Error Likely Occurred when talking to the Console");
-             }
-             var socketBytes = nintendontSocket.readFromSocket(stringLength);
-             return new String(socketBytes, StandardCharsets.UTF_8);
-         } catch (IOException e) {
-             log.error("Failed to Read from Socket", e);
-             return "";
-         }
+                return new String(socketBytes, StandardCharsets.UTF_8);
+            }
+            nintendontSocket.writeToSocket(NintendontOperation.readNOperation(consoleAddress, (byte) (0xFF & stringLength)));
+            var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
+            if (!confirmationByte) {
+                log.error("Confirmation Byte was false when reading from Console Address: {}", consoleAddress);
+                throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
+            }
+            var socketBytes = nintendontSocket.readFromSocket(stringLength);
+            return new String(socketBytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error("Failed to Read from Socket", e);
+            return "";
+        }
+    }
+
+    // See https://www.baeldung.com/java-byte-arrays-hex-strings
+    private String toHexString(byte[] byteArr) {
+        char[] hexChars = new char[byteArr.length * 2];
+        for (int index = 0; index < byteArr.length; index++) {
+            hexChars[index] = Character.forDigit((byteArr[index] >> 4) & 0xF, 16);
+            hexChars[index] = Character.forDigit(byteArr[index] & 0xF, 16);
+        }
+        return new String(hexChars);
     }
 }

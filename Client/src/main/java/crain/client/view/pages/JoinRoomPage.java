@@ -75,6 +75,8 @@ public class JoinRoomPage {
             if (!connectedToServer && "Join".equals(e.getActionCommand())) {
                 applicationEventPublisher.publishEvent(new ServerService.ConnectToGameRoom());
                 applicationEventPublisher.publishEvent(createMemoryHandlerEvent());
+            } else if (connectedToServer && "Disconnect".equals(e.getActionCommand())) {
+                applicationEventPublisher.publishEvent(new ServerService.DisconnectFromGameRoom());
             } else {
                 log.debug("Unknown Text on Connection Button: {}", joinRoomButton.getText());
             }
@@ -153,6 +155,8 @@ public class JoinRoomPage {
     public void handlerServerDisconnectEvent() {
         if (connectedToServer) {
             connectedToServer = false;
+            joinRoomButton.setText("Join");
+            joinRoomButton.setActionCommand("Join");
         }
     }
 

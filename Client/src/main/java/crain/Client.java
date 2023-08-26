@@ -16,7 +16,6 @@ public class Client {
                 .headless(false)
                 .web(WebApplicationType.SERVLET) // Swap to Servlet after finishing up the GUI
                 .run(args);
-
         EventQueue.invokeLater(() -> {
             MainPageConstructor mainPageConstructor = ctx.getBean(MainPageConstructor.class);
             mainPageConstructor.getJFrame().setVisible(true);

@@ -2,11 +2,11 @@ package crain.model.domain;
 
 import constants.WorldType;
 import crain.exceptions.InvalidPlayerException;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;

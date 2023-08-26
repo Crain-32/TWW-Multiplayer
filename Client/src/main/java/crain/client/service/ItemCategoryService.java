@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ItemCategoryService {
 
     private final Map<ItemCategory, ItemCategoryHandler> resolvedHandlers;
 
-    private final HashMap<ScheduledFuture<ItemGiver>, ItemInfo> queuedItems = new HashMap<>();
+    private final HashMap<ScheduledFuture<?>, ItemInfo> queuedItems = new HashMap<>();
     private final ThreadPoolTaskScheduler scheduledExecutorService;
 
     public ItemCategoryService(List<? extends ItemCategoryHandler> handlers, ThreadPoolTaskScheduler threadPoolTaskScheduler) {
@@ -43,7 +44,7 @@ public class ItemCategoryService {
             log.debug("Checking Queued Items");
             if (queuedItems.size() != 0) {
                 log.debug("Checking Scheduled Futures, Amount: {}", queuedItems.size());
-                for (ScheduledFuture<ItemGiver> scheduledFuture : queuedItems.keySet()) {
+                for (ScheduledFuture<?> scheduledFuture : queuedItems.keySet()) {
                     if (scheduledFuture.isDone()) {
                         try {
                             scheduledFuture.get();
@@ -53,7 +54,7 @@ public class ItemCategoryService {
                                 log.debug("Failed to give Item with the following Exception", e);
                                 ItemInfo info = queuedItems.get(scheduledFuture);
                                 ItemCategoryHandler handler = resolvedHandlers.get(ItemCategory.getInfoCategory(info));
-                                ScheduledFuture<ItemGiver> redo = (ScheduledFuture<ItemGiver>) scheduledExecutorService.schedule(new ItemGiver(handler, info), Instant.now().plusSeconds(5));
+                                ScheduledFuture<?> redo = scheduledExecutorService.schedule(new ItemGiver(handler, info), Instant.now().plusSeconds(5));
                                 queuedItems.remove(scheduledFuture);
                                 queuedItems.put(redo, info);
                             } catch (Exception ex) {
@@ -67,7 +68,7 @@ public class ItemCategoryService {
                 }
                 log.debug("Remaining Futures: {}", queuedItems.size());
             }
-        }, 30000);
+        }, Duration.ofMillis(30000));
     }
 
 
@@ -88,7 +89,7 @@ public class ItemCategoryService {
         } catch (Exception e) {
             log.debug("Failed to give Item", e);
             ItemGiver giver = new ItemGiver(categoryHandler, info);
-            ScheduledFuture<ItemGiver> scheduledFuture = (ScheduledFuture<ItemGiver>) scheduledExecutorService.schedule(giver, Instant.now().plusSeconds(30));
+            ScheduledFuture<?> scheduledFuture = scheduledExecutorService.schedule(giver, Instant.now().plusSeconds(30));
             queuedItems.put(scheduledFuture, info);
         }
     }

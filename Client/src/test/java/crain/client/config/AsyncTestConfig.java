@@ -22,13 +22,6 @@ import java.util.concurrent.Executor;
 public class AsyncTestConfig implements AsyncConfigurer {
     private ThrowableCachingAsyncConfig asyncUncaughtExceptionHandler;
 
-    @Bean(name = "applicationEventMulticaster")
-    public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
-        SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
-        eventMulticaster.setTaskExecutor(new SimpleAsyncTaskExecutor());
-        return eventMulticaster;
-    }
-
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ThrowableCachingAsyncConfig throwableCachingAsyncConfig() {

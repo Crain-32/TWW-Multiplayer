@@ -5,6 +5,7 @@ import crain.client.adapters.DolphinAdapter;
 import crain.client.adapters.NintendontAdapter;
 import crain.client.events.CreateMemoryAdapterEvent;
 import crain.client.game.GameInterfaceEvents;
+import crain.client.game.interfaces.MemoryAdapter;
 import crain.client.view.events.GeneralMessageEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -24,6 +25,7 @@ public class MemoryAdapterFactory {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ConsoleConnectionConfig consoleConnectionConfig;
     private final SettingsService settingsService;
+    private MemoryAdapter referenceAdapter;
 
 
     @Async
@@ -44,16 +46,24 @@ public class MemoryAdapterFactory {
 
     @SneakyThrows
     private void createDolphinMemoryAdapter() {
+        if (referenceAdapter != null && referenceAdapter instanceof DolphinAdapter) {
+            return;
+        }
         DolphinAdapter adapter = beanFactory.getBean(DolphinAdapter.class);
         adapter.connect();
+        referenceAdapter = adapter;
         applicationEventPublisher.publishEvent(new GameInterfaceEvents.MemoryHandlerEvent(adapter));
     }
 
     @SneakyThrows
     private void createNintendontAdapter() {
+        if (referenceAdapter != null && referenceAdapter instanceof NintendontAdapter) {
+            return;
+        }
         consoleConnectionConfig.setExternalIpAddress(settingsService.getSetting(SettingsService.consoleIp));
         NintendontAdapter adapter = beanFactory.getBean(NintendontAdapter.class);
         adapter.connect();
+        referenceAdapter = adapter;
         applicationEventPublisher.publishEvent(new GameInterfaceEvents.MemoryHandlerEvent(adapter));
     }
 }

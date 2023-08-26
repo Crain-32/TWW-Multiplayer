@@ -16,11 +16,13 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 @RequiredArgsConstructor
 public class StompService {
 
-    @Autowired // Required due to Proxying
+    @Autowired // Required due to Proxying | Might work if I do constructor + @Qualifier
     private StompSessionHandler stompSessionHandler;
     private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
     @Value("ws://${multiplayer.server.url}:${multiplayer.server.port}/ws")
     private String targetURL;
+
+    private WebSocketStompClient stompClient;
 
 
     public void setUpClient() {
@@ -29,6 +31,14 @@ public class StompService {
         WebSocketStompClient client = new WebSocketStompClient(baseClient);
         client.setMessageConverter(new MappingJackson2MessageConverter());
         client.setTaskScheduler(threadPoolTaskScheduler);
-        client.connect(targetURL, stompSessionHandler);
+        client.connectAsync(targetURL, stompSessionHandler, stompSessionHandler);
+        stompClient = client;
+
+    }
+
+    public void disconnectFromServer() {
+        if (stompClient != null && stompClient.isRunning()) {
+            stompClient.stop();
+        }
     }
 }

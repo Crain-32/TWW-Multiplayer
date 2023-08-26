@@ -1,10 +1,10 @@
 package crain.model.domain;
 
 import constants.WorldType;
+import jakarta.persistence.*;
 import lombok.*;
 import records.ROOM;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;

@@ -19,7 +19,6 @@ public class TournamentController {
 
     private final GameRoomService gameRoomService;
 
-
     @GetMapping("/{GameRoom}")
     public TOURNAMENT.TournamentRecord pollGameRoom(@PathVariable("GameRoom") String gameRoomName) {
         return gameRoomService.getTournamentDto(gameRoomName);

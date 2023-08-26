@@ -4,8 +4,8 @@ import crain.exceptions.InvalidGameRoomException;
 import crain.exceptions.InvalidPlayerException;
 import crain.service.GameRoomService;
 import crain.service.PlayerService;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,12 +14,17 @@ import records.DETAIL;
 import records.INFO;
 import records.ROOM;
 
+@Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/rest/gameroom")
 public class GameRoomController {
     private final GameRoomService gameRoomService;
     private final PlayerService playerService;
+
+    public GameRoomController(GameRoomService gameRoomService, PlayerService playerService) {
+        this.gameRoomService = gameRoomService;
+        this.playerService = playerService;
+    }
 
 
     @PostMapping

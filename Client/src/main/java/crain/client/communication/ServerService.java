@@ -6,6 +6,7 @@ import crain.client.events.SetConfigEvent;
 import crain.client.game.GameInfoConfig;
 import crain.client.view.events.GeneralMessageEvent;
 import crain.client.view.events.ServerConnectEvent;
+import crain.client.view.events.ServerDisconnectEvent;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +55,9 @@ public class ServerService {
             gameRoomApi.createGameRoom(roomRecord);
             applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Created " + roomRecord.gameRoomName()));
         } catch (FeignException.FeignClientException e) {
-            log.error("Feign crain.Client Failure", e);
-            ByteBuffer buf = e.responseBody().orElse(null);
-            String serverResponse = buf != null ? buf.toString() : "Failed to Parse Server Response";
+            log.error("Feign Client Failure", e);
+            String response = e.contentUTF8();
+            String serverResponse = response != null ? response : "Failed to Parse Server Response";
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(serverResponse));
         } catch (Exception e) {
             log.debug(e.getLocalizedMessage());
@@ -68,6 +69,7 @@ public class ServerService {
     @EventListener(CreatePlayerEvent.class)
     public void createPlayer() {
         try {
+            // check the player status first please
             Boolean createdPlayer = gameRoomApi.addPlayerToGameRoom(gameRoomConfig.getGameRoomName(), gameRoomConfig.getPassword(), createPlayerRecordFromConfig());
             String outputMessage;
             if (!createdPlayer) {
@@ -98,6 +100,23 @@ public class ServerService {
         applicationEventPublisher.publishEvent(new ServerConnectEvent());
     }
 
+    @Async
+    @EventListener(DisconnectFromGameRoom.class)
+    public void disconnectFromServer() {
+        if (!connectedToRoom) {
+            return;
+        }
+        log.trace("Attempting to close the connection to the server");
+        try {
+            stompService.disconnectFromServer();
+            connectedToRoom = false;
+            applicationEventPublisher.publishEvent(new ServerDisconnectEvent());
+        } catch (Exception e) {
+            log.debug("Failed to Disconnect from the Server", e);
+        }
+    }
+
+
 
     private INFO.CreateRoomRecord createRoomRecordFromConfig() {
         return new INFO.CreateRoomRecord(
@@ -118,17 +137,13 @@ public class ServerService {
         );
     }
 
-
     public static class CreateRoomEvent {
     }
-
     public static class CreatePlayerEvent {
     }
-
     public static class ConnectToGameRoom {
 
     }
-
     public static class DisconnectFromGameRoom {
 
     }

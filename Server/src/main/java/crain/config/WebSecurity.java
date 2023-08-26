@@ -12,9 +12,9 @@ public class WebSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/app/**", "/topic/**", "/rest/**", "/swagger-ui/**", "/favicon.ico", "/index.html", "/v3/**")
-                .permitAll();
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/app/**", "/topic/**", "/rest/**", "/swagger-ui/**", "/favicon.ico", "/index.html", "/v3/**")
+                .permitAll().anyRequest().permitAll());
         http.csrf().disable();
         return http.build();
     }
