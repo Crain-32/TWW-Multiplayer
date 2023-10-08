@@ -1,6 +1,6 @@
 package crain.controller;
 
-import crain.model.records.TOURNAMENT;
+import crain.model.tournament.TournamentRoom;
 import crain.service.GameRoomService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TournamentController {
     private final GameRoomService gameRoomService;
 
     @GetMapping("/{GameRoom}")
-    public TOURNAMENT.TournamentRecord pollGameRoom(@PathVariable("GameRoom") String gameRoomName) {
+    public TournamentRoom pollGameRoom(@PathVariable("GameRoom") String gameRoomName) {
         return gameRoomService.getTournamentDto(gameRoomName);
     }
 }

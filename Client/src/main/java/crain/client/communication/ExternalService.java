@@ -4,20 +4,26 @@ import constants.WorldType;
 import crain.client.communication.external.MultiplayerTrackerApi;
 import crain.client.config.GameRoomConfig;
 import crain.client.events.ItemFoundEvent;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class ExternalService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ExternalService.class);
     private final GameRoomConfig gameRoomConfig;
-    private final MultiplayerTrackerApi multiplayerTrackerApi;
+    //    private final MultiplayerTrackerApi multiplayerTrackerApi;
     private boolean externalIntegrationEnabled = false;
+
+    public ExternalService(GameRoomConfig gameRoomConfig) {
+        this.gameRoomConfig = gameRoomConfig;
+        //        WebClient client = WebClient.builder().baseUrl(serverBaseUrl).build();
+//        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+//
+//        this.multiplayerTrackerApi = factory.createClient(MultiplayerTrackerApi.class);
+    }
 
 
     @EventListener
@@ -37,8 +43,8 @@ public class ExternalService {
                 log.trace("Integration does not work for Multiworld Seeds Yet");
                 return;
             }
-            log.debug("Sending {} to the Tracker", event.info().getDisplayName());
-            multiplayerTrackerApi.sendItem(createPayload(event));
+            log.debug("Would have sent {} to the Tracker", event.info().getDisplayName());
+//            multiplayerTrackerApi.sendItem(createPayload(event));
         } catch (Exception e) {
             // We really don't care if something fails here.
             // So we'll log it for debugging, but nothing else.

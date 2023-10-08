@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -23,20 +22,19 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TopicSubscribeInterceptor implements ChannelInterceptor {
 
-    @NotNull
     private final GameRoomService gameRoomService;
 
     @Override
     @SneakyThrows
     @SuppressWarnings({"unchecked", "ConstantConditions"}) // IDE Doesn't register the Try/Catch, smh
-    public Message<?> preSend(@NotNull Message<?> message, @NotNull MessageChannel channel) {
+    public Message<?> preSend(Message<?> message, MessageChannel channel) {
         try {
             final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
             if (StompCommand.CONNECT.equals(accessor.getCommand()) || StompCommand.DISCONNECT.equals(accessor.getCommand())) {
                 return message;
             }
             var headers = (LinkedMultiValueMap<String, String>) accessor.getHeader("nativeHeaders");
-            if (Objects.nonNull(headers) && headers.containsKey("password") && 1 <= (Objects.requireNonNull(headers.get("password")).size())) {
+            if (Objects.nonNull(headers) && headers.containsKey("password") && !Objects.requireNonNull(headers.get("password")).isEmpty()) {
                 String password = headers.get("password").get(0);
                 String gameRoomName = extractGameRoomFromURL(accessor.getDestination());
                 if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {

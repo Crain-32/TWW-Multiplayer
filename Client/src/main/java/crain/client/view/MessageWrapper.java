@@ -4,7 +4,7 @@ package crain.client.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import crain.client.view.events.GeneralMessageEvent;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -15,9 +15,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-@Slf4j
 @Component
 public class MessageWrapper {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MessageWrapper.class);
     private JTextArea mainTextArea;
     private JButton clearText;
     private JPanel messagePanel;

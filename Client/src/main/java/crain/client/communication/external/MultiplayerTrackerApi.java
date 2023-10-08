@@ -4,18 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.service.annotation.PutExchange;
 
-@FeignClient(value = "multiplayerTrackerApi", url = "${coop.tracker.host}")
+
 public interface MultiplayerTrackerApi {
 
 
-    @PutMapping("/received")
+    @PutExchange("/received")
     void sendItem(@RequestBody MultiplayerTrackerPayload payload);
 
-    @PutMapping("/chu")
+    @PutExchange("/chu")
     void sendChu(@RequestBody BlueChuPayload payload);
 
 

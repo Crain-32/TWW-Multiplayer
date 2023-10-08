@@ -7,25 +7,25 @@ import crain.client.game.GameInfoConfig;
 import crain.client.view.events.GeneralMessageEvent;
 import crain.client.view.events.ServerConnectEvent;
 import crain.client.view.events.ServerDisconnectEvent;
-import feign.FeignException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.support.WebClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import records.INFO;
 import records.ROOM;
 
-import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class ServerService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ServerService.class);
     private final GameRoomApi gameRoomApi;
     private final StompService stompService;
     private final GameRoomConfig gameRoomConfig;
@@ -33,8 +33,20 @@ public class ServerService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private boolean connectedToRoom = false;
 
+    public ServerService(@Value("${https://${multiplayer.server.url}:${multiplayer.server.port}/rest/gameroom}") String serverBaseUrl, StompService stompService, GameRoomConfig gameRoomConfig, GameInfoConfig gameInfoConfig, ApplicationEventPublisher applicationEventPublisher) {
+        WebClient client = WebClient.builder().baseUrl(serverBaseUrl).build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+
+        this.gameRoomApi = factory.createClient(GameRoomApi.class);
+        this.stompService = stompService;
+        this.gameRoomConfig = gameRoomConfig;
+        this.gameInfoConfig = gameInfoConfig;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+
     @Async
     @EventListener
+    // Technically this needs to check for the Dev Server URL changing as well, since now that is actually dynamic.
     public void handleConfigChange(SetConfigEvent configEvent) {
         gameRoomConfig.setGameRoomName(Optional.ofNullable(configEvent.getGameRoomName()).orElse(gameRoomConfig.getGameRoomName()));
         gameRoomConfig.setPassword(Optional.ofNullable(configEvent.getPassword()).orElse(gameRoomConfig.getPassword()));
@@ -54,14 +66,11 @@ public class ServerService {
             INFO.CreateRoomRecord roomRecord = createRoomRecordFromConfig();
             gameRoomApi.createGameRoom(roomRecord);
             applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Created " + roomRecord.gameRoomName()));
-        } catch (FeignException.FeignClientException e) {
-            log.error("Feign Client Failure", e);
-            String response = e.contentUTF8();
+        } catch (Exception e) {
+            log.error("Game Room Client Failure", e);
+            String response = e.getMessage();
             String serverResponse = response != null ? response : "Failed to Parse Server Response";
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(serverResponse));
-        } catch (Exception e) {
-            log.debug(e.getLocalizedMessage());
-            applicationEventPublisher.publishEvent(new GeneralMessageEvent("Failed to Communicate with the Server, please verify your connection"));
         }
     }
 
@@ -78,11 +87,9 @@ public class ServerService {
                 outputMessage = gameRoomConfig.getPlayerName() + " was added to " + gameRoomConfig.getGameRoomName();
             }
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(outputMessage));
-        } catch (FeignException.FeignClientException e) {
+        } catch (Exception e) {
             log.error("Failed to create Player", e);
-            ByteBuffer buf = e.responseBody().orElse(null);
-            String serverResponse = buf != null ? buf.toString() : "Failed to Parse Server Response";
-            applicationEventPublisher.publishEvent(new GeneralMessageEvent(serverResponse));
+            applicationEventPublisher.publishEvent(new GeneralMessageEvent(e.getMessage()));
         }
     }
 
@@ -117,7 +124,6 @@ public class ServerService {
     }
 
 
-
     private INFO.CreateRoomRecord createRoomRecordFromConfig() {
         return new INFO.CreateRoomRecord(
                 gameRoomConfig.getGameRoomName(),
@@ -139,11 +145,14 @@ public class ServerService {
 
     public static class CreateRoomEvent {
     }
+
     public static class CreatePlayerEvent {
     }
+
     public static class ConnectToGameRoom {
 
     }
+
     public static class DisconnectFromGameRoom {
 
     }

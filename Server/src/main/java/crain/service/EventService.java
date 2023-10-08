@@ -1,7 +1,6 @@
 package crain.service;
 
 import crain.model.event.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,10 +13,13 @@ import records.ROOM;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class EventService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
+
+    public EventService(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+    }
 
     @Async
     @EventListener

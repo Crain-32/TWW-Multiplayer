@@ -6,7 +6,8 @@ import crain.mappers.GameRoomMapper;
 import crain.mappers.PlayerMapper;
 import crain.model.domain.GameRoom;
 import crain.model.domain.Player;
-import crain.model.records.TOURNAMENT;
+import crain.model.tournament.TournamentMapper;
+import crain.model.tournament.TournamentRoom;
 import crain.repository.GameRoomRepo;
 import crain.repository.PlayerRepo;
 import jakarta.transaction.Transactional;
@@ -33,6 +34,7 @@ public class GameRoomService {
     private final PlayerRepo playerRepo;
     private final GameRoomMapper gameRoomMapper;
     private final PlayerMapper playerMapper;
+    private final TournamentMapper tournamentMapper;
 
     public List<GameRoom> findAll() {
         return gameRoomRepo.findAll();
@@ -139,9 +141,9 @@ public class GameRoomService {
     }
 
     @SneakyThrows
-    public TOURNAMENT.TournamentRecord getTournamentDto(@NonNull String gameRoomName) {
+    public TournamentRoom getTournamentDto(@NonNull String gameRoomName) {
         GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName)
                 .orElseThrow(() -> new InvalidGameRoomException("The Provided GameRoom does not Exist!", gameRoomName));
-        return TOURNAMENT.TournamentRecord.fromGameRoom(targetRoom);
+        return tournamentMapper.fromGameRoom(targetRoom);
     }
 }

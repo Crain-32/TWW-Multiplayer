@@ -1,11 +1,11 @@
 package records;
 
 import constants.WorldType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -23,7 +23,8 @@ public class ROOM {
             @Positive(message = "At least one Player is expected to Play")
             Integer playerAmount,
             List<PlayerRecord> players
-    ) { }
+    ) {
+    }
 
     public record PlayerRecord(
             @Size(min = 3, max = 20, message = "Player Names must be between 3 and 20 Characters")
@@ -33,15 +34,18 @@ public class ROOM {
             @NotBlank(message = "World Type must be included")
             WorldType worldType,
             Boolean connected
-    ) { }
+    ) {
+    }
 
     public record MessageRecord(
-            @Size(min=3, max=120, message="Max Message Size is 120 Characters")
+            @Size(min = 3, max = 120, message = "Max Message Size is 120 Characters")
             String message
-    ) {}
+    ) {
+    }
 
     public record ErrorRecord(
             @NotNull
             String error
-    ) {}
+    ) {
+    }
 }

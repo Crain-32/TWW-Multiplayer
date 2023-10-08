@@ -11,20 +11,20 @@
     </parent>
 
     <artifactId>wwr.multiplayer.client</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Client</name>
 
     <properties>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <multiplayer-model-version>1.0.0</multiplayer-model-version>
+        <multiplayer-model-version>1.0.1</multiplayer-model-version>
         <java-dolphin-engine-version>0.1.0</java-dolphin-engine-version>
 
-        <spring-messaging-version>6.0.3</spring-messaging-version>
+        <spring-messaging-version>${spring-framework.version}</spring-messaging-version>
 
-        <junit-testing-version>5.9.2</junit-testing-version>
+        <junit-testing-version>${junit-jupiter.version}</junit-testing-version>
     </properties>
 
     <dependencies>
@@ -33,17 +33,37 @@
             <groupId>org.crain.multiplayer</groupId>
             <artifactId>wwr.multiplayer.model</artifactId>
             <version>${multiplayer-model-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>org.crain</groupId>
             <artifactId>Java-Dolphin-Memory-Engine</artifactId>
             <version>${java-dolphin-engine-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Spring Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -64,7 +84,7 @@
         <dependency>
             <groupId>com.jetbrains.intellij.java</groupId>
             <artifactId>java-gui-forms-rt</artifactId>
-            <version>222.3962.22</version>
+            <version>232.9921.89</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -93,24 +113,39 @@
     </dependencies>
 
 
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.modulith</groupId>
-                <artifactId>spring-modulith-bom</artifactId>
-                <version>1.0.0-RC1</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -120,26 +155,6 @@
             <id>Jetbrains Repo</id>
             <url>https://www.jetbrains.com/intellij-repository/releases</url>
         </repository>
-        <repository>
-            <id>repository.spring.milestone</id>
-            <name>Spring Milestone Repository</name>
-            <url>https://repo.spring.io/milestone</url>
-        </repository>
-        <repository>
-            <id>maven-central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-snapshots</id>
-            <url>https://repo.spring.io/snapshot</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-milestones</id>
-            <url>https://repo.spring.io/milestone</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>

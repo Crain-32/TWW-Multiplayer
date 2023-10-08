@@ -5,19 +5,17 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import crain.client.view.pages.CreateRoomPage;
 import crain.client.view.pages.JoinRoomPage;
 import crain.client.view.pages.SettingsPage;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
-@Slf4j
 @Component
 public class TabPageViewer {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(TabPageViewer.class);
     private JTabbedPane tabSelector;
-    @Getter
     private JPanel basePanel;
 
     private CreateRoomPage createRoomPage;
@@ -79,5 +77,9 @@ public class TabPageViewer {
 
     private void createUIComponents() {
         // We don't do anything in here since we're setting the panels through Autowired Setters.
+    }
+
+    public JPanel getBasePanel() {
+        return this.basePanel;
     }
 }

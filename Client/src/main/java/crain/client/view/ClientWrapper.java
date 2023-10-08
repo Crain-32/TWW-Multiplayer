@@ -2,14 +2,10 @@ package crain.client.view;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
 
-@Getter
-@Setter
 public class ClientWrapper {
 
     private JPanel rightPanel;
@@ -48,4 +44,27 @@ public class ClientWrapper {
         return parentPanel;
     }
 
+    public JPanel getRightPanel() {
+        return this.rightPanel;
+    }
+
+    public JPanel getLeftPanel() {
+        return this.leftPanel;
+    }
+
+    public JPanel getParentPanel() {
+        return this.parentPanel;
+    }
+
+    public void setRightPanel(JPanel rightPanel) {
+        this.rightPanel = rightPanel;
+    }
+
+    public void setLeftPanel(JPanel leftPanel) {
+        this.leftPanel = leftPanel;
+    }
+
+    public void setParentPanel(JPanel parentPanel) {
+        this.parentPanel = parentPanel;
+    }
 }

@@ -19,7 +19,7 @@ import java.util.Objects;
 public class HttpConfig implements WebMvcConfigurer {
 
     @Value("${admin.port}")
-    private int adminPort;
+    private Integer adminPort;
     @Value("${server.port}")
     private int serverPort;
 
