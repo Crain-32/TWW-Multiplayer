@@ -12,5 +12,6 @@ public record InitialSettingsEvent(
         String password,
         Integer worldAmount,
         Integer worldId,
-        String playerName) {
+        String playerName,
+        String brokerServer) {
 }

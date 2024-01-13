@@ -1,7 +1,8 @@
 package crain.client.adapters;
 
-import crain.client.exceptions.MemoryAdapterDisconnectException;
-import crain.client.exceptions.MissingGameAdapterException;
+import crain.client.communication.CommunicationState;
+import crain.client.exceptions.memory.MemoryAdapterDisconnectException;
+import crain.client.exceptions.memory.MissingGameAdapterException;
 import crain.client.game.interfaces.MemoryAdapter;
 import crain.client.view.events.GeneralMessageEvent;
 import dolphin.DolphinEngine;
@@ -29,26 +30,29 @@ public class DolphinAdapter implements MemoryAdapter {
     }
 
     @Override
-    public void connect() throws MemoryAdapterDisconnectException {
-        engine.hook();
-        if (engine.getStatus() == Boolean.FALSE) {
-            log.debug("No emulator was found.");
+    public void connect() throws MissingGameAdapterException {
+        engine.hook(); // Integer == int -> Boxed refA != refB
+        if (Boolean.FALSE.equals(engine.getStatus())) {
+            log.debug("No Emulator was found.");
+            applicationEventPublisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(false));
             throw new MissingGameAdapterException("Failed to Find Dolphin, Please Open Dolphin and Restart the Client.");
-        } else if (engine.getStatus() == Boolean.TRUE) {
+        } else if (Boolean.TRUE.equals(engine.getStatus())) {
             log.debug("Hooked to Dolphin\nPublishing Self to Context...");
             isHooked = true;
+            applicationEventPublisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(true));
             applicationEventPublisher.publishEvent(new GeneralMessageEvent("Successfully Hooked to Dolphin"));
         }
     }
 
     @Override
     public Boolean disconnect() {
+        applicationEventPublisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(false));
         return true;
     }
 
     @Override
     public Boolean isConnected() {
-        if (engine.getStatus() == Boolean.FALSE) {
+        if (Boolean.FALSE.equals(engine.getStatus())) {
             engine.hook();
         }
         isHooked = engine.getStatus();

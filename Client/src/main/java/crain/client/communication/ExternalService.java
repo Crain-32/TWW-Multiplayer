@@ -1,12 +1,19 @@
 package crain.client.communication;
 
-import constants.WorldType;
 import crain.client.communication.external.MultiplayerTrackerApi;
 import crain.client.config.GameRoomConfig;
 import crain.client.events.ItemFoundEvent;
+import crain.client.service.SettingsService;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.support.WebClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+
+import static crain.client.service.SettingsService.EXTERNAL_TRACKER_WEBSITE;
 
 
 @Service
@@ -14,35 +21,25 @@ public class ExternalService {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ExternalService.class);
     private final GameRoomConfig gameRoomConfig;
-    //    private final MultiplayerTrackerApi multiplayerTrackerApi;
-    private boolean externalIntegrationEnabled = false;
+    private final SettingsService settingsService;
+    private MultiplayerTrackerApi multiplayerTrackerApi;
 
-    public ExternalService(GameRoomConfig gameRoomConfig) {
+    public ExternalService(GameRoomConfig gameRoomConfig, SettingsService settingsService) {
         this.gameRoomConfig = gameRoomConfig;
-        //        WebClient client = WebClient.builder().baseUrl(serverBaseUrl).build();
-//        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
-//
-//        this.multiplayerTrackerApi = factory.createClient(MultiplayerTrackerApi.class);
+        this.settingsService = settingsService;
     }
 
-
-    @EventListener
-    public void toggleIntegration(ToggleIntegrationEvent event) {
-        log.debug("Integration Set to: {}", event.enable());
-        externalIntegrationEnabled = event.enable();
+    @PostConstruct
+    public void makeMultiplayerTrackerApi() {
+        WebClient client = WebClient.builder().baseUrl(settingsService.getSetting("https://" + settingsService.getSetting(EXTERNAL_TRACKER_WEBSITE))).build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+        this.multiplayerTrackerApi = factory.createClient(MultiplayerTrackerApi.class);
     }
 
-    @EventListener
-    public void sendItemFound(ItemFoundEvent event) {
+    @Async
+    @EventListener(condition = "@communicationState.externalIntegration() && T(constants.WorldType).COOP.equals(#gameRoomConfig?.worldType)")
+    public void sendCoopItem(ItemFoundEvent event) {
         try {
-            if (!externalIntegrationEnabled) {
-                log.trace("Integration is not enabled");
-                return;
-            }
-            if (gameRoomConfig.getWorldType() == WorldType.MULTIWORLD) {
-                log.trace("Integration does not work for Multiworld Seeds Yet");
-                return;
-            }
             log.debug("Would have sent {} to the Tracker", event.info().getDisplayName());
 //            multiplayerTrackerApi.sendItem(createPayload(event));
         } catch (Exception e) {
@@ -66,6 +63,4 @@ public class ExternalService {
                 .build();
     }
 
-    public record ToggleIntegrationEvent(Boolean enable) {
-    }
 }

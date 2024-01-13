@@ -1,7 +1,7 @@
 package crain.client.service;
 
 import crain.client.config.UtilScanningConfig;
-import crain.client.exceptions.MissingMemoryAdapterException;
+import crain.client.exceptions.memory.MissingMemoryAdapterException;
 import crain.client.game.GameInterfaceEvents;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

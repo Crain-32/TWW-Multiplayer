@@ -1,6 +1,6 @@
 package crain.client.game.interfaces;
 
-import crain.client.exceptions.MemoryAdapterDisconnectException;
+import crain.client.exceptions.memory.MissingGameAdapterException;
 
 /**
  * This Interface should define the protocol between the crain.Client and the Game.
@@ -17,7 +17,7 @@ public interface MemoryAdapter {
      * Communication Protocol being implemented.
      * Failure to connect should raise a GameHandlerDisconnectWarning
      */
-    void connect() throws MemoryAdapterDisconnectException;
+    void connect() throws MissingGameAdapterException;
 
     Boolean disconnect();
 
@@ -37,6 +37,7 @@ public interface MemoryAdapter {
     Boolean writeString(Integer consoleAddress, String stringVal);
 
     String readString(Integer consoleAddress, Integer stringLength);
+
     /**
      * True if the Connection to the Game is current connected and usable.
      */

@@ -30,7 +30,7 @@ public class GameScanningComponent {
 
 
     @Async
-    @EventListener
+    @EventListener(condition = "!T(crain.client.util.NullUtil).anyNullField(event)")
     public void changeHandler(GameInterfaceEvents.MemoryHandlerEvent event) {
         log.debug("Memory Handler changed to {}", event.memoryAdapter().getClass().getSimpleName());
         MemoryAdapter handler = event.memoryAdapter();

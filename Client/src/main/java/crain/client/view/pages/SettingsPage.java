@@ -4,7 +4,8 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import crain.client.events.CreateMemoryAdapterEvent;
 import crain.client.service.SettingsService;
-import crain.client.view.events.SettingsChangeEvent;
+import crain.client.util.NullUtil;
+import crain.client.view.events.SettingsPageChangeEvent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +59,13 @@ public class SettingsPage {
     private void onSave() {
         String consoleAddress = consoleIpField.getText().trim();
         Boolean externalIntegration = enableExternalIntegration.isSelected();
-        log.debug("Currently Selected Item: {}", connectionTypeSelection.getSelectedItem().toString());
-        var adapterType = Objects.equals(connectionTypeSelection.getSelectedItem().toString().trim(), "Dolphin") ? CreateMemoryAdapterEvent.MemoryAdapterType.DOLPHIN : CreateMemoryAdapterEvent.MemoryAdapterType.NINTENDONT;
-        applicationEventPublisher.publishEvent(new SettingsChangeEvent(adapterType, consoleAddress, externalIntegration));
+
+        log.debug("Currently Selected Item: {}", connectionTypeSelection.getSelectedItem());
+        //noinspection DataFlowIssue || getPotentialNull handles the NPE
+        var adapterType = Objects.equals(NullUtil.getPotentialNull(() -> connectionTypeSelection.getSelectedItem().toString().trim()), "Dolphin")
+                ? CreateMemoryAdapterEvent.MemoryAdapterType.DOLPHIN
+                : CreateMemoryAdapterEvent.MemoryAdapterType.NINTENDONT;
+        applicationEventPublisher.publishEvent(new SettingsPageChangeEvent(adapterType, consoleAddress, externalIntegration));
     }
 
 

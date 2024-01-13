@@ -1,8 +1,8 @@
 package crain.client.communication;
 
-import lombok.RequiredArgsConstructor;
+import crain.client.service.SettingsService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -13,16 +13,24 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class StompService {
 
-    @Autowired // Required due to Proxying | Might work if I do constructor + @Qualifier
-    private StompSessionHandler stompSessionHandler;
+    private final StompSessionHandler stompSessionHandler;
     private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
+    private final SettingsService settingsService;
+    // Migrate this to be a Settings Call
     @Value("ws://${multiplayer.server.url}:${multiplayer.server.port}/ws")
     private String targetURL;
 
     private WebSocketStompClient stompClient;
+
+    public StompService(@Qualifier("stompSessionHandler") StompSessionHandler stompSessionHandler,
+                        ThreadPoolTaskScheduler threadPoolTaskScheduler,
+                        SettingsService settingsService) {
+        this.stompSessionHandler = stompSessionHandler;
+        this.threadPoolTaskScheduler = threadPoolTaskScheduler;
+        this.settingsService = settingsService;
+    }
 
 
     public void setUpClient() {
@@ -33,7 +41,6 @@ public class StompService {
         client.setTaskScheduler(threadPoolTaskScheduler);
         client.connectAsync(targetURL, stompSessionHandler, stompSessionHandler);
         stompClient = client;
-
     }
 
     public void disconnectFromServer() {

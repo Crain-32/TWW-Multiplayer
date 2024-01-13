@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -119,6 +120,15 @@ public class GameRoomService {
                         )
                 )).toList();
         return gameRooms.stream().map(this.gameRoomMapper::gameRoomRecordMapper).collect(Collectors.toList());
+    }
+
+    public List<ROOM.PlayerRecord> getPlayerRecordsForRoom(String gameRoomName) {
+        return gameRoomRepo.findOneByName(gameRoomName)
+                .map(GameRoom::getPlayers)
+                .stream()
+                .flatMap(List::stream)
+                .map(playerMapper::createPlayerRecord)
+                .toList();
     }
 
     @Transactional

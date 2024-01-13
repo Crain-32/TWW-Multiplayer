@@ -56,7 +56,7 @@ public class CheckScanner implements Runnable {
             log.debug("Publishing Multiworld Record");
             applicationEventPublisher.publishEvent(new ItemFoundEvent(ItemInfo.getInfoByItemId(itemId), worldId, null));
         } else {
-            log.debug("Failed to identify the World Type");
+            log.debug("Failed to identify the World Type: {}", gameConfig.getWorldType());
         }
     }
 

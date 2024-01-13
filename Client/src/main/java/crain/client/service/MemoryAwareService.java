@@ -1,6 +1,6 @@
 package crain.client.service;
 
-import crain.client.exceptions.MissingMemoryAdapterException;
+import crain.client.exceptions.memory.MissingMemoryAdapterException;
 import crain.client.game.GameInterfaceEvents;
 import crain.client.game.interfaces.MemoryAdapter;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public abstract class MemoryAwareService {
     protected MemoryAdapter memoryAdapter = null;
 
     @Async
-    @EventListener
+    @EventListener(condition = "!T(crain.client.util.NullUtil).anyNullField(event)")
     public void setMemoryAdapterEvent(GameInterfaceEvents.MemoryHandlerEvent event) {
         log.debug(
                 "{} Updated the Memory Adapter to {}",
@@ -33,9 +33,7 @@ public abstract class MemoryAwareService {
         if (memoryAdapter == null) {
             throw new MissingMemoryAdapterException("No Memory Adapter could be found");
         }
-        if (log.isTraceEnabled()) {
-            log.trace("Current Memory Adapter: {}", getClassName());
-        }
+        log.trace("Current Memory Adapter: {}", getClassName());
         if (!memoryAdapter.isConnected()) {
             throw new IllegalStateException("Memory Adapter is not connected");
         }

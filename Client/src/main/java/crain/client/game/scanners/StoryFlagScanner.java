@@ -1,8 +1,8 @@
 package crain.client.game.scanners;
 
 import crain.client.events.GameFlagToggleEvent;
-import crain.client.exceptions.MemoryHandlerException;
-import crain.client.exceptions.MissingMemoryAdapterException;
+import crain.client.exceptions.memory.MemoryHandlerException;
+import crain.client.exceptions.memory.MissingMemoryAdapterException;
 import crain.client.game.data.StoryFlagInfo;
 import crain.client.game.interfaces.MemoryAdapter;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Objects;
  * - Starting to talk to Ms Marie
  * - Starting Tag
  * - Talking to Lenzo/Triggers
- *
+ * <p>
  * Examples of what you don't want to Scan
  * - Zunari
  * - Sploosh Kaboom
@@ -45,15 +45,14 @@ public class StoryFlagScanner implements Runnable {
         }
     }
 
-    private boolean checkStoryFlag(StoryFlagInfo info) {
+    private boolean checkStoryFlag(StoryFlagInfo info) throws MissingMemoryAdapterException {
         if (Objects.isNull(memoryAdapter) || !memoryAdapter.isConnected()) {
             throw new MissingMemoryAdapterException("No Handler Found, or Handler was not Connected");
         }
-        Byte currState = memoryAdapter.readByte(info.getMemoryAddress());
-        Byte mask = (byte) (1 << info.getBitIndex());
-        if (log.isTraceEnabled()) {
-            log.trace("Current Value {} and applied Mask {}", currState, mask);
-        }
+        final byte currState = memoryAdapter.readByte(info.getMemoryAddress());
+        final byte mask = (byte) (1 << info.getBitIndex());
+        log.trace("Current Value {} and applied Mask {}", currState, mask);
+
         return ((currState & mask) != 0);
     }
 }

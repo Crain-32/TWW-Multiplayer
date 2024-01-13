@@ -1,11 +1,12 @@
 package utils;
 
-import crain.client.exceptions.MemoryAdapterDisconnectException;
+import crain.client.exceptions.memory.MemoryAdapterDisconnectException;
+import crain.client.exceptions.memory.MissingGameAdapterException;
 import crain.client.game.interfaces.MemoryAdapter;
 
 public class MemoryAdapterStub implements MemoryAdapter {
     @Override
-    public void connect() throws MemoryAdapterDisconnectException {
+    public void connect() throws MissingGameAdapterException {
     }
 
     @Override

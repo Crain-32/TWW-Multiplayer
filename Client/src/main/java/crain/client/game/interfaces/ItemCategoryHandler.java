@@ -2,6 +2,7 @@ package crain.client.game.interfaces;
 
 import crain.client.exceptions.FailedToGiveItemException;
 import crain.client.exceptions.FailedToTakeItemException;
+import crain.client.exceptions.memory.MissingMemoryAdapterException;
 import crain.client.game.data.ItemCategory;
 import crain.client.game.data.ItemInfo;
 import crain.client.service.MemoryAwareService;
@@ -18,7 +19,7 @@ public abstract class ItemCategoryHandler extends MemoryAwareService {
     /**
      * If the state of the game doesn't prevent giving the item
      */
-    public Boolean canGiveItem() {
+    public Boolean canGiveItem() throws MissingMemoryAdapterException {
         verifyHandler();
         String currStage = memoryAdapter.readString(0x803C9D3C, 8);
         log.trace("Current Stage {}", currStage);

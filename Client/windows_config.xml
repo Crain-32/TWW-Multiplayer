@@ -1,0 +1,16 @@
+<launch4jconfig>
+    <headerType>gui</headerType>
+    <outfile>twwmultiplayer.exe</outfile>
+    <jar>twwmultiplayer</jar>
+    <errTitle>The Wind Waker Multiplayer Project</errTitle>
+    <singleInstance>
+        <mutexName>twwmultplayer-project</mutexName>
+        <windowTitle>The Wind Waker Multiplayer</windowTitle>
+    </singleInstance>
+    <jre>
+        <path>%JAVA_HOME%;%PATH%</path>
+        <minVersion>21</minVersion>
+        <maxVersion>21</maxVersion>
+        <requires64Bit>true</requires64Bit>
+    </jre>
+</launch4jconfig>

@@ -4,9 +4,11 @@ import constants.WorldType;
 import crain.client.config.GameRoomConfig;
 import crain.client.events.SetConfigEvent;
 import crain.client.game.GameInfoConfig;
+import crain.client.service.SettingsService;
 import crain.client.view.events.GeneralMessageEvent;
 import crain.client.view.events.ServerConnectEvent;
 import crain.client.view.events.ServerDisconnectEvent;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,22 +28,29 @@ import java.util.Optional;
 public class ServerService {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ServerService.class);
-    private final GameRoomApi gameRoomApi;
+    private GameRoomApi gameRoomApi;
+    private final SettingsService settingsService;
     private final StompService stompService;
     private final GameRoomConfig gameRoomConfig;
     private final GameInfoConfig gameInfoConfig;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private boolean connectedToRoom = false;
 
-    public ServerService(@Value("${https://${multiplayer.server.url}:${multiplayer.server.port}/rest/gameroom}") String serverBaseUrl, StompService stompService, GameRoomConfig gameRoomConfig, GameInfoConfig gameInfoConfig, ApplicationEventPublisher applicationEventPublisher) {
-        WebClient client = WebClient.builder().baseUrl(serverBaseUrl).build();
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+    public ServerService(SettingsService settingsService, StompService stompService, GameRoomConfig gameRoomConfig, GameInfoConfig gameInfoConfig, ApplicationEventPublisher applicationEventPublisher) {
 
-        this.gameRoomApi = factory.createClient(GameRoomApi.class);
+        this.settingsService = settingsService;
         this.stompService = stompService;
         this.gameRoomConfig = gameRoomConfig;
         this.gameInfoConfig = gameInfoConfig;
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        // Groundwork for the dynamic Server URL
+        WebClient client = WebClient.builder().baseUrl("http://" + settingsService.getBrokerServerURL() + "/rest/gameroom").build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+
+        this.gameRoomApi = factory.createClient(GameRoomApi.class);
     }
 
     @Async
@@ -74,8 +83,6 @@ public class ServerService {
         }
     }
 
-    @Async
-    @EventListener(CreatePlayerEvent.class)
     public void createPlayer() {
         try {
             // check the player status first please
@@ -84,7 +91,7 @@ public class ServerService {
             if (!createdPlayer) {
                 outputMessage = "Failed to add your Player to the Game Room!";
             } else {
-                outputMessage = gameRoomConfig.getPlayerName() + " was added to " + gameRoomConfig.getGameRoomName();
+                outputMessage = String.format("%s was added to %s", gameRoomConfig.getPlayerName(), gameRoomConfig.getGameRoomName());
             }
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(outputMessage));
         } catch (Exception e) {
@@ -95,28 +102,20 @@ public class ServerService {
 
 
     @Async
-    @EventListener(ConnectToGameRoom.class)
+    @EventListener(value = ConnectToGameRoom.class, condition = "!@communicationState.connectedToMultiplayerServer()")
     public void connectToRoom() {
-        if (connectedToRoom) {
-            return;
-        }
         log.trace("Attempting to create Player and connect to the Room");
         createPlayer();
         stompService.setUpClient();
-        connectedToRoom = true;
         applicationEventPublisher.publishEvent(new ServerConnectEvent());
     }
 
     @Async
-    @EventListener(DisconnectFromGameRoom.class)
+    @EventListener(value = DisconnectFromGameRoom.class, condition = "@communicationState.connectedToMultiplayerServer()")
     public void disconnectFromServer() {
-        if (!connectedToRoom) {
-            return;
-        }
         log.trace("Attempting to close the connection to the server");
         try {
             stompService.disconnectFromServer();
-            connectedToRoom = false;
             applicationEventPublisher.publishEvent(new ServerDisconnectEvent());
         } catch (Exception e) {
             log.debug("Failed to Disconnect from the Server", e);
@@ -146,8 +145,6 @@ public class ServerService {
     public static class CreateRoomEvent {
     }
 
-    public static class CreatePlayerEvent {
-    }
 
     public static class ConnectToGameRoom {
 
@@ -156,4 +153,6 @@ public class ServerService {
     public static class DisconnectFromGameRoom {
 
     }
+
+    public static class DifferentServerEvent {}
 }

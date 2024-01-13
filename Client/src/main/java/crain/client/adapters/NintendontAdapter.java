@@ -2,10 +2,11 @@ package crain.client.adapters;
 
 import crain.client.adapters.sockets.NintendontOperation;
 import crain.client.adapters.sockets.NintendontSocket;
-import crain.client.exceptions.HandlerValidationException;
-import crain.client.exceptions.MemoryAdapterDisconnectException;
+import crain.client.communication.CommunicationState;
+import crain.client.exceptions.memory.MissingGameAdapterException;
 import crain.client.game.interfaces.MemoryAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -19,27 +20,47 @@ public class NintendontAdapter implements MemoryAdapter {
 
     private NintendontSocket nintendontSocket;
     private final ConsoleConnectionConfig consoleInfo;
+    private final ApplicationEventPublisher publisher;
 
-    public NintendontAdapter(ConsoleConnectionConfig consoleConnectionConfig) {
+    public NintendontAdapter(ConsoleConnectionConfig consoleConnectionConfig, ApplicationEventPublisher publisher) {
         this.consoleInfo = consoleConnectionConfig;
+        this.publisher = publisher;
     }
 
     @Override
-    public void connect() throws MemoryAdapterDisconnectException {
-        this.nintendontSocket = new NintendontSocket(consoleInfo.getExternalIpAddress());
+    public void connect() throws MissingGameAdapterException {
+        try {
+            this.nintendontSocket = new NintendontSocket(consoleInfo.getExternalIpAddress());
+            publisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(true));
+        } catch (IOException e) {
+            log.error("Failed to connect to Nintendont: {}", e.getMessage(), e);
+            publisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(false));
+        }
     }
 
     @Override
     public Boolean isConnected() {
         if (nintendontSocket == null) {
-            nintendontSocket = new NintendontSocket(consoleInfo.getExternalIpAddress(), consoleInfo.getExternalPort());
+            try {
+                nintendontSocket = new NintendontSocket(consoleInfo.getExternalIpAddress(), consoleInfo.getExternalPort());
+            } catch (IOException e) {
+                log.error("Failed to connect to Nintendont: {}", e.getMessage(), e);
+
+            }
         }
-        return true;
+        publisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(nintendontSocket != null));
+        return nintendontSocket != null;
     }
 
     @Override
     public Boolean disconnect() {
-        this.nintendontSocket.closeSocket();
+        try {
+            this.nintendontSocket.closeSocket();
+            this.nintendontSocket = null;
+        } catch (IOException ignore) {
+
+        }
+        publisher.publishEvent(new CommunicationState.ToggleGameConnectionEvent(false));
         // If the socket fails to close, we have bigger problems.
         return true;
     }
@@ -80,12 +101,15 @@ public class NintendontAdapter implements MemoryAdapter {
     @Override
     public Short readShort(Integer consoleAddress) {
         try {
+            String val;
             nintendontSocket.writeToSocket(NintendontOperation.readShortOperation(consoleAddress));
             var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
-            if (!confirmationByte) {
-                throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
+            if (confirmationByte) {
+                val = toHexString(nintendontSocket.readFromSocket(2));
+            } else {
+                log.error("An Error Likely Occurred when talking to the Console, Missing Confirmation Byte");
+                val = "00";
             }
-            String val = toHexString(nintendontSocket.readFromSocket(2));
             return Short.parseShort(val, 16);
         } catch (IOException e) {
             log.error("Failed to Read from Socket", e);
@@ -107,12 +131,15 @@ public class NintendontAdapter implements MemoryAdapter {
     @Override
     public Integer readInteger(Integer consoleAddress) {
         try {
+            String val;
             nintendontSocket.writeToSocket(NintendontOperation.readIntegerOperation(consoleAddress));
             var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
-            if (!confirmationByte) {
-                throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
+            if (confirmationByte) {
+                val = toHexString(nintendontSocket.readFromSocket(4));
+            } else {
+                log.error("An Error Likely Occurred when talking to the Console, Missing Confirmation Byte");
+                val = "00";
             }
-            String val = toHexString(nintendontSocket.readFromSocket(4));
             return Integer.parseInt(val, 16);
         } catch (IOException e) {
             log.error("Failed to Read from Socket", e);
@@ -131,18 +158,20 @@ public class NintendontAdapter implements MemoryAdapter {
             if (stringLength == 4) {
                 nintendontSocket.writeToSocket(NintendontOperation.readIntegerOperation(consoleAddress));
                 var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
-                if (!confirmationByte) {
-                    throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
+                byte[] socketBytes;
+                if (confirmationByte) {
+                    socketBytes = nintendontSocket.readFromSocket(4);
+                } else {
+                    log.error("An Error Likely Occurred when talking to the Console, Missing Confirmation Byte");
+                    socketBytes = new byte[0];
                 }
-                var socketBytes = nintendontSocket.readFromSocket(4);
-
                 return new String(socketBytes, StandardCharsets.UTF_8);
             }
             nintendontSocket.writeToSocket(NintendontOperation.readNOperation(consoleAddress, (byte) (0xFF & stringLength)));
             var confirmationByte = nintendontSocket.readFromSocket(1)[0] == 0x01;
             if (!confirmationByte) {
                 log.error("Confirmation Byte was false when reading from Console Address: {}", consoleAddress);
-                throw new HandlerValidationException("An Error Likely Occurred when talking to the Console");
+                throw new IOException("An Error Likely Occurred when talking to the Console");
             }
             var socketBytes = nintendontSocket.readFromSocket(stringLength);
             return new String(socketBytes, StandardCharsets.UTF_8);

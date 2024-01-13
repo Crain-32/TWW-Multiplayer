@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "coop.tracker.host",
+      "type": "java.lang.String",
+      "description": "Default Location for External API based Tracker."
+    },
+    {
+      "name": "run-gui",
+      "type": "java.lang.Boolean",
+      "description": "If the Gui Should be Run or just the Spring Backend."
+    }
+  ]
+}

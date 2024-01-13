@@ -2,7 +2,7 @@ package crain.client.game.handlers;
 
 import crain.client.exceptions.FailedToGiveItemException;
 import crain.client.exceptions.FailedToTakeItemException;
-import crain.client.exceptions.MissingMemoryAdapterException;
+import crain.client.exceptions.memory.MissingMemoryAdapterException;
 import crain.client.game.data.InventoryLocations;
 import crain.client.game.data.ItemCategory;
 import crain.client.game.data.ItemInfo;

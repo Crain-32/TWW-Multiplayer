@@ -3,9 +3,9 @@ package crain.client.view.events;
 import crain.client.events.CreateMemoryAdapterEvent;
 
 
-public record SettingsChangeEvent(
+public record SettingsPageChangeEvent(
         CreateMemoryAdapterEvent.MemoryAdapterType memoryAdapterType,
         String consoleIpAddress,
-        Boolean enableIntegration) {
-
+        Boolean enableIntegration
+) {
 }

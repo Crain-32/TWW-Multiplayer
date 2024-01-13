@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import records.INFO;
 import records.ROOM;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service to handle different event's responses to try and centralize it a bit more.
@@ -34,31 +37,19 @@ public class DisplayEventService {
 
 
     @Async
-    @EventListener
+    @EventListener(condition = "!T(crain.client.util.NullUtil).anyNullField(itemRecord)")
     public void foundItem(INFO.ItemRecord itemRecord) {
-        Integer sourcePlayer = itemRecord.sourcePlayerWorldId();
-        Integer targetPlayer = itemRecord.targetPlayerWorldId();
-        Integer itemId = itemRecord.itemId();
-        if (anyNull(sourcePlayer, targetPlayer, itemId)) {
-            log.debug("Unexpected NULL in itemRecord: {}", itemRecord);
-            return;
-        }
-        String sourcePlayerName = getUsername(sourcePlayer);
-        String targetPlayerName = getUsername(targetPlayer);
-        String itemDisplayName = ItemInfo.getInfoByItemId(itemId).getDisplayName();
+        String sourcePlayerName = getUsername(itemRecord.sourcePlayerWorldId());
+        String targetPlayerName = getUsername(itemRecord.targetPlayerWorldId());
+        String itemDisplayName = ItemInfo.getInfoByItemId(itemRecord.itemId()).getDisplayName();
         applicationEventPublisher.publishEvent(new GeneralMessageEvent(itemSentOut.formatted(sourcePlayerName, targetPlayerName, itemDisplayName)));
     }
 
     @Async
-    @EventListener
+    @EventListener(condition = "!T(crain.client.util.NullUtil).anyNull(itemRecord?.itemId())")
     public void foundItem(INFO.CoopItemRecord itemRecord) {
-        String sourcePlayer = Optional.ofNullable(itemRecord.sourcePlayer()).orElseGet(gameRoomConfig::getPlayerName);
-        Integer itemId = itemRecord.itemId();
-        if (itemId == null) {
-            log.debug("Unexpected NULL in itemRecord: {}", itemRecord);
-            return;
-        }
-        String itemDisplayName = ItemInfo.getInfoByItemId(itemId).getDisplayName();
+        String sourcePlayer = Optional.of(itemRecord.sourcePlayer()).orElseGet(gameRoomConfig::getPlayerName);
+        String itemDisplayName = ItemInfo.getInfoByItemId(itemRecord.itemId()).getDisplayName();
         applicationEventPublisher.publishEvent(new GeneralMessageEvent(itemReceived.formatted(sourcePlayer, itemDisplayName)));
     }
 
@@ -81,7 +72,4 @@ public class DisplayEventService {
         return name.orElseGet(() -> "World " + worldId);
     }
 
-    private boolean anyNull(Object... objectArr) {
-        return Arrays.stream(objectArr).anyMatch(Objects::isNull);
-    }
 }

@@ -2,7 +2,7 @@ package crain.client.exceptions;
 
 import crain.client.game.data.ItemInfo;
 
-public class FailedToTakeItemException extends RuntimeException {
+public class FailedToTakeItemException extends Exception {
 
     private final ItemInfo info;
 

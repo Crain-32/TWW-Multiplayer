@@ -7,7 +7,7 @@ import lombok.Getter;
  * Game Rooms can only have MULTIWORLD || COOP.
  * Players can have all 3 of them.
  * If GameRoom.WorldType == COOP, then the Player's World Type must be COOP
- * If GameRoom.WorldType == MULTIWORLD, then the Player's World Type must be SHARED || COOP
+ * If GameRoom.WorldType == MULTIWORLD, then the Player's World Type must be SHARED || MULTIWORLD
  */
 @Getter
 public enum WorldType {

@@ -9,7 +9,7 @@ import crain.client.events.SetConfigEvent;
 import crain.client.view.events.InitialSettingsEvent;
 import crain.client.view.events.ServerConnectEvent;
 import crain.client.view.events.ServerDisconnectEvent;
-import crain.client.view.events.SettingsChangeEvent;
+import crain.client.view.events.SettingsPageChangeEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -134,7 +133,8 @@ public class JoinRoomPage {
                                     .worldAmount(worldAmount)
                                     .worldId(worldAmount)
                                     .build());
-                } catch (Exception ignored) {
+                } catch (Exception exception) {
+                    log.debug("World ID input Failed {}", exception.getMessage(), exception);
                 }
             }
         });
@@ -161,12 +161,12 @@ public class JoinRoomPage {
     }
 
     @EventListener
-    public void handleSettingsChange(SettingsChangeEvent event) {
+    public void handleSettingsChange(SettingsPageChangeEvent event) {
     }
 
 
     private void handleMaxWorldIdChange() {
-        worldIdInput.setEnabled(Objects.equals(gameMode.getSelectedItem().toString(), "Multiworld"));
+        worldIdInput.setEnabled("Multiworld".equals(gameMode.getSelectedItem()));
     }
 
     public JPanel getBasePanel() {

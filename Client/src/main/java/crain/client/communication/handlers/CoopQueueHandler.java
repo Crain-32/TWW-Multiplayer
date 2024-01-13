@@ -5,6 +5,7 @@ import crain.client.config.GameRoomConfig;
 import crain.client.game.data.ItemInfo;
 import crain.client.service.ItemCategoryService;
 import crain.client.view.events.GeneralMessageEvent;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,7 +24,6 @@ public class CoopQueueHandler extends AbstractQueueHandler<INFO.CoopItemRecord> 
     private final GameRoomConfig gameRoomConfig;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-
     @Override
     public String getTopicPath() {
         return "/topic/coop/";
@@ -34,7 +34,7 @@ public class CoopQueueHandler extends AbstractQueueHandler<INFO.CoopItemRecord> 
         return WorldType.COOP;
     }
 
-    protected void innerHandleFrame(StompHeaders headers, INFO.CoopItemRecord itemRecord) {
+    protected void innerHandleFrame(@NotNull StompHeaders headers, INFO.@NotNull CoopItemRecord itemRecord) {
         if (!Objects.equals(itemRecord.sourcePlayer(), gameRoomConfig.getPlayerName())) {
             ItemInfo item = ItemInfo.getInfoByItemId(itemRecord.itemId());
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(itemRecord.sourcePlayer() + " found " + item.getDisplayName()));

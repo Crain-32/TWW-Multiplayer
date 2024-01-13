@@ -11,19 +11,16 @@
     </parent>
 
     <artifactId>wwr.multiplayer.client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-LOCAL</version>
     <packaging>jar</packaging>
     <name>Client</name>
 
     <properties>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-
         <multiplayer-model-version>1.0.1</multiplayer-model-version>
         <java-dolphin-engine-version>0.1.0</java-dolphin-engine-version>
-
         <spring-messaging-version>${spring-framework.version}</spring-messaging-version>
-
         <junit-testing-version>${junit-jupiter.version}</junit-testing-version>
     </properties>
 
@@ -110,17 +107,20 @@
             <version>${junit-testing-version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
 
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
@@ -136,8 +136,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <parameters>true</parameters>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

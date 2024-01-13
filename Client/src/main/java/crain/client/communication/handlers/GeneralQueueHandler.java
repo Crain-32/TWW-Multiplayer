@@ -2,6 +2,7 @@ package crain.client.communication.handlers;
 
 import constants.WorldType;
 import crain.client.view.events.GeneralMessageEvent;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +31,7 @@ public class GeneralQueueHandler extends AbstractQueueHandler<ROOM.MessageRecord
     }
 
     @Override
-    protected void innerHandleFrame(StompHeaders headers, ROOM.MessageRecord generalMessage) {
+    protected void innerHandleFrame(@NotNull StompHeaders headers, ROOM.@NotNull MessageRecord generalMessage) {
         if (StringUtils.isNotBlank(generalMessage.message())) {
             applicationEventPublisher.publishEvent(new GeneralMessageEvent(generalMessage.message()));
         }

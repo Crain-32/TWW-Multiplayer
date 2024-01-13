@@ -38,10 +38,11 @@ public class MessageWrapper {
     }
 
     @Async
-    @EventListener
-    public void onGeneralMessageEvent(GeneralMessageEvent e) {
-        log.debug("General Message Event Received: {}", e.message());
-        SwingUtilities.invokeLater(() -> this.jTextArea().insert(e.message(), 0)
+    @EventListener(condition = "!T(crain.client.util.NullUtil).anyNull(#event?.message)")
+    public void onGeneralMessageEvent(GeneralMessageEvent event) {
+        log.debug("General Message Event Received: {}", event.message());
+        SwingUtilities.invokeLater(
+                () -> this.jTextArea().insert(event.message(), 0)
         );
     }
 

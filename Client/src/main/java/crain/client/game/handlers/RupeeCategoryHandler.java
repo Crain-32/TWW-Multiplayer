@@ -2,7 +2,7 @@ package crain.client.game.handlers;
 
 import crain.client.exceptions.FailedToGiveItemException;
 import crain.client.exceptions.FailedToTakeItemException;
-import crain.client.exceptions.MissingMemoryAdapterException;
+import crain.client.exceptions.memory.MissingMemoryAdapterException;
 import crain.client.game.data.ItemCategory;
 import crain.client.game.data.ItemInfo;
 import crain.client.game.interfaces.ItemCategoryHandler;
@@ -19,6 +19,7 @@ public class RupeeCategoryHandler extends ItemCategoryHandler {
     @Override
     public Boolean giveItem(ItemInfo info) throws FailedToGiveItemException {
         try {
+            // Add Rupoors (Be Cringe)
             verifyHandler();
             return this.memoryAdapter.writeInteger(0x803CA768, getRupeeAmount(info));
         } catch (MissingMemoryAdapterException memoryHandlerException) {

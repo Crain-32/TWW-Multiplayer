@@ -1,4 +1,4 @@
-package crain.client.exceptions;
+package crain.client.exceptions.memory;
 
 public class MissingMemoryAdapterException extends MemoryHandlerException {
 

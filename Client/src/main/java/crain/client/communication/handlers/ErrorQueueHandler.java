@@ -2,6 +2,7 @@ package crain.client.communication.handlers;
 
 import constants.WorldType;
 import crain.client.view.events.GeneralMessageEvent;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,7 +26,7 @@ public class ErrorQueueHandler extends AbstractQueueHandler<ROOM.ErrorRecord> {
         return WorldType.SHARED;
     }
 
-    protected void innerHandleFrame(StompHeaders headers, ROOM.ErrorRecord errorMessage) {
+    protected void innerHandleFrame(@NotNull StompHeaders headers, ROOM.@NotNull ErrorRecord errorMessage) {
         applicationEventPublisher.publishEvent(new GeneralMessageEvent("The Server has sent an Error: " + errorMessage.error()));
     }
 }

@@ -14,6 +14,8 @@ import records.DETAIL;
 import records.INFO;
 import records.ROOM;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/rest/gameroom")
@@ -28,7 +30,6 @@ public class GameRoomController {
 
 
     @PostMapping
-    @SneakyThrows
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createGameRoom(@Validated @RequestBody INFO.CreateRoomRecord dto) {
         gameRoomService.createGameRoom(dto);
@@ -45,7 +46,6 @@ public class GameRoomController {
         return false;
     }
 
-    @SneakyThrows
     @PostMapping("/{GameRoom}/player")
     public ROOM.PlayerRecord getPlayerStatus(@Validated @RequestBody ROOM.PlayerRecord dto,
                                              @PathVariable(value = "GameRoom") String gameRoomName,
@@ -56,13 +56,22 @@ public class GameRoomController {
         throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
     }
 
-    @SneakyThrows
+
     @GetMapping("/{GameRoom}/player/detail")
     public DETAIL.Player getDetailedPlayer(@Validated @RequestBody ROOM.PlayerRecord dto,
                                            @PathVariable(value = "GameRoom") String gameRoomName,
                                            @RequestParam(value = "password") String password) {
         if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
             return playerService.getDetailedPlayer(dto, gameRoomName);
+        }
+        throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
+    }
+
+    @GetMapping("/{GameRoom}/players")
+    public List<ROOM.PlayerRecord> getPlayers(@PathVariable(value = "GameRoom") String gameRoomName,
+                                              @RequestParam(value = "password") String password) {
+        if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
+           return gameRoomService.getPlayerRecordsForRoom(gameRoomName);
         }
         throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
     }

@@ -1,6 +1,7 @@
 package crain.client.communication.handlers;
 
 import constants.WorldType;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,7 +26,7 @@ public class NamesQueueHandler extends AbstractQueueHandler<ROOM.PlayerRecord> {
     }
 
     @Override
-    public void innerHandleFrame(StompHeaders headers, ROOM.PlayerRecord playerRecord) {
+    public void innerHandleFrame(@NotNull StompHeaders headers, ROOM.@NotNull PlayerRecord playerRecord) {
         if (playerRecord.worldId() != null && playerRecord.worldType() != WorldType.COOP && playerRecord.playerName() != null) {
             applicationEventPublisher.publishEvent(playerRecord);
         }

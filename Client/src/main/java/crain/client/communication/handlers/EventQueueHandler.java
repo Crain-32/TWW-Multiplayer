@@ -1,6 +1,7 @@
 package crain.client.communication.handlers;
 
 import constants.WorldType;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +30,7 @@ public class EventQueueHandler extends AbstractQueueHandler<INFO.EventRecord> {
     }
 
     @Override
-    protected void innerHandleFrame(StompHeaders headers, INFO.EventRecord payload) {
+    protected void innerHandleFrame(@NotNull StompHeaders headers, INFO.@NotNull EventRecord payload) {
         applicationEventPublisher.publishEvent(payload);
     }
 }

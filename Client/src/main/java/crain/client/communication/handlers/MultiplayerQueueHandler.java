@@ -3,6 +3,7 @@ package crain.client.communication.handlers;
 import constants.WorldType;
 import crain.client.config.GameRoomConfig;
 import crain.client.service.ItemCategoryService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,7 +33,7 @@ public class MultiplayerQueueHandler extends AbstractQueueHandler<INFO.ItemRecor
     }
 
     @Override
-    protected void innerHandleFrame(StompHeaders headers, INFO.ItemRecord itemRecord) {
+    protected void innerHandleFrame(@NotNull StompHeaders headers, INFO.@NotNull ItemRecord itemRecord) {
         if (Objects.equals(itemRecord.targetPlayerWorldId(), gameRoomConfig.getWorldId())) {
             applicationEventPublisher.publishEvent(itemRecord);
             itemCategoryService.giveItem(itemRecord.itemId());

@@ -31,12 +31,12 @@ public abstract class AbstractQueueHandler<T> extends StompSessionHandlerAdapter
     }
 
     @Override
-    public Type getPayloadType(StompHeaders headers) {
+    public @NotNull Type getPayloadType(@NotNull StompHeaders headers) {
         return ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
-    public void handleFrame(StompHeaders headers, @Nullable Object payload) {
+    public void handleFrame(@NotNull StompHeaders headers, @Nullable Object payload) {
         if (payload == null) {
             log.debug("Payload was null");
             return;
@@ -45,13 +45,14 @@ public abstract class AbstractQueueHandler<T> extends StompSessionHandlerAdapter
         log.debug("Object Received: {}", payload);
 
         try {
+            //noinspection unchecked
             innerHandleFrame(headers, (T) payload);
         } catch (Exception e) {
             log.error("An unexpected Exception occurred", e);
         }
     }
 
-    protected abstract void innerHandleFrame(StompHeaders headers, @NotNull T object);
+    protected abstract void innerHandleFrame(@NotNull StompHeaders headers, @NotNull T object);
 
 
     /**

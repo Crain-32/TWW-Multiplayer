@@ -21,18 +21,17 @@ public class NintendontSocket {
     private final String ipAddress;
     private final Integer port;
 
-    public NintendontSocket(String ipAddress) {
+    public NintendontSocket(String ipAddress) throws IOException {
         this(ipAddress, 43673);
     }
 
-    public NintendontSocket(String ipAddress, Integer port) {
+    public NintendontSocket(String ipAddress, Integer port) throws IOException {
         this.ipAddress = ipAddress;
         this.port = port;
         connectSocket();
     }
 
-    @SneakyThrows
-    private void connectSocket() {
+    private void connectSocket() throws IOException {
         log.info("Connecting to: {}:{}", ipAddress, port);
         socket = new Socket(ipAddress, port);
         this.inputStream = new BufferedInputStream(socket.getInputStream());
@@ -57,7 +56,7 @@ public class NintendontSocket {
         log.debug("Connected to Nintendont Version: {}", nintendontApiVersion);
     }
 
-    public void closeSocket() {
+    public void closeSocket() throws IOException {
         log.trace("Closing Nintendont Socket");
         try {
             this.inputStream.close();
@@ -65,8 +64,7 @@ public class NintendontSocket {
             this.socket.close();
         } catch (IOException e) {
             log.error("Failed to Close Nintendont Socket", e);
-            // We're just going to log the exception.
-            // Hard to close when the last close failed.
+            throw e;
         }
     }
 
