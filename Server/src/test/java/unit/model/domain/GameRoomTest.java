@@ -7,7 +7,7 @@ import crain.model.domain.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.DomainObjectUtil;
+import crain.util.DomainObjectUtil;
 
 import java.util.ArrayList;
 

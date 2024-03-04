@@ -13,6 +13,8 @@ public interface PlayerMapper {
 
     ROOM.PlayerRecord createPlayerRecord(Player player);
 
+    @Mapping(target = "id", source = "worldId")
+    @Mapping(target = "queuedItems", source = "items")
     @Mapping(target = "lastInteractionDate", source = "lastInteractionDate", dateFormat = "dd-MM-yyyy HH:mm:ss")
     DETAIL.Player detailedPlayer(Player player);
 

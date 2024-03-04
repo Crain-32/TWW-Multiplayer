@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -47,7 +46,7 @@ public class GameRoomService {
             if (log.isDebugEnabled()) {
                 log.debug("Attempted Duplicate Game Room Create with name: " + dto.gameRoomName());
             }
-            throw new InvalidGameRoomException("A Game Room with this Name already Exists!");
+            throw new InvalidGameRoomException("A Game Room with this name already exists!");
         }
         GameRoom gameRoom = GameRoom.builder()
                 .name(dto.gameRoomName())

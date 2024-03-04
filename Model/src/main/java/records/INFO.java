@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Builder;
 
 /**
  * This Class holds all the records for the STOMP/ReST API communication.
@@ -16,6 +17,7 @@ public class INFO {
      * @param sourcePlayer The Player who sent the Item into the Server.
      * @param itemId The ID of the Item found.
      */
+    @Builder
     public record CoopItemRecord(
             @NotNull(message = "A Source Player Name must be provided!")
             String sourcePlayer,
@@ -33,6 +35,7 @@ public class INFO {
      * @param gameRoomPassword
      * @param worldType MULTIWORLD || COOP
      */
+    @Builder
     public record CreateRoomRecord(
 
             @NotEmpty(message = "Game Room Name must be Provided!")
@@ -55,6 +58,7 @@ public class INFO {
      * @param secondaryOffset
      * @param sourcePlayerName
      */
+    @Builder
     public record EventRecord(
             @NotNull
             Integer stageId,
@@ -69,6 +73,7 @@ public class INFO {
     ) {
     }
 
+    @Builder
     public record ItemRecord(
             @Positive(message = "World Id must be greater than 0.")
             Integer sourcePlayerWorldId,

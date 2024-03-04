@@ -60,7 +60,7 @@ public class GameRoom {
             this.players.add(player);
             player.setGameRoom(this);
         } else {
-            throw new InvalidPlayerException("The Provided Player Cannot be Added!", this.name);
+            throw new InvalidPlayerException("The provided Player cannot be added", this.name);
         }
     }
 

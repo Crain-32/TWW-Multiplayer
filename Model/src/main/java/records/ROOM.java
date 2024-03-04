@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  */
 public class ROOM {
 
+    @Builder
     public record GameRoomRecord(
             @NotNull(message = "Name cannot be Null")
             String name,
@@ -26,6 +28,7 @@ public class ROOM {
     ) {
     }
 
+    @Builder
     public record PlayerRecord(
             @Size(min = 3, max = 20, message = "Player Names must be between 3 and 20 Characters")
             String playerName,
@@ -37,12 +40,14 @@ public class ROOM {
     ) {
     }
 
+    @Builder
     public record MessageRecord(
             @Size(min = 3, max = 120, message = "Max Message Size is 120 Characters")
             String message
     ) {
     }
 
+    @Builder
     public record ErrorRecord(
             @NotNull
             String error

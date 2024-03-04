@@ -1,0 +1,8 @@
+wind-waker:
+  actors:
+    - rel-name: d_a_ks
+      actor-id: 0xCE
+      actor-type: REL
+      actor-names:
+        - kuro_s
+        - kuro_t

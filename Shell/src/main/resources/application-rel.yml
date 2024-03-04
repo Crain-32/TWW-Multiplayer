@@ -1,0 +1,10 @@
+wind-waker:
+  rels:
+    d_a_ks:
+      version: ENGLISH
+      symbol-offset:
+        draw_SUB: 0x78
+    d_a_ship:
+      version: ENGLISH
+      symbol-offset:
+        bodyJointCallBack: 0xEC

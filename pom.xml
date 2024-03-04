@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.4</version>
+        <version>3.2.1</version>
         <relativePath/>
     </parent>
 
@@ -26,6 +26,7 @@
         <module>Model</module>
         <module>Client</module>
         <module>Server</module>
+        <module>Shell</module>
     </modules>
 
     <repositories>

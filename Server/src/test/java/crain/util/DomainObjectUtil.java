@@ -1,4 +1,4 @@
-package util;
+package crain.util;
 
 import constants.WorldType;
 import crain.model.domain.GameRoom;

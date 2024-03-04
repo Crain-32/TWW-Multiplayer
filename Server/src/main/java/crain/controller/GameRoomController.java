@@ -4,7 +4,7 @@ import crain.exceptions.InvalidGameRoomException;
 import crain.exceptions.InvalidPlayerException;
 import crain.service.GameRoomService;
 import crain.service.PlayerService;
-import lombok.SneakyThrows;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/gameroom")
 public class GameRoomController {
+    protected static final String GAMEROOM_MSG = "The requested Game Room could not be found, or the Password was wrong";
     private final GameRoomService gameRoomService;
     private final PlayerService playerService;
 
@@ -36,14 +37,14 @@ public class GameRoomController {
     }
 
     @PostMapping("/{GameRoom}")
-    public boolean addPlayerToGameRoom(@Validated @RequestBody ROOM.PlayerRecord dto,
-                                       @PathVariable(value = "GameRoom") String gameRoomName,
-                                       @RequestParam(value = "password") String password) {
-        if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
-            gameRoomService.addPlayerDto(dto, gameRoomName);
-            return true;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addPlayerToGameRoom(@Validated @RequestBody ROOM.PlayerRecord dto,
+                                    @PathVariable(value = "GameRoom") String gameRoomName,
+                                    @RequestParam(value = "password") String password) {
+        if (!gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
+            throw new InvalidGameRoomException(GAMEROOM_MSG, gameRoomName);
         }
-        return false;
+        gameRoomService.addPlayerDto(dto, gameRoomName);
     }
 
     @PostMapping("/{GameRoom}/player")
@@ -53,7 +54,7 @@ public class GameRoomController {
         if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
             return gameRoomService.getPlayerStatus(dto, gameRoomName);
         }
-        throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
+        throw new InvalidGameRoomException(GAMEROOM_MSG, gameRoomName);
     }
 
 
@@ -64,21 +65,25 @@ public class GameRoomController {
         if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
             return playerService.getDetailedPlayer(dto, gameRoomName);
         }
-        throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
+        throw new InvalidGameRoomException(GAMEROOM_MSG, gameRoomName);
     }
 
     @GetMapping("/{GameRoom}/players")
     public List<ROOM.PlayerRecord> getPlayers(@PathVariable(value = "GameRoom") String gameRoomName,
                                               @RequestParam(value = "password") String password) {
         if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
-           return gameRoomService.getPlayerRecordsForRoom(gameRoomName);
+            return gameRoomService.getPlayerRecordsForRoom(gameRoomName);
         }
-        throw new InvalidGameRoomException("The Requested Game Room could not be found, or the Password was wrong.", gameRoomName);
+        throw new InvalidGameRoomException(GAMEROOM_MSG, gameRoomName);
     }
 
     @ExceptionHandler(value = {InvalidGameRoomException.class})
     public ResponseEntity<String> handleInvalidGameRoom(InvalidGameRoomException e) {
-        return new ResponseEntity<>(e.getMessage() + " for " + e.getGameRoomName(), HttpStatus.NOT_FOUND);
+        String body = e.getMessage();
+        if (StringUtils.isNotEmpty(e.getGameRoomName())) {
+            body += " for " + e.getGameRoomName();
+        }
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = {InvalidPlayerException.class})
