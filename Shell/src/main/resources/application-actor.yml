@@ -1,8 +1,766 @@
 wind-waker:
   actors:
+    - rel-name: d_a_grass
+      actor-id: 0X1B8
+      actor-type: REL
+      actor-names:
+        - kusax1
+        - kusax7
+        - kusax21
+        - flower
+        - flwr7
+        - flwr17
+        - pflwrx7
+        - swood
+        - swood3
+        - swood5
+    - rel-name: d_a_obj_wood
+      actor-id: 0x10C
+      actor-type: REL
+      actor-names:
+        - woodb
+        - woodbx
+    - rel-name: d_a_door10
+      actor-id: 0x12E
+      actor-type: REL
+      actor-names:
+        - door10
+        - door11
+        - door20
+        - door21
+        - Zenshut
+        - keyshut
+        - K_Zshut
+    - rel-name: d_a_atdoor
+      actor-id: 0x130
+      actor-type: REL
+      actor-names:
+        - ATdoor
+    - rel-name: d_a_mdoor
+      actor-id: 0x131
+      actor-type: REL
+      actor-names:
+        - Mori1
+    - rel-name: d_a_kddoor
+      actor-id: 0x132
+      actor-type: REL
+      actor-names:
+        - doorKD
+        - ZenshKD
+        - K_ZshKD
+        - doorSH
+        - doorSZ
+    - rel-name: d_a_knob00
+      actor-id: 0x133
+      actor-type: REL
+      actor-names:
+        - KNOB00
+        - KNOB01
+        - KNOB02
+        - KNOB03
+        - KNOB00D
+        - KNOB01D
+        - KNOB02D
+        - KNOB03D
+    - rel-name: d_a_door12
+      actor-id: 0x12F
+      actor-type: REL
+      actor-names:
+        - door12
+        - door12M
+        - door12B
+        - door13
+        - door13M
+        - door13B
+        - keyS12
+        - ZenS12
+    - rel-name: d_a_ep
+      actor-id: 0x0BA
+      actor-type: REL
+      actor-names:
+        - bonbori
+    - rel-name: d_a_swc00
+      actor-id: 0x12C
+      actor-type: REL
+      actor-names:
+        - SW_C00
+    - rel-name: d_a_tbox
+      actor-id: 0x126
+      actor-type: REL
+      actor-names:
+        - takara
+        - takara2
+        - takara3
+        - takara4
+        - takara5
+        - takara6
+        - takara7
+        - takara8
+        - takaraK
+        - takaraI
+        - takaraM
+        - tkrASw
+        - tkrAGc
+        - tkrAKd
+        - tkrAIk
+        - tkrBMs
+        - tkrCTf
+        - tkrAOc
+        - tkrAOs
+    - rel-name: d_a_sbox
+      actor-id: 0x127
+      actor-type: REL
+      actor-names:
+        - tkrSlv
+    - rel-name: d_a_agbsw0
+      actor-id: 0x1B6
+      actor-type: REL
+      actor-names:
+        - agbA
+        - agbAT
+        - agbA2
+        - agbF
+        - agbF2
+        - agbMARK
+        - agbMW
+        - agbCSW
+        - agbTBOX
+        - agbR
+        - agbB
+        - agbD
+        - agbFA
+    - actor-id: 0x1E2
+      actor-type: MAIN
+      actor-names:
+        - NoneCam
+        - NormCam
+    - actor-id: 0x0A9
+      actor-type: MAIN
+      actor-names:
+        - Link
+    - rel-name: d_a_tsubo
+      actor-id: 0x1CB
+      actor-type: REL
+      actor-names:
+        - kotubo
+        - ootubo1
+        - Kmtub
+        - Ktaru
+        - Ostool
+        - Odokuro
+        - Okioke
+        - Kmi02
+        - Ptubo
+        - KkibaaB
+        - Kmi00
+        - Hbox2S
+    - rel-name: d_a_swhit0
+      actor-id: 0x1C9
+      actor-type: REL
+      actor-names:
+        - SW_HIT0
+    - rel-name: d_a_stone
+      actor-id: 0x1CC
+      actor-type: REL
+      actor-names:
+        - koisi1
+        - koisi2
+    - rel-name: d_a_obj_aygr
+      actor-id: 0x0A6
+      actor-type: REL
+      actor-names:
+        - Aygr
+    - rel-name: d_a_salvage
+      actor-id: 0x194
+      actor-type: REL
+      actor-names:
+        - Salvage
+        - SwSlvg
+        - Salvag2
+        - SalvagN
+        - SalvagE
+        - SalvFM
+    - rel-name: d_a_obj_movebox
+      actor-id: 0x02D
+      actor-type: REL
+      actor-names:
+        - osiBLK0
+        - osiBLK1
+        - Kkiba
+        - Hseki2
+        - Hseki7
+        - Mmrr
+        - MkieBB
+        - Ecube
+        - Hjump1
+        - Hbox1
+        - MpwrB
+        - DBLK0
+        - DBLK1
+        - DKkiba
+        - Hbox2
+    - rel-name: d_a_obj_correct
+      actor-id: 0x1D8
+      actor-type: REL
+      actor-names:
+        - BLK_CR
+        - CrTrS3
+        - CrTrS4
+        - CrTrS5
+        - CrTrM1
+        - CrTrM2
+        - CrTrGr
+        - CrTrB1
+    - rel-name: d_a_obj_swpush
+      actor-id: 0x01D
+      actor-type: REL
+      actor-names:
+        - Kbota_A
+        - Kbota_B
+        - KbotaC
+    - rel-name: d_a_obj_swheavy
+      actor-id: 0x01E
+      actor-type: REL
+      actor-names:
+        - Hhbot1
+        - Hhbot1N
+    - rel-name: d_a_obj_swhammer
+      actor-id: 0x021
+      actor-type: REL
+      actor-names:
+        - MhmrSW0
+    - rel-name: d_a_tag_so
+      actor-id: 0x025
+      actor-type: REL
+      actor-names:
+        - TagSo
+        - TagMSo
+    - rel-name: d_a_tag_ghostship
+      actor-id: 0x1CA
+      actor-type: REL
+      actor-names:
+        - PScnChg
+    - rel-name: d_a_alldie
+      actor-id: 0x016
+      actor-type: REL
+      actor-names:
+        - ALLdie
+    - rel-name: d_a_tag_event
+      actor-id: 0x19C
+      actor-type: REL
+      actor-names:
+        - TagEv
+    - rel-name: d_a_tag_hint
+      actor-id: 0x19D
+      actor-type: REL
+      actor-names:
+        - TagHt
+        - TagHt2
+    - rel-name: d_a_tag_msg
+      actor-id: 0x19E
+      actor-type: REL
+      actor-names:
+        - TagMsg
+        - TagMsg2
+    - rel-name: d_a_tag_island
+      actor-id: 0x1A0
+      actor-type: REL
+      actor-names:
+        - TagIsl
+    - rel-name: d_a_tag_etc
+      actor-id: 0x19F
+      actor-type: REL
+      actor-names:
+        - TagMd
+    - rel-name: d_a_tag_kf1
+      actor-id: 0x1A1
+      actor-type: REL
+      actor-names:
+        - TagKf1
+    - rel-name: d_a_tag_kk1
+      actor-id: 0x1A2
+      actor-type: REL
+      actor-names:
+        - TagKk1
+    - rel-name: d_a_tag_kb_item
+      actor-id: 0x1A4
+      actor-type: REL
+      actor-names:
+        - TagKb
+    - rel-name: d_a_tag_mk
+      actor-id: 0x1A5
+      actor-type: REL
+      actor-names:
+        - TagMk
+        - TagWp
+        - TagDM
+        - TagTy
+    - rel-name: d_a_tag_md_cb
+      actor-id: 0x1A6
+      actor-type: REL
+      actor-names:
+        - TagMd1
+        - TagCb1
+        - TagMd11
+        - TagMd12
+        - TagMd13
+        - TagMd14
+        - TagMd15
+        - TagMd16
+        - TagCb11
+        - TagCb12
+        - TagCb13
+        - TagCb14
+    - rel-name: d_a_tag_ba1
+      actor-id: 0x1A7
+      actor-type: REL
+      actor-names:
+        - TagBa1
+    - rel-name: d_a_tag_evsw
+      actor-id: 0x01C
+      actor-type: REL
+      actor-names:
+        - Evsw
+    - actor-id: 0x044
+      actor-type: MAIN
+      actor-names:
+        - Search
+    - rel-name: d_a_obj_otble
+      actor-id: 0x042
+      actor-type: REL
+      actor-names:
+        - Otble
+        - OtbleL
+    - rel-name: d_a_obj_warpt
+      actor-id: 0x043
+      actor-type: REL
+      actor-names:
+        - Warpt
+        - Warpnt
+        - Warpts1
+        - Warpts2
+        - Warpts3
+    - rel-name: d_a_seatag
+      actor-id: 0x027
+      actor-type: REL
+      actor-names:
+        - Seatag
+    - rel-name: d_a_warpf
+      actor-id: 0x06A
+      actor-type: REL
+      actor-names:
+        - Warpf
+    - rel-name: d_a_hys
+      actor-id: 0x1C8
+      actor-type: REL
+      actor-names:
+        - Hys
+        - Hys2
+    - rel-name: d_a_fan
+      actor-id: 0x12D
+      actor-type: REL
+      actor-names:
+        - Hsen1
+        - Hsen2
+        - Hsen3
+    - rel-name: d_a_leaflift
+      actor-id: 0x07A
+      actor-type: REL
+      actor-names:
+        - Olift
+    - rel-name: d_a_icelift
+      actor-id: 0x05F
+      actor-type: REL
+      actor-names:
+        - Ylsic
+        - Yllic
+        - Ylkic
+    - rel-name: d_a_swpropeller
+      actor-id: 0x1B2
+      actor-type: REL
+      actor-names:
+        - Hpbot1
+        - Vpbot
+    - rel-name: d_a_amiprop
+      actor-id: 0x60
+      actor-type: REL
+      actor-names:
+        - Hami1
+        - HamiY
+    - rel-name: d_a_tag_light
+      actor-id: 0x1DB
+      actor-type: REL
+      actor-names:
+        - LTag0
+        - LTag1
+        - LTagR0
+    - rel-name: d_a_tag_attention
+      actor-id: 0x1DC
+      actor-type: REL
+      actor-names:
+        - AttTag
+        - AttTagB
+    - rel-name: d_a_obj_ice
+      actor-id: 0x1D2
+      actor-type: REL
+      actor-names:
+        - Ikori
+    - rel-name: d_a_swlight
+      actor-id: 0x020
+      actor-type: REL
+      actor-names:
+        - MsuSW
+        - MsuSWB
+    - rel-name: d_a_swattack
+      actor-id: 0x138
+      actor-type: REL
+      actor-names:
+        - SWat00
+    - rel-name: d_a_switem
+      actor-id: 0x139
+      actor-type: REL
+      actor-names:
+        - ITat00
+    - rel-name: d_a_swtact
+      actor-id: 0x13A
+      actor-type: REL
+      actor-names:
+        - SWtact
+        - SWtactB
+    - rel-name: d_a_floor
+      actor-id: 0x062
+      actor-type: REL
+      actor-names:
+        - Hhyu1
+    - rel-name: d_a_obj_lpalm
+      actor-id: 0x04B
+      actor-type: REL
+      actor-names:
+        - Oyashi
+    - rel-name: d_a_kanban
+      actor-id: 0x0B7
+      actor-type: REL
+      actor-names:
+        - Kanban
+    - rel-name: d_a_kt
+      actor-id: 0x0B9
+      actor-type: REL
+      actor-names:
+        - kt
+    - rel-name: d_a_ff
+      actor-id: 0x0BC
+      actor-type: REL
+      actor-names:
+        - ho
+    - rel-name: d_a_mo2
+      actor-id: 0x0BD
+      actor-type: REL
+      actor-names:
+        - mo2
+    - rel-name: d_a_mozo
+      actor-id: 0x0FB
+      actor-type: REL
+      actor-names:
+        - moZOU
+    - rel-name: d_a_rectangle
+      actor-id: 0x0B5
+      actor-type: REL
+      actor-names:
+        - hotest
+    - rel-name: d_a_kui
+      actor-id: 0x0FC
+      actor-type: REL
+      actor-names:
+        - Kui
+    - rel-name: d_a_kamome
+      actor-id: 0x0C3
+      actor-type: REL
+      actor-names:
+        - Kamome
+    - actor-id: 0x101
+      actor-type: MAIN
+      actor-names:
+        - item
+        - itemFLY
+    - rel-name: d_a_deku_item
+      actor-id: 0x106
+      actor-type: REL
+      actor-names:
+        - itemDek
+    - rel-name: d_a_ship
+      actor-id: 0x0A7
+      actor-type: REL
+      actor-names:
+        - Ship
+    - rel-name: d_a_andsw0
+      actor-id: 0x135
+      actor-type: REL
+      actor-names:
+        - AND_SW0
+    - rel-name: d_a_andsw2
+      actor-id: 0x135
+      actor-type: REL
+      actor-names:
+        - AND_SW2
+    - rel-name: d_a_bb
+      actor-id: 0x0B6
+      actor-type: REL
+      actor-names:
+        - Bb
+    - rel-name: d_a_stone2
+      actor-id: 0x1CD
+      actor-type: REL
+      actor-names:
+        - EBrock
+        - Ekao
+        - Ebrock2
+    - rel-name: d_a_kytag00
+      actor-id: 0x181
+      actor-type: REL
+      actor-names:
+        - ky_tag0
+        - kytag00
+        - ky00you
+    - rel-name: d_a_kytag01
+      actor-id: 0x182
+      actor-type: REL
+      actor-names:
+        - ky_tag1
+    - rel-name: d_a_kytag02
+      actor-id: 0x183
+      actor-type: REL
+      actor-names:
+        - ky_tag2
+    - rel-name: d_a_kytag03
+      actor-id: 0x184
+      actor-type: REL
+      actor-names:
+        - ky_tag3
+    - rel-name: d_a_kytag04
+      actor-id: 0x185
+      actor-type: REL
+      actor-names:
+        - kytag4
+    - rel-name: d_a_kytag05
+      actor-id: 0x186
+      actor-type: REL
+      actor-names:
+        - kytag5
+    - rel-name: d_a_kytag06
+      actor-id: 0x187
+      actor-type: REL
+      actor-names:
+        - kytag6
+    - rel-name: d_a_kytag07
+      actor-id: 0x188
+      actor-type: REL
+      actor-names:
+        - kytag7
+    - actor_id: 0x028
+      actor-type: MAIN
+      actor-names:
+        - sea
+    - rel-name: d_a_nz
+      actor-id: 0x0C7
+      actor-type: REL
+      actor-names:
+        - nezumi
+    - rel-name: d_a_nzg
+      actor-id: 0x0C8
+      actor-type: REL
+      actor-names:
+        - nezuana
+    - rel-name: d_a_kn
+      actor-id: 0x0C9
+      actor-type: REL
+      actor-names:
+        - kani
+    - rel-name: d_a_demo_dk
+      actor-id: 0x0CA
+      actor-type: REL
+      actor-names:
+        - Demo_Dk
+    - rel-name: d_a_demo_kmm
+      actor-id: 0x0C6
+      actor-type: REL
+      actor-names:
+        - DmKmm
+        - DmKmm2
+    - rel-name: d_a_am
+      actor-id: 0x0CB
+      actor-type: REL
+      actor-names:
+        - amos
+    - rel-name: d_a_am2
+      actor-id: 0x0CC
+      actor-type: REL
+      actor-names:
+        - amos2
+    - rel-name: d_a_gm
+      actor-id: 0x0CD
+      actor-type: REL
+      actor-names:
+        - gmos
+        - gmos_g
+        - gmos_f
     - rel-name: d_a_ks
-      actor-id: 0xCE
+      actor-id: 0x0CE
       actor-type: REL
       actor-names:
         - kuro_s
         - kuro_t
+    - rel-name: d_a_cc
+      actor-id: 0x0CF
+      actor-type: REL
+      actor-names:
+        - c_green
+        - c_red
+        - c_blue
+        - c_black
+        - c_kiiro
+    - rel-name: d_a_bl
+      actor-id: 0x0D0
+      actor-type: REL
+      actor-names:
+        - bable
+        - bable_r
+    - rel-name: d_a_wz
+      actor-id: 0x0D1
+      actor-type: REL
+      actor-names:
+        - wiz_r
+        - wiz_s
+        - wiz_m
+        - wiz_o
+    - rel-name: d_a_ph
+      actor-id: 0x0D2
+      actor-type: REL
+      actor-names:
+        - p_hat
+        - sea_hat # Note, different GBA Name, if I ever decide to model that
+    - rel-name: d_a_pz
+      actor-id: 0x0D3
+      actor-type: REL
+      actor-names:
+        - p_zelda
+    - rel-name: d_a_bpw
+      actor-id: 0x0D4
+      actor-type: REL
+      actor-names:
+        - big_pow
+    - rel-name: d_a_pw
+      actor-id: 0x0D5
+      actor-type: REL
+      actor-names:
+        - pow
+    - rel-name: d_a_jbo
+      actor-id: 0x0D6
+      actor-type: REL
+      actor-names:
+        - jbaba
+    - rel-name: d_a_bo
+      actor-id: 0x0D7
+      actor-type: REL
+      actor-names:
+        - bbaba
+    - rel-name: d_a_bridge
+      actor-id: 0x05B
+      actor-type: REL
+      actor-names:
+        - bridge
+    - rel-name: d_a_dr
+      actor-id: 0x0DF
+      actor-type: REL
+      actor-names:
+        - dragon
+    - actor-id: 0x13B
+      actor-type: MAIN
+      actor-names:
+        - Nh
+    - rel-name: d_a_npc_so
+      actor-id: 0x0078
+      actor-type: REL
+      actor-names:
+        - NpcSo
+    - rel-name: d_a_npc_nz
+      actor-id: 0x0077
+      actor-type: REL
+      actor-names:
+        - NpcNz
+    - rel-name: d_a_npc_os
+      actor-id: 0x013C
+      actor-type: REL
+      actor-names:
+        - Os
+        - Os1
+        - Os2
+    - rel-name: d_a_npc_ym1
+      actor-id: 0x013D
+      actor-type: REL
+      actor-names:
+        - Ym1
+    - rel-name: d_a_npc_ym1
+      actor-id: 0x013E
+      actor-type: REL
+      actor-names:
+        - Ym2
+    - rel-name: d_a_npc_yw1
+      actor-id: 0x013F
+      actor-type: REL
+      actor-names:
+        - Yw1
+    - rel-name: d_a_npc_ji1
+      actor-id: 0x0140
+      actor-type: REL
+      actor-names:
+        - Ji1
+    - rel-name: d_a_npc_ko1
+      actor-id: 0x0141
+      actor-type: REL
+      actor-names:
+        - Ko1
+    - rel-name: d_a_npc_ko1
+      actor-id: 0x0142
+      actor-type: REL
+      actor-names:
+        - Ko2
+    - rel-name: d_a_npc_ls1
+      actor-id: 0x0143
+      actor-type: REL
+      actor-names:
+        - Ls1
+    - rel-name: d_a_npc_bm1
+      actor-id: 0x0148
+      actor-type: REL
+      actor-names:
+        - Bm1
+    - rel-name: d_a_npc_bm1
+      actor-id: 0x0149
+      actor-type: REL
+      actor-names:
+        - Bm2
+    - rel-name: d_a_npc_bm1
+      actor-id: 0x014A
+      actor-type: REL
+      actor-names:
+        - Bm3
+    - rel-name: d_a_npc_bm1
+      actor-id: 0x014B
+      actor-type: REL
+      actor-names:
+        - Bm4
+    - rel-name: d_a_npc_bm1
+      actor-id: 0x014C
+      actor-type: REL
+      actor-names:
+        - Bm5
+    - rel-name: d_a_npc_bmcon1
+      actor-id: 0x015C
+      actor-type: REL
+      actor-names:
+        - Bmcon1
+    - rel-name: d_a_npc_bmcon1
+      actor-id: 0x015C
+      actor-type: REL
+      actor-names:
+        - Bmcon1

@@ -18,12 +18,13 @@ public class ROOM {
     public record GameRoomRecord(
             @NotNull(message = "Name cannot be Null")
             String name,
-            Boolean extraValidation,
+            boolean extraValidation,
             @Positive(message = "You must have at least 1 World.")
             Integer worldAmount,
+            @NotNull(message = "A world type must be provided")
             WorldType worldType,
             @Positive(message = "At least one Player is expected to Play")
-            Integer playerAmount,
+            int playerAmount,
             List<PlayerRecord> players
     ) {
     }
@@ -33,8 +34,8 @@ public class ROOM {
             @Size(min = 3, max = 20, message = "Player Names must be between 3 and 20 Characters")
             String playerName,
             @Positive(message = "World ID cannot be equal to or less than 0")
-            Integer worldId,
-            @NotBlank(message = "World Type must be included")
+            int worldId,
+            @NotNull(message = "World Type must be included")
             WorldType worldType,
             Boolean connected
     ) {

@@ -169,7 +169,7 @@ public enum ItemCategory {
             ItemInfo.FIVE_BOMBS, ItemInfo.TEN_BOMBS,
             ItemInfo.TWENTY_BOMBS, ItemInfo.THIRTY_BOMBS,
             ItemInfo.FAIRY, ItemInfo.HEART,
-            ItemInfo.YELLOW_RUPEE_JOKE,
+            ItemInfo.YELLOW_RUPEE_JOKE, ItemInfo.RECOVERED_HEROS_SWORD
     });
 
     private final ItemInfo[] items;

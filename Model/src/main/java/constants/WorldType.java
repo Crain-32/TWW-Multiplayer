@@ -1,5 +1,6 @@
 package constants;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Getter;
  */
 @Getter
 public enum WorldType {
+    @JsonEnumDefaultValue
     SHARED("Shared"),
     MULTIWORLD("Multiworld"),
     COOP("Coop");

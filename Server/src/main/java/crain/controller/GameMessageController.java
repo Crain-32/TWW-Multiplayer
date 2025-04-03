@@ -34,31 +34,29 @@ public class GameMessageController {
 
     @MessageMapping("/event/{GameRoom}")
     public void postEventToGroupTopic(@Payload INFO.EventRecord eventRecord, @DestinationVariable("GameRoom") String gameRoom) {
-        applicationEventPublisher.publishEvent(new EventEvent(eventRecord, gameRoom));
+        applicationEventPublisher.publishEvent(new EventEvent(gameRoom, eventRecord));
     }
 
     @MessageMapping("/name/{GameRoom}")
     public void setPlayerToConnected(@Valid @Payload ROOM.PlayerRecord playerRecord,
                                      @DestinationVariable("GameRoom") String gameRoom) {
         playerRecord = gameRoomService.setPlayerToConnected(playerRecord, gameRoom);
-        if (log.isDebugEnabled()) {
-            log.debug(playerRecord.playerName() + " was set to Connected in - " + gameRoom);
-        }
-        applicationEventPublisher.publishEvent(new NameEvent(playerRecord, gameRoom));
+        log.debug("{} was set to Connected in - {}", playerRecord.playerName(), gameRoom);
+        applicationEventPublisher.publishEvent(new NameEvent(gameRoom, playerRecord));
     }
 
 
     @MessageMapping("/coop/{GameRoom}")
     public void postItemToCoopTopic(@Valid @Payload INFO.CoopItemRecord coopItemRecord,
                                     @DestinationVariable("GameRoom") String gameRoom) {
-        applicationEventPublisher.publishEvent(new CoopItemEvent(coopItemRecord, gameRoom));
+        applicationEventPublisher.publishEvent(new CoopItemEvent(gameRoom, coopItemRecord));
     }
 
 
     @MessageExceptionHandler(value = {RoomException.class})
     public void handleInvalidObjExceptions(RoomException e) {
         if (Objects.nonNull(e.getGameRoomName())) {
-            applicationEventPublisher.publishEvent(new ErrorEvent(e.getMessage(), e.getGameRoomName()));
+            applicationEventPublisher.publishEvent(new ErrorEvent(e.getGameRoomName(), e.getMessage()));
         }
     }
 }

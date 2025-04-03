@@ -20,8 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected String handleUnmatchedExceptions(Exception e) {
-        log.debug(e.getMessage());
-        log.debug("Unexpected Failure:", e);
-        return e.getMessage();
+        log.debug("Unexpected Failure: {}", e.getMessage(), e);
+        return "An unexpected Exception has occurred on the Server. Contact Crain if this persists";
     }
 }

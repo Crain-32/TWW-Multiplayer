@@ -1,6 +1,7 @@
 package service;
 
 import constants.WorldType;
+import crain.config.DataConfig;
 import crain.exceptions.InvalidGameRoomException;
 import crain.exceptions.InvalidPlayerException;
 import crain.mappers.GameRoomMapper;
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
@@ -46,6 +48,7 @@ public class GameRoomServiceTest {
     @Autowired private GameRoomRepo gameRoomRepo;
 
     @Configuration
+    @Import(DataConfig.class)
     @EntityScan(basePackages = {"crain.model.domain"})
     @EnableJpaRepositories(basePackages = {"crain.repository"})
     static class Config {}
@@ -61,25 +64,24 @@ public class GameRoomServiceTest {
 
     @Test
     public void itShouldGetGameRoomsByTimestamp() {
-        Optional.ofNullable(null);
         gameRoomService.createGameRoom(getCreateRoomDto());
         GameRoom testingGameRoom = gameRoomRepo.findOneByName(baseGameRoomName).orElseThrow(TestAbortedException::new);
 
-        Instant adjustedTime = testingGameRoom.getCreationTimestamp().toInstant().plus(1, ChronoUnit.SECONDS);
-        List<GameRoom> gameRoomsBefore = gameRoomRepo.findAllGameRoomsCreatedBefore(Timestamp.from(adjustedTime));
+        Instant adjustedTime = testingGameRoom.getCreationTimestamp().plus(1, ChronoUnit.SECONDS);
+        List<GameRoom> gameRoomsBefore = gameRoomRepo.findAllGameRoomsCreatedBefore(adjustedTime);
         assertEquals(1, gameRoomsBefore.size());
 
-        adjustedTime = testingGameRoom.getCreationTimestamp().toInstant().minus(1, ChronoUnit.SECONDS);
-        gameRoomsBefore = gameRoomRepo.findAllGameRoomsCreatedBefore(Timestamp.from(adjustedTime));
+        adjustedTime = testingGameRoom.getCreationTimestamp().minus(1, ChronoUnit.SECONDS);
+        gameRoomsBefore = gameRoomRepo.findAllGameRoomsCreatedBefore(adjustedTime);
         assertEquals(0, gameRoomsBefore.size());
     }
 
     @Test
     public void itShouldNotAllowDuplicateNamesInCoop() {
         gameRoomService.createGameRoom(getCreateRoomDto(WorldType.COOP));
-        gameRoomService.addPlayerDto(new ROOM.PlayerRecord("Player 1", null, WorldType.COOP, null), baseGameRoomName);
-        assertDoesNotThrow(() -> gameRoomService.addPlayerDto(new ROOM.PlayerRecord("Player 2", null, WorldType.COOP, null), baseGameRoomName));
-        assertThrows(InvalidPlayerException.class, () -> gameRoomService.addPlayerDto(new ROOM.PlayerRecord("Player 2", null, WorldType.COOP, null), baseGameRoomName));
+        gameRoomService.addPlayerDto(new ROOM.PlayerRecord("Player 1", 1, WorldType.COOP, null), baseGameRoomName);
+        assertDoesNotThrow(() -> gameRoomService.addPlayerDto(new ROOM.PlayerRecord("Player 2", 1, WorldType.COOP, null), baseGameRoomName));
+        assertThrows(InvalidPlayerException.class, () -> gameRoomService.addPlayerDto(new ROOM.PlayerRecord("Player 2", 1, WorldType.COOP, null), baseGameRoomName));
     }
 
     @Test

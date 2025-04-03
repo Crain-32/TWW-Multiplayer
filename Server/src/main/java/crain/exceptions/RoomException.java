@@ -1,19 +1,19 @@
 package crain.exceptions;
 
 public class RoomException extends RuntimeException {
-    private final String GAMEROOM_NAME;
+    private final String gameRoomName;
 
     public RoomException(String message) {
         super(message);
-        this.GAMEROOM_NAME = "";
+        this.gameRoomName = "";
     }
 
     public RoomException(String message, String gameRoom) {
         super(message);
-        this.GAMEROOM_NAME = gameRoom;
+        this.gameRoomName = gameRoom;
     }
 
     public String getGameRoomName() {
-        return this.GAMEROOM_NAME;
+        return this.gameRoomName;
     }
 }

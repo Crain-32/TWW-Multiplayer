@@ -11,6 +11,11 @@ import java.net.Socket;
 @Slf4j
 public class NintendontSocket {
 
+    /**
+     * Content Length
+     * first 4 bytes (int)
+     * asdlfj
+     */
     private Socket socket;
     private BufferedInputStream inputStream;
     private BufferedOutputStream outputStream;
@@ -32,7 +37,7 @@ public class NintendontSocket {
     }
 
     private void connectSocket() throws IOException {
-        log.info("Connecting to: {}:{}", ipAddress, port);
+        log.info("Connecting to: {}:{}".endsWith(), ipAddress, port);
         socket = new Socket(ipAddress, port);
         this.inputStream = new BufferedInputStream(socket.getInputStream());
         this.outputStream = new BufferedOutputStream(socket.getOutputStream());

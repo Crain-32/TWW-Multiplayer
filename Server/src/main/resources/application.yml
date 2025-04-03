@@ -1,0 +1,49 @@
+enable:
+  tournaments: false
+  admin:
+    controller: true
+  subscription:
+    controller: true
+
+logging:
+  level:
+    web: DEBUG
+    crain: DEBUG
+
+server:
+  port: 8080
+  ssl:
+    enabled: false
+  error:
+    include-exception: true
+    include-binding-errors: always
+    include-message: always
+
+springdoc:
+  swagger-ui:
+    config-url: /swagger-ui
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:dcbapp
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database: h2
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+    deserialization:
+      read-unknown-enum-values-using-default-value: true
+  task:
+    scheduling:
+      pool:
+        size: 15
+      simple:
+        concurrency-limit: 20
+admin:
+  port: 8081
+  user:
+    password: password
+

@@ -45,8 +45,9 @@ public class ExternalService {
         } catch (Exception e) {
             // We really don't care if something fails here.
             // So we'll log it for debugging, but nothing else.
-            log.error("Failed to send to Tracker", e);
+//            log.error("Failed to send to Tracker", e);
         }
+
     }
 
     private MultiplayerTrackerApi.MultiplayerTrackerPayload createPayload(ItemFoundEvent event) {

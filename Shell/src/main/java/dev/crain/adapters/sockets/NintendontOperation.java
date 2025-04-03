@@ -2,7 +2,7 @@ package dev.crain.adapters.sockets;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 @NoArgsConstructor(access= AccessLevel.PRIVATE)
 public class NintendontOperation {

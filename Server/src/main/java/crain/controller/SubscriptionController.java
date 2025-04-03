@@ -21,12 +21,12 @@ public class SubscriptionController {
     @SubscribeMapping("/coop/{GameRoom}")
     public void subscribeToItemQueue(@DestinationVariable("GameRoom") String gameRoomName,
                                      @Headers Map<String, String> headers) {
-        log.info("Subscription to: " + gameRoomName + " Destination: " + headers.get("destination"));
+        log.info("Subscription to: {} Destination: {}", gameRoomName, headers.get("destination"));
     }
 
     @SubscribeMapping("/coop/item/{GameRoom}")
     public void subscribeToTopicItemQueue(@DestinationVariable("GameRoom") String gameRoomName,
                                           @Headers Map<String, String> headers) {
-        log.info("Topic Subscription to: " + gameRoomName + " Destination: " + headers.get("destination"));
+        log.info("Topic Subscription to: {} Destination: {}", gameRoomName, headers.get("destination"));
     }
 }

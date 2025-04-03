@@ -2,10 +2,7 @@ package records;
 
 import constants.WorldType;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 
 /**
@@ -19,7 +16,8 @@ public class INFO {
      */
     @Builder
     public record CoopItemRecord(
-            @NotNull(message = "A Source Player Name must be provided!")
+            @NotNull
+            @Size(min = 3, max = 20, message = "A Source Player can only have a name between 3-20 characters")
             String sourcePlayer,
             @Positive(message = "ItemID must be Positive!")
             Integer itemId
@@ -37,11 +35,12 @@ public class INFO {
      */
     @Builder
     public record CreateRoomRecord(
-
             @NotEmpty(message = "Game Room Name must be Provided!")
             String gameRoomName,
+            @NotNull
             @Positive(message = "Player Amount must be Positive!")
             Integer playerAmount,
+            @NotNull
             @Positive(message = "World Amount must be Positive!")
             Integer worldAmount,
             @NotEmpty(message = "All Game Rooms need a Password!")
@@ -75,10 +74,13 @@ public class INFO {
 
     @Builder
     public record ItemRecord(
+            @NotNull
             @Positive(message = "World Id must be greater than 0.")
             Integer sourcePlayerWorldId,
+            @NotNull
             @Positive(message = "World Id must be greater than 0.")
             Integer targetPlayerWorldId,
+            @NotNull
             @PositiveOrZero(message = "Item Ids cannot be less than 0.")
             Integer itemId
     ) {

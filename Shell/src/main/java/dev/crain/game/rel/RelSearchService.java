@@ -1,11 +1,14 @@
 package dev.crain.game.rel;
 
+import dev.crain.adapters.DolphinAdapter;
 import dev.crain.exceptions.memory.MemoryHandlerException;
+import dev.crain.game.GameInterfaceEvents;
 import dev.crain.game.actor.ActorService;
 import dev.crain.game.config.WindWakerConfig;
 import dev.crain.game.util.CollectionUtil;
 import dev.crain.service.HeapService;
 import dev.crain.service.MemoryAwareService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
@@ -18,12 +21,11 @@ public class RelSearchService extends MemoryAwareService {
 
     private final HeapService heapService;
     private final WindWakerConfig windWakerConfig;
-    private final ActorService actorService;
 
-    public RelSearchService(HeapService heapService, WindWakerConfig windWakerConfig, ActorService actorService) {
+    @SneakyThrows
+    public RelSearchService(HeapService heapService, WindWakerConfig windWakerConfig) {
         this.heapService = heapService;
         this.windWakerConfig = windWakerConfig;
-        this.actorService = actorService;
     }
 
     @Command(command = "rel-location")
@@ -43,6 +45,17 @@ public class RelSearchService extends MemoryAwareService {
 
         var toParse = loc == null ? -1 : loc;
         return "%s found at 0x%s".formatted(relName, Integer.toHexString(toParse));
+    }
+
+    @Command(command = "rel-test", hidden = true)
+    public String testRelFileMap() throws MemoryHandlerException {
+        for (var entry: heapService.getRelFileNameMap().entrySet()) {
+            log.atError().setMessage("{} : {}")
+                    .addArgument(entry.getKey())
+                    .addArgument(entry.getValue())
+                    .log();
+        }
+        return "";
     }
 
     @Command(command = "rel-func")

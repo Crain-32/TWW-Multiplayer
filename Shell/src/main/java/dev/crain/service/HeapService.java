@@ -2,7 +2,6 @@ package dev.crain.service;
 
 import dev.crain.exceptions.memory.MemoryHandlerException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -14,7 +13,6 @@ import static dev.crain.game.data.HeapConstants.*;
 
 @Slf4j
 @Service
-@DependsOn(value = "memoryAdapterFactory")
 public class HeapService extends MemoryAwareService {
 
     public HeapService() {
@@ -47,7 +45,12 @@ public class HeapService extends MemoryAwareService {
         for (short whoKnows = 0; whoKnows < 0x300; whoKnows++) {
             var checkActor = memoryAdapter.readShort(DYNAMIC_NAME_TABLE.pointer() + whoKnows * DYNAMIC_NAME_TABLE.entryLength());
             if (checkActor == -1) break;
+            var nextNamePointerPointer = DYNAMIC_NAME_TABLE.pointer() + whoKnows * DYNAMIC_NAME_TABLE.entryLength() + 4;
             var relFilenamePointer = memoryAdapter.readInteger(DYNAMIC_NAME_TABLE.pointer() + whoKnows * DYNAMIC_NAME_TABLE.entryLength() + 4);
+            log.atDebug().setMessage("relFilenamePointer: 0x{}, nextNamePointerPointer: 0x{}")
+                    .addArgument(() -> Integer.toHexString(relFilenamePointer))
+                    .addArgument(() -> Integer.toHexString(nextNamePointerPointer))
+                    .log();
             var relName = memoryAdapter.readStringTillNull(relFilenamePointer);
             shortStringMap.put(checkActor, StringUtils.hasLength(relName) ? relName : "[unknown : custom]");
         }

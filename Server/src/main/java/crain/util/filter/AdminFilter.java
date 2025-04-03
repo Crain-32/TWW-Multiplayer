@@ -30,10 +30,7 @@ public class AdminFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
         if (request.getServerPort() != adminPort && request.getServletPath().startsWith("/admin")) {
-            if (log.isWarnEnabled()) {
-
-                log.warn("Unexpected Access Attempt By" + request.getRemoteUser());
-            }
+            log.warn("Unexpected Access Attempt By {}", request.getLocalAddr());
             throw new ServletException("Invalid User Access Attempt");
         }
         filterChain.doFilter(request, response);

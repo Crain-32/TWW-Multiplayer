@@ -16,7 +16,6 @@ import records.ROOM;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -30,14 +29,14 @@ public class PlayerService {
     @SneakyThrows
     public Player setPlayerToConnected(ROOM.PlayerRecord dto, String gameRoomName) {
         Player player = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(dto.playerName(), gameRoomName)
+                .map(val -> val.makeConnected(true))
                 .orElseThrow(() -> new InvalidPlayerException("Player could not be found."));
-        player.setConnected(true);
         return playerRepo.save(player);
     }
 
     public void setOldPlayersToDisconnected() {
         try {
-            List<Player> oldPlayers = playerRepo.findAllByLastInteractionDateBefore(Date.from(Instant.now().minus(1, ChronoUnit.DAYS)));
+            List<Player> oldPlayers = playerRepo.findAllByLastInteractionDateBefore(Instant.now().minus(1, ChronoUnit.DAYS));
             oldPlayers.forEach(player -> player.setConnected(false));
             playerRepo.saveAll(oldPlayers);
         } catch (Exception e) {
@@ -47,9 +46,9 @@ public class PlayerService {
 
     @SneakyThrows
     public DETAIL.Player getDetailedPlayer(ROOM.PlayerRecord dto, String gameRoomName) {
-        Player player = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(dto.playerName(), gameRoomName)
+        return playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(dto.playerName(), gameRoomName)
+                .map(playerMapper::detailedPlayer)
                 .orElseThrow(() -> new InvalidPlayerException("Player could not be found."));
-        return playerMapper.detailedPlayer(player);
     }
 
     @Async
@@ -58,7 +57,6 @@ public class PlayerService {
         var optionalPlayer = playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(event.itemRecord().sourcePlayer(), event.gameRoom());
         if (optionalPlayer.isPresent()) {
             var player = optionalPlayer.get();
-            player.preUpdated();
             playerRepo.save(player);
         }
     }

@@ -6,11 +6,6 @@
   ],
   "properties": [
     {
-      "name": "enable.openapi",
-      "type": "java.lang.Boolean",
-      "description": "If the OpenAPI UI should be enabled at Runtime"
-    },
-    {
       "name": "enable.tournaments",
       "type": "java.lang.Boolean",
       "description": "If the Tournament Controller should be exposed at Runtime"
@@ -27,19 +22,6 @@
     }
   ],
   "hints": [
-    {
-      "name": "enable.openapi",
-      "values": [
-        {
-          "value": "true",
-          "description": "If the OpenAPI UI should be enabled at Runtime"
-        },
-        {
-          "value": "false",
-          "description": "If the OpenAPI UI should be disabled at Runtime"
-        }
-      ]
-    },
     {
       "name": "enable.tournaments",
       "values": [

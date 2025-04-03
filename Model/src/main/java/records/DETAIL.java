@@ -14,7 +14,6 @@ public class DETAIL {
             Integer connectedPlayerCount,
             WorldType worldType,
             List<Player> players,
-            Boolean tournament,
             String creationTimestamp
     ) {}
 

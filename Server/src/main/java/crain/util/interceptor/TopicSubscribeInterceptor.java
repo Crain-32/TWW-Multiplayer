@@ -35,7 +35,7 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
             }
             var headers = (LinkedMultiValueMap<String, String>) accessor.getHeader("nativeHeaders");
             if (Objects.nonNull(headers) && headers.containsKey("password") && !Objects.requireNonNull(headers.get("password")).isEmpty()) {
-                String password = headers.get("password").get(0);
+                String password = headers.get("password").getFirst();
                 String gameRoomName = extractGameRoomFromURL(accessor.getDestination());
                 if (gameRoomService.validateGameRoomPassword(gameRoomName, password)) {
                     return message;
@@ -52,16 +52,12 @@ public class TopicSubscribeInterceptor implements ChannelInterceptor {
     @SneakyThrows
     private String extractGameRoomFromURL(@NonNull String destination) {
         if (destination.length() >= 30) {
-            if (log.isDebugEnabled()) {
-                log.debug("Attempted to message: " + destination);
-            }
+            log.debug("Attempted to message: {}", destination);
             throw new InvalidGameRoomException("Invalid Game Room Name!");
         }
         String[] urlBreakdown = destination.split("/");
         if (urlBreakdown.length > 4) {
-            if (log.isDebugEnabled()) {
-                log.debug("Invalid Destination Attempted: " + destination);
-            }
+            log.debug("Invalid Destination Attempted: {}", destination);
             throw new InvalidGameRoomException("Invalid Destination URL");
         }
         return urlBreakdown[urlBreakdown.length - 1];

@@ -99,6 +99,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                 config.getPlayerName(),
                 config.getWorldId(),
                 config.getWorldType(),
-                false);
+                false
+        );
     }
 }

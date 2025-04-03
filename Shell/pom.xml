@@ -15,9 +15,9 @@
     <name>Shell</name>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <java-dolphin-engine-version>1.1-SNAPSHOT</java-dolphin-engine-version>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <java-dolphin-engine-version>2.1-LOCAL</java-dolphin-engine-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-shell.version>3.2.1</spring-shell.version>
     </properties>
@@ -32,12 +32,16 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.shell</groupId>
             <artifactId>spring-shell-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.crain</groupId>
-            <artifactId>Java-Dolphin-Memory-Engine</artifactId>
+            <artifactId>dme4j</artifactId>
             <version>${java-dolphin-engine-version}</version>
             <exclusions>
                 <exclusion>
@@ -58,6 +62,10 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

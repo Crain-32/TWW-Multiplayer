@@ -12,6 +12,8 @@ import org.springframework.scheduling.annotation.Async;
 /**
  * Abstract class that gives the extender the ability to access/verify the MemoryAdaptor without
  * having to worry about syncing the state.
+ *
+ * $.link.health=5
  */
 @Slf4j
 public abstract class MemoryAwareService {

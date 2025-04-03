@@ -32,8 +32,10 @@ public class ScheduleConfig {
     @Scheduled(cron = "0 5 * ? * * ") // Every Hour 5 Minutes after the Hour
     public void clearEmptyGameRooms() {
         log.info("Running: 'clearEmptyGameRooms()'");
-        List<ROOM.GameRoomRecord> toDelete = gameRoomService.getEmptyGameRooms();
-        toDelete.forEach(room -> applicationEventPublisher.publishEvent(new GameRoomMessageEvent("This Room is being cleared due to Inactivity.", room.name())));
+        gameRoomService.getEmptyGameRooms()
+                .stream()
+                .map(room -> new GameRoomMessageEvent("This Room is being cleared due to Inactivity.", room.name()))
+                .forEach(applicationEventPublisher::publishEvent);
         gameRoomService.clearEmptyGameRooms();
     }
 }

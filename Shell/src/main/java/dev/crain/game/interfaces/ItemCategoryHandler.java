@@ -7,7 +7,7 @@ import dev.crain.game.data.ItemCategory;
 import dev.crain.game.data.ItemInfo;
 import dev.crain.service.MemoryAwareService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**

@@ -2,9 +2,9 @@ package dev.crain.adapters;
 
 import dev.crain.exceptions.memory.MissingGameAdapterException;
 import dev.crain.game.interfaces.MemoryAdapter;
-import dolphin.DolphinEngine;
-import dolphin.DolphinFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.crain.memory.GamecubeMemoryEngine;
+import org.crain.memory.MemoryEngineBuilder;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -15,23 +15,25 @@ import java.io.IOException;
 @Component
 public class DolphinAdapter extends MemoryAdapter {
 
-    private final DolphinEngine engine;
+    private final GamecubeMemoryEngine engine;
     private boolean isHooked;
 
     public DolphinAdapter() throws IOException {
-        this.engine = DolphinFactory.createEngine();
+        log.atError().setMessage("WHAT?").log();
+        this.engine = MemoryEngineBuilder.forPlatform().connectOnBuild().build();
+        this.isHooked = true;
     }
 
     @Override
     public void connect() throws MissingGameAdapterException {
-        engine.hook(); // Integer == int -> Boxed refA != refB
-        if (Boolean.FALSE.equals(engine.getStatus())) {
-            log.debug("No Emulator was found.");
-            throw new MissingGameAdapterException("Failed to Find Dolphin, Please Open Dolphin and Restart the Client.");
-        } else if (Boolean.TRUE.equals(engine.getStatus())) {
-            log.debug("Hooked to Dolphin\nPublishing Self to Context...");
+//        engine.connect(); // Integer == int -> Boxed refA != refB
+//        if (Boolean.FALSE.equals(engine.getStatus())) {
+//            log.debug("No Emulator was found.");
+//            throw new MissingGameAdapterException("Failed to Find Dolphin, Please Open Dolphin and Restart the Client.");
+//        } else if (Boolean.TRUE.equals(engine.getStatus())) {
+//            log.debug("Hooked to Dolphin\nPublishing Self to Context...");
             isHooked = true;
-        }
+//        }
     }
 
     @Override
@@ -41,10 +43,10 @@ public class DolphinAdapter extends MemoryAdapter {
 
     @Override
     public Boolean isConnected() {
-        if (Boolean.FALSE.equals(engine.getStatus())) {
-            engine.hook();
-        }
-        isHooked = engine.getStatus();
+//        if (Boolean.FALSE.equals(engine.getStatus())) {
+//            engine.connect();
+//        }
+//        isHooked = engine.getStatus();
         return isHooked;
     }
 

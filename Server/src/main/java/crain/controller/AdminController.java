@@ -1,5 +1,6 @@
 package crain.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import crain.mappers.GameRoomMapper;
 import crain.model.enums.EventTypes;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import records.DETAIL;
 import records.INFO;
@@ -34,15 +38,10 @@ public class AdminController {
         return gameRoomService.findAll().stream().map(gameRoomMapper::gameRoomRecordMapper).toList();
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{GameRoom}")
-    public String deleteGameRoom(@PathVariable("GameRoom") String gameRoomName) {
-        applicationEventPublisher.publishEvent(new GameRoomMessageEvent("This Room is being cleared by Crain.", gameRoomName));
-        return gameRoomService.deleteGameRoomByName(gameRoomName) ? "GameRoom Still Exists" : "Successfully Deleted";
-    }
-
-    @PutMapping("/{GameRoom}") // ?setTo=False
-    public Boolean toggleTournamentMode(@PathVariable("GameRoom") String gameRoomName, @RequestParam("setTo") Boolean setTo) {
-        return gameRoomService.setTournamentMode(gameRoomName, setTo);
+    public void deleteGameRoom(@PathVariable("GameRoom") String gameRoomName) {
+        applicationEventPublisher.publishEvent(new GameRoomMessageEvent("This Room is being cleared by Crain", gameRoomName));
     }
 
     @GetMapping("/total/players")
@@ -61,13 +60,16 @@ public class AdminController {
         return gameRoomService.findAll().stream().map(gameRoomMapper::detailedRoomMapper).toList();
     }
 
+    public boolean eh(Authentication auth, Object ref) {
+        return false;
+    }
 
     @PostMapping("/gameroom/message/all")
     public void tellAllGameRooms(@RequestBody String message) {
-        var allGameRooms = getAllGameRooms();
-        for (var room : allGameRooms) {
-            applicationEventPublisher.publishEvent(new GameRoomMessageEvent(message, room.name()));
-        }
+        getAllGameRooms().forEach(room ->
+                applicationEventPublisher.publishEvent(new GameRoomMessageEvent(message, room.name()))
+        );
+
     }
 
 
@@ -75,17 +77,18 @@ public class AdminController {
     @PostMapping("/force/{event}/{GameRoom}")
     public void forceEvent(@PathVariable("GameRoom") String gameRoomName, @PathVariable("event") EventTypes type,
                            @RequestBody String eventInfo) {
-        switch (type) {
+        MultiplayerEvent<?> event = switch (type) {
             case COOP ->
-                    applicationEventPublisher.publishEvent(new CoopItemEvent(objectMapper.readValue(eventInfo, INFO.CoopItemRecord.class), gameRoomName));
+                    new CoopItemEvent(gameRoomName, objectMapper.readValue(eventInfo, INFO.CoopItemRecord.class));
             case MULTI ->
-                    applicationEventPublisher.publishEvent(new MultiworldItemEvent(objectMapper.readValue(eventInfo, INFO.ItemRecord.class), gameRoomName));
+                    new MultiworldItemEvent(gameRoomName, objectMapper.readValue(eventInfo, INFO.ItemRecord.class));
             case NAME ->
-                    applicationEventPublisher.publishEvent(new NameEvent(objectMapper.readValue(eventInfo, ROOM.PlayerRecord.class), gameRoomName));
+                    new NameEvent(gameRoomName, objectMapper.readValue(eventInfo, ROOM.PlayerRecord.class));
             case EVENT ->
-                    applicationEventPublisher.publishEvent(new EventEvent(objectMapper.readValue(eventInfo, INFO.EventRecord.class), gameRoomName));
-            case GENERAL -> applicationEventPublisher.publishEvent(new GameRoomMessageEvent(eventInfo, gameRoomName));
-            case ERROR -> applicationEventPublisher.publishEvent(new ErrorEvent(eventInfo, gameRoomName));
-        }
+                    new EventEvent(gameRoomName, objectMapper.readValue(eventInfo, INFO.EventRecord.class));
+            case GENERAL -> new GameRoomMessageEvent(gameRoomName, eventInfo);
+            case ERROR -> new ErrorEvent(gameRoomName, eventInfo);
+        };
+        applicationEventPublisher.publishEvent(event);
     }
 }

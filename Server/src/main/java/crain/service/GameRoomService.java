@@ -6,8 +6,6 @@ import crain.mappers.GameRoomMapper;
 import crain.mappers.PlayerMapper;
 import crain.model.domain.GameRoom;
 import crain.model.domain.Player;
-import crain.model.tournament.TournamentMapper;
-import crain.model.tournament.TournamentRoom;
 import crain.repository.GameRoomRepo;
 import crain.repository.PlayerRepo;
 import jakarta.transaction.Transactional;
@@ -21,7 +19,10 @@ import records.ROOM;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,7 +35,6 @@ public class GameRoomService {
     private final PlayerRepo playerRepo;
     private final GameRoomMapper gameRoomMapper;
     private final PlayerMapper playerMapper;
-    private final TournamentMapper tournamentMapper;
 
     public List<GameRoom> findAll() {
         return gameRoomRepo.findAll();
@@ -43,9 +43,7 @@ public class GameRoomService {
     @SneakyThrows
     public void createGameRoom(INFO.CreateRoomRecord dto) {
         if (gameRoomRepo.existsByName(dto.gameRoomName())) {
-            if (log.isDebugEnabled()) {
-                log.debug("Attempted Duplicate Game Room Create with name: " + dto.gameRoomName());
-            }
+            log.debug("Attempted Duplicate Game Room Create with name: {}", dto.gameRoomName());
             throw new InvalidGameRoomException("A Game Room with this name already exists!");
         }
         GameRoom gameRoom = GameRoom.builder()
@@ -65,8 +63,9 @@ public class GameRoomService {
     public ROOM.PlayerRecord getPlayerStatus(ROOM.PlayerRecord playerRecord, String gameRoomName) {
         return playerMapper.createPlayerRecord(
                 playerRepo.findByPlayerNameIgnoreCaseAndGameRoomName(
-                        playerRecord.playerName(),
-                        gameRoomName).orElse(new Player()));
+                                playerRecord.playerName(), gameRoomName)
+                        .orElse(new Player())
+        );
     }
 
     @SneakyThrows
@@ -75,9 +74,7 @@ public class GameRoomService {
                 .orElseThrow(() -> new InvalidGameRoomException("The Provided Room does not Exist!", gameRoomName));
         Player player = Player.fromDto(playerRecord);
         player.setConnected(false);
-        if (log.isDebugEnabled()) {
-            log.debug(playerRecord + " : was added to - " + gameRoomName);
-        }
+        log.debug("{} : was added to - {}", playerRecord, gameRoomName);
         // The InvalidPlayerException from below is caught by the Global Exception Handler
         gameRoom.addPlayer(player);
         playerRepo.save(player);
@@ -102,22 +99,20 @@ public class GameRoomService {
     public void clearEmptyGameRooms() {
         List<GameRoom> gameRooms = gameRoomRepo.findAllDistinctByPlayersConnectedFalseOrPlayersIsNull();
         var filteredRooms = gameRooms.stream().filter(gameRoom -> gameRoom.getCreationTimestamp()
-                .before(
-                        Date.from(Instant.now().minus(1, ChronoUnit.DAYS)
-                        )
-                )).toList();
-        gameRoomRepo.flush();
+                .isBefore(
+                        Instant.now().minus(1, ChronoUnit.DAYS)
+                )
+        ).toList();
         gameRoomRepo.deleteAll(filteredRooms);
-        gameRoomRepo.flush();
     }
 
     public List<ROOM.GameRoomRecord> getEmptyGameRooms() {
         List<GameRoom> gameRooms = gameRoomRepo.findAllDistinctByPlayersConnectedFalseOrPlayersIsNull();
         gameRooms = gameRooms.stream().filter(gameRoom -> gameRoom.getCreationTimestamp()
-                .before(
-                        Date.from(Instant.now().minus(1, ChronoUnit.DAYS)
-                        )
-                )).toList();
+                .isBefore(
+                        Instant.now().minus(1, ChronoUnit.DAYS)
+                )
+        ).toList();
         return gameRooms.stream().map(this.gameRoomMapper::gameRoomRecordMapper).collect(Collectors.toList());
     }
 
@@ -131,28 +126,10 @@ public class GameRoomService {
     }
 
     @Transactional
-    public Boolean deleteGameRoomByName(@NonNull String gameRoomName) {
+    public void deleteGameRoomByName(@NonNull String gameRoomName) {
         GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName).orElse(null);
         if (Objects.nonNull(targetRoom)) {
             gameRoomRepo.delete(targetRoom);
         }
-        return gameRoomRepo.existsByName(gameRoomName);
-    }
-
-    @Transactional
-    @SneakyThrows
-    public Boolean setTournamentMode(@NonNull String gameRoomName, @NonNull Boolean setTo) {
-        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName)
-                .orElseThrow(() -> new InvalidGameRoomException("The Provided Gameroom does not Exist!", gameRoomName));
-        targetRoom.setTournament(setTo);
-        gameRoomRepo.saveAndFlush(targetRoom);
-        return targetRoom.getTournament();
-    }
-
-    @SneakyThrows
-    public TournamentRoom getTournamentDto(@NonNull String gameRoomName) {
-        GameRoom targetRoom = gameRoomRepo.findOneByName(gameRoomName)
-                .orElseThrow(() -> new InvalidGameRoomException("The Provided GameRoom does not Exist!", gameRoomName));
-        return tournamentMapper.fromGameRoom(targetRoom);
     }
 }

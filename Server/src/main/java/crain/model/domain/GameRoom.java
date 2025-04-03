@@ -4,26 +4,24 @@ import constants.WorldType;
 import crain.exceptions.InvalidPlayerException;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table
-@Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameRoom {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class GameRoom extends AbstractPersistable<Long> {
 
     private String name;
     private String password;
@@ -34,23 +32,16 @@ public class GameRoom {
     private WorldType worldType;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> players = new ArrayList<>();
-    private Boolean tournament;
 
-    private Date creationTimestamp;
-
-
-    @PrePersist
-    public void beforePersist() {
-        this.creationTimestamp = Date.from(Instant.now());
-    }
+    private Instant creationTimestamp;
 
     @PreRemove
     public void beforeRemoval() {
         players.clear();
     }
 
-    public Integer getConnectedPlayerCount() {
-        return Math.toIntExact(this.players.stream().filter(Player::getConnected).count());
+    public int getConnectedPlayerCount() {
+        return Math.toIntExact(this.players.stream().filter(Player::isConnected).count());
     }
 
     @SneakyThrows
@@ -76,5 +67,54 @@ public class GameRoom {
 
     public String getName() {
         return name;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public Integer getWorldAmount() {
+        return this.worldAmount;
+    }
+
+    public WorldType getWorldType() {
+        return this.worldType;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public Instant getCreationTimestamp() {
+        return this.creationTimestamp;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setWorldAmount(Integer worldAmount) {
+        this.worldAmount = worldAmount;
+    }
+
+    public void setConnectedPlayerCount(Integer connectedPlayerCount) {
+        this.connectedPlayerCount = connectedPlayerCount;
+    }
+
+    public void setWorldType(WorldType worldType) {
+        this.worldType = worldType;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    @PrePersist
+    void setCreationTimestamp() {
+        this.creationTimestamp = Instant.now();
     }
 }
