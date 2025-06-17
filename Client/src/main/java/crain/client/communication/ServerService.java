@@ -48,7 +48,7 @@ public class ServerService {
     public void postConstruct() {
         // Groundwork for the dynamic Server URL
         WebClient client = WebClient.builder().baseUrl("http://" + settingsService.getBrokerServerURL() + "/rest/gameroom").build();
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(WebClientAdapter.create(client)).build();
 
         this.gameRoomApi = factory.createClient(GameRoomApi.class);
     }

@@ -1,7 +1,10 @@
 # Project exclude paths
 **/target/*
 **/.idea/
-/src/main/resources/*
+**/build/*
+
+#Going to look at this later at some point probably
+**/MANIFEST.MF
 *.iml
 *.p12
 **.db

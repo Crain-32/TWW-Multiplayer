@@ -26,8 +26,8 @@ public class NamesQueueHandler extends AbstractQueueHandler<ROOM.PlayerRecord> {
     }
 
     @Override
-    public void innerHandleFrame(@NotNull StompHeaders headers, ROOM.@NotNull PlayerRecord playerRecord) {
-        if (playerRecord.worldId() != null && playerRecord.worldType() != WorldType.COOP && playerRecord.playerName() != null) {
+    public void innerHandleFrame(@NotNull StompHeaders headers, @NotNull ROOM.PlayerRecord playerRecord) {
+        if (playerRecord.worldId() != 0 && playerRecord.worldType() != WorldType.COOP && playerRecord.playerName() != null) {
             applicationEventPublisher.publishEvent(playerRecord);
         }
     }

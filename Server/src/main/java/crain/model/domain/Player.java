@@ -2,16 +2,12 @@ package crain.model.domain;
 
 import constants.WorldType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.NonNull;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import records.ROOM;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +15,6 @@ import java.util.Objects;
 
 @Entity
 @Table
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Player extends AbstractPersistable<Long> {
 
     private String playerName;
@@ -41,6 +34,23 @@ public class Player extends AbstractPersistable<Long> {
     private List<Integer> items = new ArrayList<>();
 
     private Instant lastInteractionDate;
+
+    public Player(String playerName, @NotNull GameRoom gameRoom, WorldType worldType, Integer worldId, boolean connected, List<Integer> items, Instant lastInteractionDate) {
+        this.playerName = playerName;
+        this.gameRoom = gameRoom;
+        this.worldType = worldType;
+        this.worldId = worldId;
+        this.connected = connected;
+        this.items = items;
+        this.lastInteractionDate = lastInteractionDate;
+    }
+
+    public Player() {
+    }
+
+    public static PlayerBuilder builder() {
+        return new PlayerBuilder();
+    }
 
     @PreRemove
     public void preRemove() {
@@ -153,5 +163,70 @@ public class Player extends AbstractPersistable<Long> {
 
     public Instant getLastInteractionDate() {
         return this.lastInteractionDate;
+    }
+
+    public static class PlayerBuilder {
+        private String playerName;
+        private @NotNull GameRoom gameRoom;
+        private WorldType worldType;
+        private Integer worldId;
+        private boolean connected;
+        private List<Integer> items;
+        private Instant lastInteractionDate;
+
+        PlayerBuilder() {
+        }
+
+        public PlayerBuilder playerName(String playerName) {
+            this.playerName = playerName;
+            return this;
+        }
+
+        public PlayerBuilder gameRoom(@NotNull GameRoom gameRoom) {
+            this.gameRoom = gameRoom;
+            return this;
+        }
+
+        public PlayerBuilder worldType(WorldType worldType) {
+            this.worldType = worldType;
+            return this;
+        }
+
+        public PlayerBuilder worldId(Integer worldId) {
+            this.worldId = worldId;
+            return this;
+        }
+
+        public PlayerBuilder connected(boolean connected) {
+            this.connected = connected;
+            return this;
+        }
+
+        public PlayerBuilder items(List<Integer> items) {
+            this.items = items;
+            return this;
+        }
+
+        public PlayerBuilder lastInteractionDate(Instant lastInteractionDate) {
+            this.lastInteractionDate = lastInteractionDate;
+            return this;
+        }
+
+        public Player build() {
+            Objects.requireNonNull(this.gameRoom);
+            return new Player(
+                    this.playerName,
+                    this.gameRoom,
+                    this.worldType,
+                    this.worldId,
+                    this.connected,
+                    Objects.requireNonNullElseGet(this.items, ArrayList::new),
+                    this.lastInteractionDate
+            );
+        }
+
+        public String toString() {
+            return "Player.PlayerBuilder(playerName=" + this.playerName + ", gameRoom=" + this.gameRoom + ", worldType=" + this.worldType + ", worldId=" + this.worldId + ", connected=" + this.connected + ", items=" + this.items + ", lastInteractionDate=" + this.lastInteractionDate + ")";
+        }
     }
 }

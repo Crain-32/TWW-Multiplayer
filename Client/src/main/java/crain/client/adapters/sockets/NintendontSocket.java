@@ -37,7 +37,7 @@ public class NintendontSocket {
     }
 
     private void connectSocket() throws IOException {
-        log.info("Connecting to: {}:{}".endsWith(), ipAddress, port);
+        log.info("Connecting to: {}:{}", ipAddress, port);
         socket = new Socket(ipAddress, port);
         this.inputStream = new BufferedInputStream(socket.getInputStream());
         this.outputStream = new BufferedOutputStream(socket.getOutputStream());

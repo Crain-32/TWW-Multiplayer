@@ -32,7 +32,7 @@ public class ExternalService {
     @PostConstruct
     public void makeMultiplayerTrackerApi() {
         WebClient client = WebClient.builder().baseUrl(settingsService.getSetting("https://" + settingsService.getSetting(EXTERNAL_TRACKER_WEBSITE))).build();
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(client)).build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(WebClientAdapter.create(client)).build();
         this.multiplayerTrackerApi = factory.createClient(MultiplayerTrackerApi.class);
     }
 

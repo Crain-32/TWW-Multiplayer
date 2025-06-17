@@ -17,7 +17,7 @@ import org.springframework.stereotype.Controller;
 import records.INFO;
 import records.ROOM;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Objects;
 
 @Slf4j

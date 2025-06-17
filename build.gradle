@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+}
+ext {
+    set('springVersion', "3.4.4")
+    set('springShellVersion', "3.4.0")
+    set('junitVersion', "5.11.4")
+    set('lombokVersion', "1.18.36")
+    set('springdocVersion', "2.8.5")
+    set('mapstructVersion', "1.6.3")
+}
+
+group = 'dev.crain'
+version = '1.0.1'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+}
+
+subprojects {
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+}
+
+
+
+
+
